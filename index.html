@@ -4,53 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TECNO KSA Store Visit Scorecard</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#F0F2F5;color:#1A1A2E;font-size:14px;min-height:100vh}
 .app{max-width:800px;margin:0 auto;padding:16px}
-
-/* ── Topbar ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#1B2A4A;border-radius:12px;margin-bottom:14px;box-shadow:0 2px 8px rgba(27,42,74,.18)}
 .t1{color:#C9A227;font-size:16px;font-weight:600}
 .t2{font-size:11px;margin-top:2px;display:flex;align-items:center;gap:6px}
 .conn-dot{width:7px;height:7px;border-radius:50%;background:#98A2B3;flex-shrink:0;transition:background .3s}
-.conn-dot.ok{background:#27AE60}.conn-dot.err{background:#E74C3C}.conn-dot.spin{background:#C9A227;animation:blink 1s infinite}
-.conn-lbl{color:#8899AA;font-size:11px}
+.conn-dot.ok{background:#27AE60}
+.conn-dot.err{background:#E74C3C}
+.conn-dot.spin{background:#C9A227;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
 .score-box{text-align:right}
 .big-score{font-size:32px;font-weight:700;color:#C9A227;line-height:1}
 .score-lbl{font-size:11px;color:#8899AA}
-
-/* ── Setup screen ── */
 .setup-screen{background:#fff;border-radius:12px;border:1px solid #E4E7EC;padding:28px;max-width:480px;margin:40px auto}
-.setup-screen h2{font-size:18px;font-weight:600;color:#1B2A4A;margin-bottom:6px}
-.setup-screen p{font-size:13px;color:#667085;margin-bottom:20px;line-height:1.6}
 .setup-screen input{width:100%;font-size:13px;border:1px solid #D0D5DD;border-radius:8px;padding:10px 12px;outline:none;color:#1A1A2E;margin-bottom:10px;font-family:inherit}
 .setup-screen input:focus{border-color:#C9A227;box-shadow:0 0 0 3px rgba(201,162,39,.12)}
 .setup-screen .info{background:#EBF5FB;border:1px solid #AED6F1;border-radius:8px;padding:12px;font-size:12px;color:#1A5276;line-height:1.7;margin-bottom:16px}
-.setup-screen .info a{color:#2E75B6}
 .setup-screen .info code{background:#D6EAF8;padding:1px 5px;border-radius:4px;font-size:11px}
-
-/* ── Tabs ── */
 .tabs{display:flex;gap:6px;margin-bottom:14px}
 .tab{flex:1;padding:7px 4px;border-radius:8px;border:1.5px solid #D0D5DD;background:#fff;font-size:12px;cursor:pointer;color:#667085;text-align:center;font-weight:500;transition:all .15s;line-height:1.3}
 .tab:hover{background:#F9F0D6;border-color:#C9A227}
 .tab.on{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A;font-weight:600}
-
-/* ── Meta grid ── */
 .meta-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
 .meta-box{background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:8px 12px}
 .meta-box label{font-size:11px;color:#667085;display:block;margin-bottom:3px;font-weight:500}
 .meta-box input,.meta-box select{width:100%;font-size:13px;background:transparent;border:none;outline:none;color:#1A1A2E;padding:0;font-family:inherit}
-
-/* ── Sections ── */
 .sec-card{background:#fff;border:1px solid #E4E7EC;border-radius:12px;margin-bottom:8px;overflow:hidden}
 .sec-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #F2F4F7;cursor:pointer;user-select:none}
 .sec-hdr:hover{background:#FAFAFA}
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .sec-name{font-size:13px;font-weight:600;flex:1}
-.sec-en{font-size:11px;color:#98A2B3}
 .sec-badge{font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;background:#F9FAFB}
 .pbar{height:3px;background:#F2F4F7}
 .pfill{height:100%;transition:width .3s}
@@ -58,32 +45,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .irow:last-child{border-bottom:none}
 .irow:nth-child(even){background:#FAFAFA}
 .izh{font-size:12px;line-height:1.4;color:#344054}
-.ien{font-size:11px;color:#98A2B3}
 .sbtns{display:flex;gap:3px}
 .sb{width:26px;height:26px;border-radius:6px;border:1px solid #D0D5DD;background:#F9FAFB;color:#667085;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;transition:all .12s}
 .sb:hover{background:#FDF3D0;border-color:#C9A227}
 .sb.on{color:#fff;border-color:transparent}
-
-/* ── Summary bar ── */
 .sumbar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
 .scard{background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:8px 6px;text-align:center}
 .sval{font-size:16px;font-weight:700}
 .slbl{font-size:10px;color:#98A2B3;margin-top:2px}
 .grade-b{border-radius:10px;padding:12px;text-align:center;margin-bottom:12px;border:1.5px solid transparent}
-
-/* ── Notes ── */
 .gnote{background:#fff;border:1px solid #E4E7EC;border-radius:10px;padding:10px 12px;margin-bottom:8px}
 .gnote label{font-size:11px;color:#667085;margin-bottom:4px;display:block;font-weight:500}
 .gnote textarea{width:100%;border:none;background:transparent;resize:none;font-size:12px;color:#344054;outline:none;min-height:48px;line-height:1.6;font-family:inherit}
-
-/* ── Action row ── */
 .act-row{display:flex;gap:8px;margin-top:12px}
 .btn-pri{flex:1;padding:11px;border-radius:8px;background:#1B2A4A;color:#C9A227;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s}
 .btn-pri:hover{opacity:.88}
 .btn-pri:disabled{opacity:.4;cursor:not-allowed}
 .btn-sec{padding:11px 14px;border-radius:8px;background:#fff;border:1.5px solid #D0D5DD;font-size:13px;cursor:pointer;color:#344054;font-weight:500}
-
-/* ── History ── */
 .hfil{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
 .hf{padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid #D0D5DD;background:#fff;color:#667085;font-weight:500}
 .hf.on{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A}
@@ -105,10 +83,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .hnr{margin-bottom:8px}
 .hnl{font-size:10px;color:#98A2B3;font-weight:600;margin-bottom:2px}
 .hnv{font-size:12px;color:#344054;line-height:1.5}
-.del-btn{font-size:11px;color:#E74C3C;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px}
-.del-btn:hover{background:#FEF3F2}
-
-/* ── Dashboard ── */
 .dsec{margin-bottom:18px}
 .dtitle{font-size:11px;font-weight:700;color:#98A2B3;margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em}
 .mgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
@@ -120,89 +94,80 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 .chip{font-size:11px;padding:2px 10px;border-radius:20px;font-weight:600;background:#ECFDF3;color:#027A48}
 .chip.d{background:#FEF3F2;color:#B42318}
 .chip.f{background:#F9FAFB;color:#667085}
-
-/* ── Settings ── */
 .cfg-panel{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:16px;margin-bottom:14px}
 .cfg-panel h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#1B2A4A}
 .cfg-panel label{font-size:11px;color:#667085;display:block;margin-bottom:4px;font-weight:500}
 .cfg-panel input{width:100%;font-size:12px;border:1px solid #D0D5DD;border-radius:6px;padding:8px 10px;outline:none;color:#1A1A2E;margin-bottom:10px;font-family:inherit}
 .cfg-panel input:focus{border-color:#C9A227}
-.code-pre{background:#1E2A3A;border-radius:8px;padding:12px;font-size:10.5px;color:#A8D8A8;line-height:1.6;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;font-family:'Fira Code',Consolas,monospace;margin:10px 0}
-
-/* ── Misc ── */
+.code-pre{background:#1E2A3A;border-radius:8px;padding:12px;font-size:10.5px;color:#A8D8A8;line-height:1.6;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;font-family:Consolas,monospace;margin:10px 0}
 .empty{text-align:center;padding:48px 20px;color:#98A2B3;font-size:13px;background:#fff;border-radius:12px;border:1px solid #E4E7EC}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1B2A4A;color:#C9A227;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.18);white-space:nowrap;max-width:90vw}
 .badge{font-size:10px;padding:1px 7px;border-radius:10px;margin-left:5px;background:#C9A22722;color:#9A7010}
 .live-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:10px;background:#ECFDF3;color:#027A48;font-weight:600}
 .user-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:20px;background:#EBF5FB;color:#1A5276;font-weight:500;border:1px solid #AED6F1}
+.btn-excel{width:100%;padding:11px;border-radius:8px;background:#1A7A4A;color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px}
+.btn-excel:hover{opacity:.88}
 @media(max-width:500px){.meta-g{grid-template-columns:1fr}.sumbar{grid-template-columns:repeat(5,1fr)}}
 </style>
 </head>
 <body>
 <div class="app">
 
-<!-- ═══ SETUP SCREEN ══════════════════════════════════════ -->
+<!-- ====== Setup Screen ====== -->
 <div id="setup" style="display:none">
  <div class="setup-screen">
  <div style="text-align:center;margin-bottom:20px">
- <div style="font-size:32px;margin-bottom:6px">📊</div>
- <div style="font-size:20px;font-weight:700;color:#1B2A4A">TECNO KSA Store Visit Scorecard</div>
- <div style="font-size:13px;color:#98A2B3;margin-top:4px">Multi-user · Real-time Sync</div>
+  <div style="font-size:32px;margin-bottom:6px">&#128202;</div>
+  <div style="font-size:20px;font-weight:700;color:#1B2A4A">TECNO KSA Store Visit Scorecard</div>
+  <div style="font-size:13px;color:#98A2B3;margin-top:4px">Multi-user &middot; Real-time Sync</div>
  </div>
  <div class="info">
- <strong>First time setup:</strong><br>
- Ask your admin for the <code>Apps Script URL</code>.<br>
- 1. <code>Apps Script URL</code> — backend URL<br>
- If you are the admin, deploy the backend first → see the setup guide below
+  <strong>First time setup:</strong><br>
+  Ask your admin for the <code>Apps Script URL</code>.<br>
+  If you are the admin, click "Admin Setup Guide" below to deploy the backend.
  </div>
- <label>Apps Script URL </label>
+ <label style="font-size:11px;color:#667085;font-weight:500">Apps Script URL</label>
  <input type="url" id="su-url" placeholder="https://script.google.com/macros/s/.../exec">
- <label>Your Name </label>
- <input type="text" id="su-name" placeholder="Your name (e.g. KDR Manager)">
- <button onclick="setupSave()" style="width:100%;padding:11px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px">
- <i class="ti ti-login"></i> Enter System
- </button>
- <button onclick="showGuide()" style="width:100%;padding:11px;background:transparent;color:#667085;border:1px solid #D0D5DD;border-radius:8px;font-size:13px;cursor:pointer">
- <i class="ti ti-book"></i> Admin Setup Guide
- </button>
+ <label style="font-size:11px;color:#667085;font-weight:500">Your Name</label>
+ <input type="text" id="su-name" placeholder="e.g. KDR Manager">
+ <button onclick="setupSave()" style="width:100%;padding:11px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px">Enter System</button>
+ <button onclick="showGuide()" style="width:100%;padding:11px;background:transparent;color:#667085;border:1px solid #D0D5DD;border-radius:8px;font-size:13px;cursor:pointer">Admin Setup Guide</button>
  </div>
 </div>
 
-<!-- ═══ GUIDE ═════════════════════════════════════════════ -->
+<!-- ====== Admin Guide ====== -->
 <div id="guide" style="display:none">
  <div class="cfg-panel">
  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
- <h3 style="margin-bottom:0"><i class="ti ti-brand-google-drive" style="color:#27AE60;margin-right:6px"></i>Admin Setup Guide</h3>
- <button onclick="showSetup()" style="font-size:12px;color:#667085;background:none;border:1px solid #D0D5DD;padding:4px 10px;border-radius:6px;cursor:pointer"><i class="ti ti-arrow-left"></i> Back</button>
+  <h3 style="margin-bottom:0">Admin Setup Guide</h3>
+  <button onclick="showSetup()" style="font-size:12px;color:#667085;background:none;border:1px solid #D0D5DD;padding:4px 10px;border-radius:6px;cursor:pointer">&larr; Back</button>
  </div>
  <div style="font-size:12px;color:#344054;line-height:1.9;background:#F9FAFB;border-radius:8px;padding:12px;margin-bottom:12px">
- <strong>Step 1:</strong> Create a new <a href="https://sheets.google.com" target="_blank" style="color:#2E75B6">Google Sheet</a> and copy its ID<br>
- → The string between <code>/d/</code> and <code>/edit</code> in the Sheet URL<br><br>
- <strong>Step 2:</strong> Open <a href="https://script.google.com" target="_blank" style="color:#2E75B6">script.google.com</a> → New project<br>
- → Paste the code below and replace <code>SHEET_ID</code> on line 1<br>
-
- <strong>Step 3:</strong> Menu → Deploy → New deployment<br>
- → Type: Web app / Execute as: Me / Access: Anyone (including anonymous)<br>
- → Click Deploy → Authorize → Copy the Web App URL<br><br>
- <strong>Step 4:</strong> Share the URL with your team — everyone can use it immediately
+  <strong>Step 1:</strong> Create a new <a href="https://sheets.google.com" target="_blank" style="color:#2E75B6">Google Sheet</a> and copy its ID<br>
+  &rarr; The string between <code>/d/</code> and <code>/edit</code> in the Sheet URL<br><br>
+  <strong>Step 2:</strong> Open <a href="https://script.google.com" target="_blank" style="color:#2E75B6">script.google.com</a> &rarr; New project<br>
+  &rarr; Paste the code below and replace <code>SHEET_ID</code> on line 1<br>
+  <strong>Step 3:</strong> Menu &rarr; Deploy &rarr; New deployment<br>
+  &rarr; Type: Web app / Execute as: Me / Access: Anyone (including anonymous)<br>
+  &rarr; Click Deploy &rarr; Authorize &rarr; Copy the Web App URL<br><br>
+  <strong>Step 4:</strong> Share the URL with your team
  </div>
- <label>Apps Script Code — paste into script.google.com</label>
+ <label style="font-size:11px;color:#667085;font-weight:500">Apps Script Code &mdash; paste into script.google.com</label>
  <div class="code-pre" id="guide-code"></div>
- <button onclick="copyGuideCode()" style="padding:7px 14px;border:1px solid #D0D5DD;background:#fff;border-radius:6px;cursor:pointer;font-size:12px"><i class="ti ti-copy"></i> Copy Code</button>
+ <button onclick="copyCode()" style="padding:7px 14px;border:1px solid #D0D5DD;background:#fff;border-radius:6px;cursor:pointer;font-size:12px">Copy Code</button>
  </div>
 </div>
 
-<!-- ═══ MAIN APP ═══════════════════════════════════════════ -->
+<!-- ====== Main App ====== -->
 <div id="mainapp" style="display:none">
-
 <div class="topbar">
  <div>
- <div class="t1"><i class="ti ti-building-store" style="font-size:16px;margin-right:7px"></i>TECNO KSA Store Visit Scorecard</div>
+ <div class="t1">TECNO KSA Store Visit Scorecard</div>
  <div class="t2">
- <span class="conn-dot" id="cdot"></span>
- <span id="clbl" style="color:#8899AA">Connecting…</span>
- <span class="live-pill" id="live-pill" style="display:none"><span class="conn-dot ok" style="margin:0"></span>Live Sync</span>
- <span class="user-pill" id="user-pill"></span>
+  <span class="conn-dot" id="cdot"></span>
+  <span id="clbl" style="color:#8899AA">Connecting...</span>
+  <span class="live-pill" id="live-pill" style="display:none"><span class="conn-dot ok" style="margin:0"></span> Live</span>
+  <span class="user-pill" id="user-pill"></span>
  </div>
  </div>
  <div class="score-box">
@@ -212,108 +177,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 </div>
 
 <div class="tabs">
- <button class="tab on" onclick="sw('form',this)" id="t-form"><i class="ti ti-pencil"></i> Fill Scorecard </button>
- <button class="tab" onclick="sw('hist',this)" id="t-hist">
- <i class="ti ti-history"></i> All Records
- <span class="badge" id="rec-count">0</span>
- </button>
- <button class="tab" onclick="sw('dash',this)" id="t-dash"><i class="ti ti-chart-bar"></i> Dashboard </button>
- <button class="tab" onclick="sw('cfg',this)" id="t-cfg"><i class="ti ti-settings"></i> Settings </button>
+ <button class="tab on" onclick="sw('form',this)" id="t-form">Fill Scorecard</button>
+ <button class="tab" onclick="sw('hist',this)" id="t-hist">All Records <span class="badge" id="rec-count">0</span></button>
+ <button class="tab" onclick="sw('dash',this)" id="t-dash">Dashboard</button>
+ <button class="tab" onclick="sw('cfg',this)" id="t-cfg">Settings</button>
 </div>
 
-<!-- FORM -->
+<!-- Form -->
 <div id="v-form">
  <div class="meta-g">
- <div class="meta-box"><label><i class="ti ti-building-store"></i> Store </label>
+ <div class="meta-box"><label>Store</label>
  <select id="f-s" onchange="onStore()">
-      <option value="">Select store</option>
-      <optgroup label="Jarir">
-        <option>Jarir Olaya</option>
-        <option>Jarir Khurais</option>
-        <option>Jarir Exit 25</option>
-        <option>Jarir Tabuk</option>
-        <option>Jarir Faisalyah</option>
-        <option>Jarir Khamis Musait</option>
-      </optgroup>
-      <optgroup label="Extra">
-        <option>Extra Woroud</option>
-        <option>Extra Al-Badiah</option>
-        <option>Extra JS1 Sultan</option>
-        <option>Extra Jeddah Thaliah Alazezyah</option>
-        <option>Extra Tabuk</option>
-        <option>Extra Khurais</option>
-        <option>Extra J11 Jizan</option>
-        <option>Extra Remal</option>
-        <option>Extra Sweedy</option>
-        <option>Extra Abha</option>
-        <option>Extra Khamis Mushait</option>
-      </optgroup>
-      <optgroup label="LuLu">
-        <option>LuLu HM Riyadh Avenue Murabba</option>
-        <option>Lulu Hypermarket Batha Riyadh E</option>
-        <option>Lulu Batha M</option>
-        <option>Lulu Hypermarket Yarmouk</option>
-        <option>LuLu HM Al Yasmin Riyadh</option>
-        <option>Lulu Hypermarket Khurais</option>
-        <option>Lulu Hypermarket Al Ahsa</option>
-        <option>LuLu Hypermarket AlKhobar</option>
-        <option>LuLu Hypermarket Jubail</option>
-        <option>Lulu Mall Dammam</option>
-        <option>LuLu HM Madeena Road Jeddah</option>
-        <option>LuLu HM Marwa Jeddah</option>
-        <option>Lulu Hamdaniya</option>
-        <option>LuLu Hypermarket Amir Fawaz</option>
-        <option>Lulu Malaz</option>
-        <option>Lulu Hypermarket Hail</option>
-      </optgroup>
-      <optgroup label="Nesto">
-        <option>Nesto Batha M</option>
-        <option>Nesto Batha E</option>
-        <option>Nesto Aziziya</option>
-        <option>Nesto New Sanaya</option>
-        <option>Nesto Al Kharj</option>
-        <option>Nesto Buraidah</option>
-        <option>Nesto Jubail</option>
-        <option>Nesto Khobar</option>
-        <option>Nesto Dabab</option>
-        <option>Nesto Mina</option>
-        <option>Nesto Villagio</option>
-      </optgroup>
-      <optgroup label="Wafa">
-        <option>Wafa Exit 16</option>
-        <option>Wafa Shola</option>
-        <option>Wafa Seiko</option>
-        <option>Wafa Makkah</option>
-      </optgroup>
-    </select>
- </div>
- <div class="meta-box"><label><i class="ti ti-user"></i> Promoter </label>
- <select id="f-p"><option value="">Select store first</option></select>
- </div>
- <div class="meta-box"><label><i class="ti ti-star"></i> Star Level </label>
- <select id="f-st"><option value="">—</option><option>★ 1-Star</option><option>★★★ 3-Star</option><option>★★★★★ 5-Star</option></select>
- </div>
- <div class="meta-box"><label><i class="ti ti-user-check"></i> Auditor </label>
- <input type="text" id="f-a" placeholder="Auto-filled from settings">
- </div>
- <div class="meta-box"><label><i class="ti ti-calendar"></i> Date </label><input type="date" id="f-d"></div>
- <div class="meta-box"><label><i class="ti ti-clock"></i> Time </label><input type="time" id="f-t"></div>
+  <option value="">Select store</option>
+  <optgroup label="Jarir"><option>Jarir Olaya</option><option>Jarir Khurais</option><option>Jarir Exit 25</option><option>Jarir Tabuk</option><option>Jarir Faisalyah</option><option>Jarir Khamis Musait</option></optgroup>
+  <optgroup label="Extra"><option>Extra Woroud</option><option>Extra Al-Badiah</option><option>Extra JS1 Sultan</option><option>Extra Jeddah Thaliah Alazezyah</option><option>Extra Tabuk</option><option>Extra Khurais</option><option>Extra J11 Jizan</option><option>Extra Remal</option><option>Extra Sweedy</option><option>Extra Abha</option><option>Extra Khamis Mushait</option></optgroup>
+  <optgroup label="LuLu"><option>LuLu HM Riyadh Avenue Murabba</option><option>Lulu Hypermarket Batha Riyadh E</option><option>Lulu Batha M</option><option>Lulu Hypermarket Yarmouk</option><option>LuLu HM Al Yasmin Riyadh</option><option>Lulu Hypermarket Khurais</option><option>Lulu Hypermarket Al Ahsa</option><option>LuLu Hypermarket AlKhobar</option><option>LuLu Hypermarket Jubail</option><option>Lulu Mall Dammam</option><option>LuLu HM Madeena Road Jeddah</option><option>LuLu HM Marwa Jeddah</option><option>Lulu Hamdaniya</option><option>LuLu Hypermarket Amir Fawaz</option><option>Lulu Malaz</option><option>Lulu Hypermarket Hail</option></optgroup>
+  <optgroup label="Nesto"><option>Nesto Batha M</option><option>Nesto Batha E</option><option>Nesto Aziziya</option><option>Nesto New Sanaya</option><option>Nesto Al Kharj</option><option>Nesto Buraidah</option><option>Nesto Jubail</option><option>Nesto Khobar</option><option>Nesto Dabab</option><option>Nesto Mina</option><option>Nesto Villagio</option></optgroup>
+  <optgroup label="Wafa"><option>Wafa Exit 16</option><option>Wafa Shola</option><option>Wafa Seiko</option><option>Wafa Makkah</option></optgroup>
+ </select></div>
+ <div class="meta-box"><label>Promoter</label><select id="f-p"><option value="">Select store first</option></select></div>
+ <div class="meta-box"><label>Star Level</label><select id="f-st"><option value="">--</option><option>1-Star</option><option>3-Star</option><option>5-Star</option></select></div>
+ <div class="meta-box"><label>Auditor</label><input type="text" id="f-a" placeholder="Auto-filled"></div>
+ <div class="meta-box"><label>Date</label><input type="date" id="f-d"></div>
+ <div class="meta-box"><label>Time</label><input type="time" id="f-t"></div>
  </div>
  <div id="sw"></div>
  <div class="sumbar" id="sb"></div>
  <div id="ga" style="margin-bottom:12px"></div>
- <div class="gnote"><label><i class="ti ti-star"></i> Highlights </label><textarea id="n1" placeholder="What was done well this visit…"></textarea></div>
- <div class="gnote"><label><i class="ti ti-alert-triangle"></i> Actions Required </label><textarea id="n2" placeholder="Items to fix and deadlines…"></textarea></div>
- <div class="gnote"><label><i class="ti ti-messages"></i> Promoter Feedback </label><textarea id="n3" placeholder="Feedback on product, events, customers…"></textarea></div>
+ <div class="gnote"><label>Highlights</label><textarea id="n1" placeholder="What was done well..."></textarea></div>
+ <div class="gnote"><label>Actions Required</label><textarea id="n2" placeholder="Items to fix..."></textarea></div>
+ <div class="gnote"><label>Promoter Feedback</label><textarea id="n3" placeholder="Feedback on product, customers..."></textarea></div>
  <div class="act-row">
- <button class="btn-sec" onclick="rst()"><i class="ti ti-refresh"></i> Reset </button>
- <button class="btn-pri" id="btn-submit" onclick="submit()">
- <i class="ti ti-cloud-upload"></i> Submit & Sync to Cloud 
- </button>
+ <button class="btn-sec" onclick="rst()">Reset</button>
+ <button class="btn-pri" id="btn-submit" onclick="doSubmit()">Submit &amp; Sync to Cloud</button>
  </div>
 </div>
 
-<!-- HISTORY -->
+<!-- History -->
 <div id="v-hist" style="display:none">
  <div class="hfil">
  <button class="hf on" onclick="fh('all',this)">All</button>
@@ -321,587 +221,384 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
  <button class="hf" onclick="fh('Extra',this)">Extra</button>
  <button class="hf" onclick="fh('Lulu',this)">LuLu</button>
  <button class="hf" onclick="fh('Nesto',this)">Nesto</button>
-    <button class="hf" onclick="fh('Wafa',this)">Wafa</button>
- <button class="hf" onclick="fh('pass',this)">Pass ≥75 </button>
- <button class="hf" onclick="fh('fail',this)">Fail &lt;60 </button>
- <button class="pull-btn" onclick="pull()"><i class="ti ti-refresh"></i> Refresh</button>
+ <button class="hf" onclick="fh('Wafa',this)">Wafa</button>
+ <button class="hf" onclick="fh('pass',this)">Pass &ge;75</button>
+ <button class="hf" onclick="fh('fail',this)">Fail &lt;60</button>
+ <button class="pull-btn" onclick="pull()">&#x21bb; Refresh</button>
  </div>
  <div id="hl"></div>
 </div>
 
-<!-- DASHBOARD -->
+<!-- Dashboard -->
 <div id="v-dash" style="display:none"><div id="dc"></div></div>
 
-<!-- SETTINGS -->
+<!-- Settings -->
 <div id="v-cfg" style="display:none">
  <div class="cfg-panel">
- <h3><i class="ti ti-settings" style="margin-right:6px"></i>Personal Settings </h3>
- <label>Your Name </label>
+ <h3>Personal Settings</h3>
+ <label>Your Name</label>
  <input type="text" id="cfg-name" placeholder="Your name">
- <label>Apps Script URL </label>
+ <label>Apps Script URL</label>
  <input type="url" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec">
  <div style="display:flex;gap:8px;margin-bottom:10px">
- <button onclick="cfgSave()" style="flex:1;padding:10px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer"><i class="ti ti-check"></i> Save</button>
- <button onclick="testConn()" style="padding:10px 14px;background:#27AE60;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer"><i class="ti ti-wifi"></i> Test Connection</button>
- <button onclick="logout()" style="padding:10px 12px;background:transparent;color:#E74C3C;border:1px solid #FDECEA;border-radius:8px;font-size:13px;cursor:pointer"><i class="ti ti-logout"></i> Logout</button>
+  <button onclick="cfgSave()" style="flex:1;padding:10px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Save</button>
+  <button onclick="testConn()" style="padding:10px 14px;background:#27AE60;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer">Test Connection</button>
+  <button onclick="doLogout()" style="padding:10px 12px;background:transparent;color:#E74C3C;border:1px solid #FDECEA;border-radius:8px;font-size:13px;cursor:pointer">Logout</button>
  </div>
- <button onclick="showGuide()" style="width:100%;padding:9px;background:transparent;color:#667085;border:1px solid #D0D5DD;border-radius:8px;font-size:12px;cursor:pointer"><i class="ti ti-book"></i> Admin Setup Guide</button>
+ <button onclick="showGuide()" style="width:100%;padding:9px;background:transparent;color:#667085;border:1px solid #D0D5DD;border-radius:8px;font-size:12px;cursor:pointer">Admin Setup Guide</button>
  </div>
 </div>
-
-</div><!-- /mainapp -->
-</div><!-- /app -->
+</div>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ══════════════════════════════════════════════════
-// STORE → PROMOTER MAP
-// ══════════════════════════════════════════════════
-const SM={
-"Nesto Batha M":["SHUAIB AHMAD SHAKEEL AHMAD"],
-"Nesto Batha E":["KAZI MONSUR ALAM"],
-"LuLu HM Riyadh Avenue Murabba":["IMTINAN ABDULLATIF","AVINASH CHERUVALATH"],
-"Lulu Hypermarket Batha Riyadh E":["MOHAMMAD SADDAM BHUIYAN OLI AHMED"],
-"Lulu Batha M":["TAWSEEF AHMAD BHAT"],
-"Extra Woroud":["DINA ABDULLAH A ALOTAIBI"],
-"Extra Al-Badiah":["KAWTHAR AHMED SALAH BINAZOON"],
-"Nesto Aziziya":["ANASUDH EEN ATHAKKANTAKATH PUTHIYAPURA"],
-"Nesto New Sanaya":["TOFAZZUL ABU TAHER"],
-"Nesto Al Kharj":["MUHAMMED SWALIH KAITHAKKATTU MOOSAHAJI"],
-"Nesto Buraidah":["MD SHAKIL RARI"],
-"Lulu Hypermarket Yarmouk":["MONNAN YEAKUB"],
-"Wafa Exit 16":["FARUK MAHBUL HOQUE"],
-"LuLu HM Al Yasmin Riyadh":["RAKAN MOHAMMED S S ALBAQAMI"],
-"Lulu Hypermarket Khurais":["ABDULRAHMAN THEYAB H ALHARBI"],
-"Wafa Shola":["SHAKEER MARADATH"],
-"Lulu Hypermarket Al Ahsa":["Ahmed Alhamad"],
-"Nesto Jubail":["MAHEDI HASSAN SIRAJUL ISLAM"],
-"LuLu Hypermarket AlKhobar":["RAJIB HASAN"],
-"LuLu Hypermarket Jubail":["MOHAMMAD LADEN HOSSAIN"],
-"Nesto Khobar":["MUHAMMED SHANIF SOOPIKKAVEED"],
-"Wafa Seiko":["MD ISMAIL HOSSAIN"],
-"Lulu Mall Dammam":["RAIHAN HAWLADER"],
-"Nesto Dabab":["ABDUL SALAM PERDALA"],
-"Nesto Mina":["HAFSAR AREEKAT"],
-"Wafa Makkah":["AQSA TANVIR"],
-"Extra JS1 Sultan":["SULTAN HAMAD A ALQARNI"],
-"Extra Jeddah Thaliah Alazezyah":["MWAHEB ABDULLAH M ALGARNI"],
-"Extra Tabuk":["Maha Alblowai"],
-"Extra Khurais":["WAJD HELAL G ALANAZI"],
-"Extra J11 Jizan":["SHWGAH AL GAIZANIE"],
-"LuLu HM Madeena Road Jeddah":["ASSEM JOUHAR POOVANOOR"],
-"LuLu HM Marwa Jeddah":["SIAM UDDIN BADSHA"],
-"Extra Remal":["FAISAL MOHAMMED O ALMUTAIRI"],
-"Lulu Hamdaniya":["MUJEEB CHELAT AYAKOT"],
-"LuLu Hypermarket Amir Fawaz":["MUHAMMAD FAROOQ PULLISSERY"],
-"Extra Sweedy":["RAKAN ALSUBAIE"],
-"Extra Abha":["ABDULRAHMAN HASSAN B ALSHEHRI"],
-"Nesto Villagio":["HAMDY ELSAID ABDELFATTAH GABALLA"],
-"Extra Khamis Mushait":["ABDULRAHMAN HASSAN I ALIBRAHIM"],
-"Lulu Malaz":["Shabeir"],
-"Lulu Hypermarket Hail":["HAMOUD H ALSHAMMARI"],
-"Jarir Olaya":["SHATAH ABBAS"],
-"Jarir Khurais":["MOHAMMED MUSHI A ALTHAFIR"],
-"Jarir Exit 25":["Imtinan Almutari"],
-"Jarir Tabuk":["ARWA ALHAWITI"],
-"Jarir Faisalyah":["SULAMAN KHALID S ALDHOBAI"],
-"Jarir Khamis Musait":["ALI ALSAHMRANI"]
-};
+var SM={"Nesto Batha M":["SHUAIB AHMAD SHAKEEL AHMAD"],"Nesto Batha E":["KAZI MONSUR ALAM"],"LuLu HM Riyadh Avenue Murabba":["IMTINAN ABDULLATIF","AVINASH CHERUVALATH"],"Lulu Hypermarket Batha Riyadh E":["MOHAMMAD SADDAM BHUIYAN OLI AHMED"],"Lulu Batha M":["TAWSEEF AHMAD BHAT"],"Extra Woroud":["DINA ABDULLAH A ALOTAIBI"],"Extra Al-Badiah":["KAWTHAR AHMED SALAH BINAZOON"],"Nesto Aziziya":["ANASUDH EEN ATHAKKANTAKATH PUTHIYAPURA"],"Nesto New Sanaya":["TOFAZZUL ABU TAHER"],"Nesto Al Kharj":["MUHAMMED SWALIH KAITHAKKATTU MOOSAHAJI"],"Nesto Buraidah":["MD SHAKIL RARI"],"Lulu Hypermarket Yarmouk":["MONNAN YEAKUB"],"Wafa Exit 16":["FARUK MAHBUL HOQUE"],"LuLu HM Al Yasmin Riyadh":["RAKAN MOHAMMED S S ALBAQAMI"],"Lulu Hypermarket Khurais":["ABDULRAHMAN THEYAB H ALHARBI"],"Wafa Shola":["SHAKEER MARADATH"],"Lulu Hypermarket Al Ahsa":["Ahmed Alhamad"],"Nesto Jubail":["MAHEDI HASSAN SIRAJUL ISLAM"],"LuLu Hypermarket AlKhobar":["RAJIB HASAN"],"LuLu Hypermarket Jubail":["MOHAMMAD LADEN HOSSAIN"],"Nesto Khobar":["MUHAMMED SHANIF SOOPIKKAVEED"],"Wafa Seiko":["MD ISMAIL HOSSAIN"],"Lulu Mall Dammam":["RAIHAN HAWLADER"],"Nesto Dabab":["ABDUL SALAM PERDALA"],"Nesto Mina":["HAFSAR AREEKAT"],"Wafa Makkah":["AQSA TANVIR"],"Extra JS1 Sultan":["SULTAN HAMAD A ALQARNI"],"Extra Jeddah Thaliah Alazezyah":["MWAHEB ABDULLAH M ALGARNI"],"Extra Tabuk":["Maha Alblowai"],"Extra Khurais":["WAJD HELAL G ALANAZI"],"Extra J11 Jizan":["SHWGAH AL GAIZANIE"],"LuLu HM Madeena Road Jeddah":["ASSEM JOUHAR POOVANOOR"],"LuLu HM Marwa Jeddah":["SIAM UDDIN BADSHA"],"Extra Remal":["FAISAL MOHAMMED O ALMUTAIRI"],"Lulu Hamdaniya":["MUJEEB CHELAT AYAKOT"],"LuLu Hypermarket Amir Fawaz":["MUHAMMAD FAROOQ PULLISSERY"],"Extra Sweedy":["RAKAN ALSUBAIE"],"Extra Abha":["ABDULRAHMAN HASSAN B ALSHEHRI"],"Nesto Villagio":["HAMDY ELSAID ABDELFATTAH GABALLA"],"Extra Khamis Mushait":["ABDULRAHMAN HASSAN I ALIBRAHIM"],"Lulu Malaz":["Shabeir"],"Lulu Hypermarket Hail":["HAMOUD H ALSHAMMARI"],"Jarir Olaya":["SHATAH ABBAS"],"Jarir Khurais":["MOHAMMED MUSHI A ALTHAFIR"],"Jarir Exit 25":["Imtinan Almutari"],"Jarir Tabuk":["ARWA ALHAWITI"],"Jarir Faisalyah":["SULAMAN KHALID S ALDHOBAI"],"Jarir Khamis Musait":["ALI ALSAHMRANI"]};
 
-// ══════════════════════════════════════════════════
-// SCORING SECTIONS
-// ══════════════════════════════════════════════════
-const SEC=[
-{id:'A',zh:'陈列与视觉呈现',en:'Display & Visual Merchandising',max:30,col:'#C9A227',items:[
- {zh:'中高端机型在展台最显眼位置（视觉焦点/中央）',en:'Premium/mid-high models at most prominent focal point',pts:10},
- {zh:'全部展机开机，屏幕亮度统一，锁屏壁纸一致',en:'All units on, brightness & wallpaper uniform',pts:7},
- {zh:'价格牌准确无误，字体清晰',en:'Price tags accurate, legible',pts:7},
- {zh:'走线整洁隐蔽，桌面无灰尘无手印',en:'Cables hidden, surface clean, no fingerprints',pts:6},
-]},
-{id:'B',zh:'物料与品牌形象',en:'Materials & Brand Image',max:20,col:'#2E75B6',items:[
- {zh:'产品海报/KV正确张贴，无破损、歪斜或过期',en:'Posters correctly placed, no damage or tilt',pts:5},
- {zh:'POP/立牌与当前在售机型一致，无过期物料',en:'POP matches on-sale models, no expired materials',pts:4},
- {zh:'促销员着TECNO统一工服，仪容整洁',en:'Promoter in TECNO uniform, neat appearance',pts:5},
- {zh:'促销员佩戴正确星级铭牌（1/3/5-Star）',en:'Wearing correct star-level nameplate',pts:6},
-]},
-{id:'C',zh:'产品知识与销售技能',en:'Product Knowledge & Sales Skills',max:30,col:'#1A7A4A',items:[
- {zh:'1分钟内完整讲出任意中高端产品核心卖点',en:'Pitches any premium/mid-high product within 1 minute',pts:7},
- {zh:'准确说出处理器/电池/屏幕刷新率等核心参数',en:'States key specs accurately (chip/battery/Hz)',pts:5},
- {zh:'主动采用FABE法则进行产品演示',en:'Proactively uses FABE method in demo',pts:5},
- {zh:'自信应对至少3种客户异议（价格/品牌/竞品）',en:'Handles 3+ objections confidently',pts:6},
- {zh:'识别成交信号，自然运用促成技巧',en:'Reads buying signals, closes naturally',pts:7},
-]},
-{id:'D',zh:'门店运营与合规',en:'Operations & Compliance',max:15,col:'#C96A00',items:[
- {zh:'当日导购销售日报已填写并提交',en:'Daily sales report completed & submitted',pts:4},
- {zh:'实物库存数量与系统记录一致',en:'Physical stock matches system records',pts:4},
- {zh:'陈列检查表当日已签字确认',en:'Display checklist signed today',pts:3},
- {zh:'竞品最新价格已记录并上报',en:'Competitor prices recorded & reported',pts:4},
-]},
-{id:'E',zh:'客户接待与服务',en:'Customer Reception & Service',max:5,col:'#6B3FA0',items:[
- {zh:'客户停留5秒内主动发起接待（现场观察20分钟）',en:'Engages within 5s of stopping (20 min obs.)',pts:3},
- {zh:'沟通语言礼貌专业，无强迫推销行为',en:'Professional, respectful, no high-pressure',pts:2},
-]},
+var SEC=[
+{id:"A",en:"Display & Visual Merchandising",max:30,col:"#C9A227",items:[
+ {en:"Premium/mid-high models at most prominent focal point",pts:10},
+ {en:"All units on, brightness & wallpaper uniform",pts:7},
+ {en:"Price tags accurate, legible",pts:7},
+ {en:"Cables hidden, surface clean, no fingerprints",pts:6}]},
+{id:"B",en:"Materials & Brand Image",max:20,col:"#2E75B6",items:[
+ {en:"Posters correctly placed, no damage or tilt",pts:5},
+ {en:"POP matches on-sale models, no expired materials",pts:4},
+ {en:"Promoter in TECNO uniform, neat appearance",pts:5},
+ {en:"Wearing correct star-level nameplate",pts:6}]},
+{id:"C",en:"Product Knowledge & Sales Skills",max:30,col:"#1A7A4A",items:[
+ {en:"Pitches any premium/mid-high product within 1 minute",pts:7},
+ {en:"States key specs accurately (chip/battery/Hz)",pts:5},
+ {en:"Proactively uses FABE method in demo",pts:5},
+ {en:"Handles 3+ objections confidently",pts:6},
+ {en:"Reads buying signals, closes naturally",pts:7}]},
+{id:"D",en:"Operations & Compliance",max:15,col:"#C96A00",items:[
+ {en:"Daily sales report completed & submitted",pts:4},
+ {en:"Physical stock matches system records",pts:4},
+ {en:"Display checklist signed today",pts:3},
+ {en:"Competitor prices recorded & reported",pts:4}]},
+{id:"E",en:"Customer Reception & Service",max:5,col:"#6B3FA0",items:[
+ {en:"Engages within 5s of stopping (20 min obs.)",pts:3},
+ {en:"Professional, respectful, no high-pressure",pts:2}]}
 ];
 
-// ══════════════════════════════════════════════════
-// GAS BACKEND CODE (shown in guide)
-// ══════════════════════════════════════════════════
-const GAS_CODE=`// TECNO KSA Store Visit Scorecard — Google Apps Script Backend
-// Paste into script.google.com → update SHEET_ID → deploy as Web App
+var GAS_CODE='// TECNO KSA Store Visit Scorecard — Google Apps Script Backend\n// Paste into script.google.com → update SHEET_ID → deploy as Web App\n\nconst SHEET_ID = \'YOUR_GOOGLE_SHEET_ID_HERE\';\nconst SHEET_NAME = \'Visits\';\n\nfunction cors(out){ return out.setMimeType(ContentService.MimeType.JSON); }\nfunction ok(d) { return cors(ContentService.createTextOutput(JSON.stringify({ok:true,...d}))); }\nfunction fail(m) { return cors(ContentService.createTextOutput(JSON.stringify({ok:false,error:m}))); }\n\nfunction getSheet(){\n const ss=SpreadsheetApp.openById(SHEET_ID);\n let s=ss.getSheetByName(SHEET_NAME);\n if(!s){\n  s=ss.insertSheet(SHEET_NAME);\n  const h=[\'id\',\'store\',\'promoter\',\'star\',\'auditor\',\'date\',\'time\',\'total\',\'grade\',\n   \'A_display\',\'B_materials\',\'C_skills\',\'D_ops\',\'E_service\',\n   \'highlights\',\'actions\',\'feedback\',\'auditor_name\',\'created_at\'];\n  s.appendRow(h);\n  s.setFrozenRows(1);\n  s.getRange(1,1,1,h.length).setBackground(\'#1B2A4A\').setFontColor(\'#C9A227\').setFontWeight(\'bold\');\n }\n return s;\n}\n\nfunction doPost(e){\n try{\n  const b=JSON.parse(e.postData.contents);\n  const r=b.record, secs=r.secs||[];\n  const g=id=>{const s=secs.find(x=>x.id===id);return s?s.score:0};\n  const s=getSheet();\n  s.appendRow([String(r.id),r.store||\'\',r.promoter||\'\',r.star||\'\',\n   r.auditor||\'\',r.date||\'\',r.time||\'\',Number(r.total)||0,r.grade||\'\',\n   g(\'A\'),g(\'B\'),g(\'C\'),g(\'D\'),g(\'E\'),\n   r.h1||\'\',r.h2||\'\',r.h3||\'\',r.auditor_name||\'\',\n   new Date().toISOString()]);\n  return ok({saved:true,id:String(r.id)});\n }catch(ex){return fail(ex.message)}\n}\n\nfunction doGet(e){\n try{\n  const s=getSheet();\n  if(s.getLastRow()<2) return ok({records:[],total:0});\n  const data=s.getDataRange().getValues();\n  const hdrs=data[0];\n  const rows=data.slice(1).map(row=>{\n   const o={};hdrs.forEach((h,i)=>o[h]=row[i]);return o;\n  }).reverse();\n  return ok({records:rows,total:rows.length});\n }catch(ex){return fail(ex.message)}\n}';
 
-const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID_HERE'; // ← 替换为你的Sheet ID
-const SHEET_NAME = 'Visits';
+var sc={};
+SEC.forEach(function(s){s.items.forEach(function(_,i){sc[s.id+"_"+i]=0})});
+var allRecs=[];
+var pollTimer=null;
+var gasUrl="",myName="";
 
-function cors(out){ return out.setMimeType(ContentService.MimeType.JSON); }
-function ok(d) { return cors(ContentService.createTextOutput(JSON.stringify({ok:true,...d}))); }
-function fail(m) { return cors(ContentService.createTextOutput(JSON.stringify({ok:false,error:m}))); }
+function lsGet(k){return localStorage.getItem("tecno_"+k)||""}
+function lsSet(k,v){localStorage.setItem("tecno_"+k,v)}
 
-function getSheet(){
- const ss=SpreadsheetApp.openById(SHEET_ID);
- let s=ss.getSheetByName(SHEET_NAME);
- if(!s){
- s=ss.insertSheet(SHEET_NAME);
- const h=['id','store','promoter','star','auditor','date','time','total','grade',
- 'A_display','B_materials','C_skills','D_ops','E_service',
- 'highlights','actions','feedback','auditor_name','created_at'];
- s.appendRow(h);
- s.setFrozenRows(1);
- s.getRange(1,1,1,h.length)
- .setBackground('#1B2A4A').setFontColor('#C9A227').setFontWeight('bold');
- }
- return s;
+function tot(){var s=0;for(var k in sc)s+=sc[k];return s}
+function stot(s){var sum=0;s.items.forEach(function(_,i){sum+=sc[s.id+"_"+i]});return sum}
+function gi(t){
+ if(t>=90)return{lbl:"Excellent",sub:"Eligible for promotion",bg:"#ECFDF3",c:"#027A48",bd:"#6CE9A6"};
+ if(t>=75)return{lbl:"Good",sub:"Meets standard",bg:"#FDF3D0",c:"#9A7010",bd:"#FDE68A"};
+ if(t>=60)return{lbl:"Pass",sub:"Follow-up required",bg:"#FFF4E5",c:"#854F0B",bd:"#FEC84B"};
+ return{lbl:"Fail",sub:"Re-audit within 1 week",bg:"#FEF3F2",c:"#B42318",bd:"#FCA5A5"};
 }
-
-function doPost(e){
- try{
- const b=JSON.parse(e.postData.contents);
- const r=b.record, secs=r.secs||[];
- const g=id=>{const s=secs.find(x=>x.id===id);return s?s.score:0};
- const s=getSheet();
- s.appendRow([String(r.id),r.store||'',r.promoter||'',r.star||'',
- r.auditor||'',r.date||'',r.time||'',Number(r.total)||0,r.grade||'',
- g('A'),g('B'),g('C'),g('D'),g('E'),
- r.h1||'',r.h2||'',r.h3||'',r.auditor_name||'',
- new Date().toISOString()]);
- return ok({saved:true,id:String(r.id)});
- }catch(ex){return fail(ex.message)}
-}
-
-function doGet(e){
- try{
- const p=e.parameter||{};
- const s=getSheet();
- if(s.getLastRow()<2) return ok({records:[],total:0});
- const data=s.getDataRange().getValues();
- const hdrs=data[0];
- const rows=data.slice(1).map(row=>{
- const o={};hdrs.forEach((h,i)=>o[h]=row[i]);return o;
- }).reverse();
- const since=p.since?String(p.since):null;
- const out=since?rows.filter(r=>String(r.id)>since):rows;
- return ok({records:out,total:rows.length});
- }catch(ex){return fail(ex.message)}
-}`;
-
-// ══════════════════════════════════════════════════
-// STATE
-// ══════════════════════════════════════════════════
-let sc={};SEC.forEach(s=>s.items.forEach((_,i)=>{sc[s.id+'_'+i]=0}));
-let allRecs=[];
-let pollTimer=null;
-let lastId=null;
-let gasUrl='',myName='';
-
-// ══════════════════════════════════════════════════
-// LOCAL STORAGE helpers
-// ══════════════════════════════════════════════════
-const LS={
- get:(k,d='')=>localStorage.getItem('tecno_'+k)||d,
- set:(k,v)=>localStorage.setItem('tecno_'+k,v)
-};
-
-// ══════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════
-const tot=()=>Object.values(sc).reduce((a,b)=>a+b,0);
-const stot=s=>s.items.reduce((a,it,i)=>a+sc[s.id+'_'+i],0);
-const gi=t=>{
- if(t>=90)return{lbl:'Excellent',sub:'Eligible for promotion',bg:'#ECFDF3',c:'#027A48',bd:'#6CE9A6'};
- if(t>=75)return{lbl:'Good',sub:'Meets standard',bg:'#FDF3D0',c:'#9A7010',bd:'#FDE68A'};
- if(t>=60)return{lbl:'Pass',sub:'Follow-up required',bg:'#FFF4E5',c:'#854F0B',bd:'#FEC84B'};
- return{lbl:'Fail',sub:'Re-audit within 1 week',bg:'#FEF3F2',c:'#B42318',bd:'#FCA5A5'};
-};
-function toast(msg,dur=2600){
- const t=document.getElementById('toast');
- t.textContent=msg;t.style.display='block';
- clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',dur);
+function toast(msg,dur){
+ dur=dur||2600;var t=document.getElementById("toast");
+ t.textContent=msg;t.style.display="block";
+ clearTimeout(t._t);t._t=setTimeout(function(){t.style.display="none"},dur);
 }
 function setConn(st,msg){
- document.getElementById('cdot').className='conn-dot '+st;
- document.getElementById('clbl').textContent=msg;
+ document.getElementById("cdot").className="conn-dot "+st;
+ document.getElementById("clbl").textContent=msg;
 }
 
-// ══════════════════════════════════════════════════
-// SETUP / LOGIN
-// ══════════════════════════════════════════════════
 function init(){
- gasUrl=LS.get('gasUrl');myName=LS.get('myName');
- if(gasUrl&&myName){
- showMain();
- } else {
- showSetup();
- }
+ gasUrl=lsGet("gasUrl");myName=lsGet("myName");
+ if(gasUrl&&myName){showMain()}else{showSetup()}
 }
-
 function showSetup(){
- document.getElementById('setup').style.display='';
- document.getElementById('guide').style.display='none';
- document.getElementById('mainapp').style.display='none';
+ document.getElementById("setup").style.display="";
+ document.getElementById("guide").style.display="none";
+ document.getElementById("mainapp").style.display="none";
 }
 function showGuide(){
- document.getElementById('setup').style.display='none';
- document.getElementById('guide').style.display='';
- document.getElementById('mainapp').style.display='none';
- document.getElementById('guide-code').textContent=GAS_CODE;
+ document.getElementById("setup").style.display="none";
+ document.getElementById("guide").style.display="";
+ document.getElementById("mainapp").style.display="none";
+ document.getElementById("guide-code").textContent=GAS_CODE;
 }
 function showMain(){
- document.getElementById('setup').style.display='none';
- document.getElementById('guide').style.display='none';
- document.getElementById('mainapp').style.display='';
- document.getElementById('user-pill').textContent='👤 '+myName;
- document.getElementById('f-a').value=myName;
- document.getElementById('cfg-name').value=myName;
- document.getElementById('cfg-url').value=gasUrl;
- const now=new Date();
- document.getElementById('f-d').value=now.toISOString().slice(0,10);
- document.getElementById('f-t').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
- draw();
- pull();
- startPoll();
+ document.getElementById("setup").style.display="none";
+ document.getElementById("guide").style.display="none";
+ document.getElementById("mainapp").style.display="";
+ document.getElementById("user-pill").textContent=myName;
+ document.getElementById("f-a").value=myName;
+ document.getElementById("cfg-name").value=myName;
+ document.getElementById("cfg-url").value=gasUrl;
+ var now=new Date();
+ document.getElementById("f-d").value=now.toISOString().slice(0,10);
+ document.getElementById("f-t").value=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+ draw();pull();startPoll();
 }
-
 function setupSave(){
- const url=document.getElementById('su-url').value.trim();
- const nm =document.getElementById('su-name').value.trim();
- if(!url||!nm){alert('Please fill in the URL and your name');return}
- gasUrl=url;myName=nm;
- LS.set('gasUrl',url);LS.set('myName',nm);
- showMain();
+ var url=document.getElementById("su-url").value.trim();
+ var nm=document.getElementById("su-name").value.trim();
+ if(!url||!nm){alert("Please fill in the URL and your name");return}
+ gasUrl=url;myName=nm;lsSet("gasUrl",url);lsSet("myName",nm);showMain();
+}
+function doLogout(){
+ if(!confirm("Logout?"))return;
+ localStorage.removeItem("tecno_gasUrl");localStorage.removeItem("tecno_myName");
+ stopPoll();allRecs=[];showSetup();
+}
+function copyCode(){
+ try{navigator.clipboard.writeText(GAS_CODE);toast("Code copied!")}
+ catch(e){toast("Please copy manually")}
 }
 
-function logout(){
- if(!confirm('Logout? Any locally cached records will be cleared.'))return;
- ['gasUrl','myName'].forEach(k=>localStorage.removeItem('tecno_'+k));
- stopPoll();allRecs=[];
- showSetup();
+// ====== Cloud Sync ======
+function apiPost(record){
+ return fetch(gasUrl,{method:"POST",body:JSON.stringify({record:record}),headers:{"Content-Type":"text/plain"}}).then(function(r){return r.json()});
 }
-
-function copyGuideCode(){
- navigator.clipboard.writeText(GAS_CODE)
- .then(()=>toast('Code copied!'))
- .catch(()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('guide-code'));window.getSelection().removeAllRanges();window.getSelection().addRange(r);document.execCommand('copy');toast('Copied!')});
+function apiGet(){
+ return fetch(gasUrl+"?action=list").then(function(r){return r.json()});
 }
-
-// ══════════════════════════════════════════════════
-// API CALLS
-// ══════════════════════════════════════════════════
-async function apiPost(record){
- const res=await fetch(gasUrl,{
- method:'POST',
- body:JSON.stringify({record}),
- headers:{'Content-Type':'text/plain'}
- });
- return res.json();
-}
-
-async function apiGet(since){
- const url=gasUrl+'?action=list'+(since?'&since='+since:'');
- const res=await fetch(url);
- return res.json();
-}
-
-// ══════════════════════════════════════════════════
-// POLLING — auto-refresh every 30s
-// ══════════════════════════════════════════════════
-function startPoll(){
- stopPoll();
- pollTimer=setInterval(()=>pull(true),30000);
-}
+function startPoll(){stopPoll();pollTimer=setInterval(function(){pull(true)},30000)}
 function stopPoll(){if(pollTimer){clearInterval(pollTimer);pollTimer=null}}
 
-async function pull(silent=false){
- if(!gasUrl) return;
- if(!silent) setConn('spin','Syncing…');
- try{
- const d=await apiGet(null);
- if(d.ok&&d.records){
- // Merge: keep local records not on server, add server records not local
- const serverIds=new Set(d.records.map(r=>String(r.id)));
- const localOnly=allRecs.filter(r=>!serverIds.has(String(r.id))&&r._local);
- allRecs=parseServerRecs(d.records).concat(localOnly);
- allRecs.sort((a,b)=>String(b.id).localeCompare(String(a.id)));
- document.getElementById('rec-count').textContent=allRecs.length;
- if(!silent) toast('Synced '+allRecs.length+' records');
- setConn('ok','Synced');
- document.getElementById('live-pill').style.display='';
- if(document.getElementById('t-hist').classList.contains('on')) rh(curFilter);
- if(document.getElementById('t-dash').classList.contains('on')) rd();
- } else {
- setConn('err','Sync failed');
- if(!silent) toast('Sync failed: '+(d.error||'Please check URL settings'));
- }
- }catch(e){
- setConn('err','Connection failed');
- if(!silent) toast('Connection failed: '+e.message);
- }
-}
-
-function parseServerRecs(rows){
- return rows.map(r=>{
- const t=Number(r.total)||0;
- const g=gi(t);
- return{
- id:String(r.id),
- store:r.store||'',promoter:r.promoter||'',star:r.star||'',
- auditor:r.auditor||'',auditor_name:r.auditor_name||r.auditor||'',
- date:r.date||'',time:r.time||'',
- total:t,grade:r.grade||g.lbl,gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
- secs:[
- {id:'A',zh:'Display',score:Number(r.A_display)||0,max:30,col:'#C9A227'},
- {id:'B',zh:'Materials',score:Number(r.B_materials)||0,max:20,col:'#2E75B6'},
- {id:'C',zh:'Sales',score:Number(r.C_skills)||0,max:30,col:'#1A7A4A'},
- {id:'D',zh:'Compliance',score:Number(r.D_ops)||0,max:15,col:'#C96A00'},
- {id:'E',zh:'Service',score:Number(r.E_service)||0,max:5,col:'#6B3FA0'},
- ],
- h1:r.highlights||'',h2:r.actions||'',h3:r.feedback||'',
- _local:false
- };
+function pull(silent){
+ if(!gasUrl)return;
+ if(!silent)setConn("spin","Syncing...");
+ apiGet().then(function(d){
+  if(d.ok&&d.records){
+   var serverIds={};d.records.forEach(function(r){serverIds[String(r.id)]=true});
+   var localOnly=allRecs.filter(function(r){return !serverIds[String(r.id)]&&r._local});
+   allRecs=parseRecs(d.records).concat(localOnly);
+   allRecs.sort(function(a,b){return String(b.id)>String(a.id)?1:String(b.id)<String(a.id)?-1:0});
+   document.getElementById("rec-count").textContent=allRecs.length;
+   if(!silent)toast("Synced "+allRecs.length+" records");
+   setConn("ok","Synced");
+   document.getElementById("live-pill").style.display="";
+   if(document.getElementById("t-hist").classList.contains("on"))rh(curFilter);
+   if(document.getElementById("t-dash").classList.contains("on"))rd();
+  }else{
+   setConn("err","Sync failed");
+   if(!silent)toast("Sync failed: "+(d.error||"Check URL"));
+  }
+ }).catch(function(e){
+  setConn("err","Connection failed");
+  if(!silent)toast("Connection failed: "+e.message);
  });
 }
 
-// ══════════════════════════════════════════════════
-// FORM
-// ══════════════════════════════════════════════════
+function parseRecs(rows){
+ return rows.map(function(r){
+  var t=Number(r.total)||0;var g=gi(t);
+  return{id:String(r.id),store:r.store||"",promoter:r.promoter||"",star:r.star||"",
+   auditor:r.auditor||"",auditor_name:r.auditor_name||r.auditor||"",
+   date:r.date||"",time:r.time||"",total:t,grade:r.grade||g.lbl,
+   gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
+   secs:[{id:"A",en:"Display",score:Number(r.A_display)||0,max:30,col:"#C9A227"},
+    {id:"B",en:"Materials",score:Number(r.B_materials)||0,max:20,col:"#2E75B6"},
+    {id:"C",en:"Sales",score:Number(r.C_skills)||0,max:30,col:"#1A7A4A"},
+    {id:"D",en:"Compliance",score:Number(r.D_ops)||0,max:15,col:"#C96A00"},
+    {id:"E",en:"Service",score:Number(r.E_service)||0,max:5,col:"#6B3FA0"}],
+   h1:r.highlights||"",h2:r.actions||"",h3:r.feedback||"",_local:false};
+ });
+}
+
+// ====== Store/Promoter ======
 function onStore(){
- const store=document.getElementById('f-s').value;
- const p=document.getElementById('f-p');
- const ps=SM[store]||[];
- p.innerHTML=ps.length?ps.map(x=>`<option>${x}</option>`).join(''):'<option value="">— Enter manually —</option>';
+ var store=document.getElementById("f-s").value;
+ var p=document.getElementById("f-p");
+ var ps=SM[store]||[];
+ p.innerHTML=ps.length?ps.map(function(x){return "<option>"+x+"</option>"}).join(""):"<option value=''>-- N/A --</option>";
  if(ps.length===1)p.value=ps[0];
 }
 
+// ====== Draw Scorecard ======
 function draw(){
- const t=tot();
- document.getElementById('ls').textContent=t;
- const w=document.getElementById('sw');w.innerHTML='';
- SEC.forEach(sec=>{
- const st=stot(sec),pct=Math.round(st/sec.max*100);
- const bc=pct>=80?'#1A7A4A':pct>=55?'#C96A00':'#C0392B';
- const d=document.createElement('div');d.className='sec-card';
- const bid='sb-'+sec.id;
- d.innerHTML=`<div class="sec-hdr" onclick="var e=document.getElementById('${bid}');e.style.display=e.style.display==='none'?'':'none'">
- <div class="dot" style="background:${sec.col}"></div>
- <div style="flex:1"><div class="sec-name">${sec.id}. ${sec.en}</div></div>
- <div class="sec-badge" style="color:${sec.col}">${st}/${sec.max}</div>
- <i class="ti ti-chevron-down" style="font-size:14px;color:#98A2B3;margin-left:4px"></i>
- </div>
- <div class="pbar"><div class="pfill" style="width:${pct}%;background:${bc}"></div></div>
- <div id="${bid}">${sec.items.map((it,i)=>{
- const k=sec.id+'_'+i,cur=sc[k];
- const btns=Array.from({length:it.pts},(_,v)=>{const vv=v+1,on=cur>=vv;return`<button class="sb${on?' on':''}" style="${on?'background:'+sec.col+';':''}" onclick="set('${k}',${vv})">${vv}</button>`;}).join('');
- return`<div class="irow"><div><div class="izh">${it.en}</div></div><div style="display:flex;align-items:center;gap:5px"><div class="sbtns">${btns}</div><div style="font-size:11px;font-weight:700;min-width:30px;text-align:right;color:${cur>0?sec.col:'#98A2B3'}">${cur}/${it.pts}</div></div></div>`;
- }).join('')}</div>`;
- w.appendChild(d);
+ var t=tot();document.getElementById("ls").textContent=t;
+ var w=document.getElementById("sw");w.innerHTML="";
+ SEC.forEach(function(sec){
+  var st=stot(sec),pct=Math.round(st/sec.max*100);
+  var bc=pct>=80?"#1A7A4A":pct>=55?"#C96A00":"#C0392B";
+  var d=document.createElement("div");d.className="sec-card";
+  var bid="sb-"+sec.id;
+  var itemsHtml=sec.items.map(function(it,i){
+   var k=sec.id+"_"+i,cur=sc[k],btns="";
+   for(var v=1;v<=it.pts;v++){var on=cur>=v;btns+='<button class="sb'+(on?" on":"")+'" style="'+(on?"background:"+sec.col+";":"")+'" onclick="setScore(\''+k+"',"+v+')">'+v+"</button>"}
+   return '<div class="irow"><div><div class="izh">'+it.en+'</div></div><div style="display:flex;align-items:center;gap:5px"><div class="sbtns">'+btns+'</div><div style="font-size:11px;font-weight:700;min-width:30px;text-align:right;color:'+(cur>0?sec.col:"#98A2B3")+'">'+cur+"/"+it.pts+"</div></div></div>";
+  }).join("");
+  d.innerHTML='<div class="sec-hdr" onclick="toggleSec(\''+bid+'\')"><div class="dot" style="background:'+sec.col+'"></div><div style="flex:1"><div class="sec-name">'+sec.id+". "+sec.en+'</div></div><div class="sec-badge" style="color:'+sec.col+'">'+st+"/"+sec.max+'</div></div><div class="pbar"><div class="pfill" style="width:'+pct+"%;background:"+bc+'"></div></div><div id="'+bid+'">'+itemsHtml+"</div>";
+  w.appendChild(d);
  });
- document.getElementById('sb').innerHTML=SEC.map(s=>`<div class="scard"><div class="sval" style="color:${s.col}">${stot(s)}</div><div class="slbl">${s.id}</div></div>`).join('');
- const g=gi(t);
- document.getElementById('ga').innerHTML=`<div class="grade-b" style="background:${g.bg};border-color:${g.bd}"><div style="font-size:16px;font-weight:700;color:${g.c}">${g.lbl} — ${t}/100</div><div style="font-size:12px;color:${g.c};margin-top:4px;opacity:.8">${g.sub}</div></div>`;
+ document.getElementById("sb").innerHTML=SEC.map(function(s){return '<div class="scard"><div class="sval" style="color:'+s.col+'">'+stot(s)+'</div><div class="slbl">'+s.id+"</div></div>"}).join("");
+ var g=gi(t);
+ document.getElementById("ga").innerHTML='<div class="grade-b" style="background:'+g.bg+";border-color:"+g.bd+'"><div style="font-size:16px;font-weight:700;color:'+g.c+'">'+g.lbl+" - "+t+'/100</div><div style="font-size:12px;color:'+g.c+';margin-top:4px;opacity:.8">'+g.sub+"</div></div>";
 }
-
-function set(k,v){sc[k]=sc[k]===v?0:v;draw()}
+function toggleSec(bid){var e=document.getElementById(bid);e.style.display=e.style.display==="none"?"":"none"}
+function setScore(k,v){sc[k]=sc[k]===v?0:v;draw()}
 
 function rst(){
- Object.keys(sc).forEach(k=>sc[k]=0);
- ['f-s','f-st','f-t','n1','n2','n3'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
- document.getElementById('f-p').innerHTML='<option value="">Select store first</option>';
- document.getElementById('f-a').value=myName;
- document.getElementById('f-d').value=new Date().toISOString().slice(0,10);
+ for(var k in sc)sc[k]=0;
+ document.getElementById("f-s").value="";document.getElementById("f-st").value="";
+ document.getElementById("f-t").value="";document.getElementById("n1").value="";
+ document.getElementById("n2").value="";document.getElementById("n3").value="";
+ document.getElementById("f-p").innerHTML="<option value=''>Select store first</option>";
+ document.getElementById("f-a").value=myName;
+ document.getElementById("f-d").value=new Date().toISOString().slice(0,10);
  draw();
 }
 
-async function submit(){
- const store=document.getElementById('f-s').value,prom=document.getElementById('f-p').value;
- if(!store||!prom){alert('Please select store and promoter');return}
- const t=tot(),g=gi(t);
- const btn=document.getElementById('btn-submit');
- btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> Submitting…';
- const rec={
- id:Date.now(),store,promoter:prom,
- star:document.getElementById('f-st').value,
- auditor:document.getElementById('f-a').value||myName,
- auditor_name:myName,
- date:document.getElementById('f-d').value,
- time:document.getElementById('f-t').value,
- total:t,grade:g.lbl,gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
- secs:SEC.map(s=>({id:s.id,zh:s.zh,score:stot(s),max:s.max,col:s.col})),
- h1:document.getElementById('n1').value,
- h2:document.getElementById('n2').value,
- h3:document.getElementById('n3').value,
- _local:false
- };
- setConn('spin','Submitting…');
- try{
- const d=await apiPost(rec);
- if(d.ok){
- allRecs.unshift(rec);
- document.getElementById('rec-count').textContent=allRecs.length;
- setConn('ok','Synced');
- toast('✓ Submitted & synced! '+store+' — '+t+'/100 ('+g.lbl+')');
- setTimeout(()=>sw('hist',document.getElementById('t-hist')),800);
- } else {
- // Save locally anyway
- rec._local=true;
- allRecs.unshift(rec);
- document.getElementById('rec-count').textContent=allRecs.length;
- setConn('err','Submit failed');
- toast('Submit failed, saved locally. Error: '+(d.error||'unknown'));
- }
- }catch(e){
- rec._local=true;
- allRecs.unshift(rec);
- document.getElementById('rec-count').textContent=allRecs.length;
- setConn('err','Connection failed');
- toast('Network error — saved locally, will retry on next connection');
- }
- btn.disabled=false;btn.innerHTML='<i class="ti ti-cloud-upload"></i> Submit & Sync to Cloud ';
+// ====== Submit ======
+function doSubmit(){
+ var store=document.getElementById("f-s").value,prom=document.getElementById("f-p").value;
+ if(!store||!prom){alert("Please select store and promoter");return}
+ var t=tot(),g=gi(t);
+ var btn=document.getElementById("btn-submit");
+ btn.disabled=true;btn.textContent="Submitting...";
+ var rec={id:Date.now(),store:store,promoter:prom,
+  star:document.getElementById("f-st").value,
+  auditor:document.getElementById("f-a").value||myName,auditor_name:myName,
+  date:document.getElementById("f-d").value,time:document.getElementById("f-t").value,
+  total:t,grade:g.lbl,gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
+  secs:SEC.map(function(s){return{id:s.id,en:s.en,score:stot(s),max:s.max,col:s.col}}),
+  h1:document.getElementById("n1").value,h2:document.getElementById("n2").value,
+  h3:document.getElementById("n3").value,_local:false};
+ setConn("spin","Submitting...");
+ apiPost(rec).then(function(d){
+  if(d.ok){
+   allRecs.unshift(rec);document.getElementById("rec-count").textContent=allRecs.length;
+   setConn("ok","Synced");toast("Submitted! "+store+" - "+t+"/100 ("+g.lbl+")");
+   rst();setTimeout(function(){sw("hist",document.getElementById("t-hist"))},600);
+  }else{
+   rec._local=true;allRecs.unshift(rec);document.getElementById("rec-count").textContent=allRecs.length;
+   setConn("err","Submit failed");toast("Failed, saved locally: "+(d.error||"unknown"));
+  }
+ }).catch(function(e){
+  rec._local=true;allRecs.unshift(rec);document.getElementById("rec-count").textContent=allRecs.length;
+  setConn("err","Offline");toast("Network error - saved locally");
+ }).finally(function(){
+  btn.disabled=false;btn.innerHTML="Submit &amp; Sync to Cloud";
+ });
 }
 
-// ══════════════════════════════════════════════════
-// HISTORY
-// ══════════════════════════════════════════════════
-let curFilter='all';
+// ====== Tabs ======
+var curFilter="all";
 function sw(tab,btn){
- ['form','hist','dash','cfg'].forEach(t=>{document.getElementById('v-'+t).style.display=t===tab?'':'none';document.getElementById('t-'+t).classList.toggle('on',t===tab)});
- if(tab==='hist') rh(curFilter);
- if(tab==='dash') rd();
+ ["form","hist","dash","cfg"].forEach(function(t){
+  document.getElementById("v-"+t).style.display=t===tab?"":"none";
+  document.getElementById("t-"+t).classList.toggle("on",t===tab);
+ });
+ if(tab==="hist")rh(curFilter);if(tab==="dash")rd();
 }
+function fh(f,btn){curFilter=f;document.querySelectorAll(".hf").forEach(function(b){b.classList.remove("on")});btn.classList.add("on");rh(f)}
 
-function fh(f,btn){curFilter=f;document.querySelectorAll('.hf').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rh(f)}
-
+// ====== History ======
 function rh(f){
- const el=document.getElementById('hl');
- let fl=allRecs;
- if(f==='Jarir') fl=allRecs.filter(r=>r.store.includes('Jarir'));
- else if(f==='Extra') fl=allRecs.filter(r=>r.store.includes('Extra'));
- else if(f==='Lulu') fl=allRecs.filter(r=>r.store.toLowerCase().includes('lulu'));
- else if(f==='Nesto') fl=allRecs.filter(r=>r.store.includes('Nesto'));
-  else if(f==='Wafa') fl=allRecs.filter(r=>r.store.includes('Wafa'));
- else if(f==='pass') fl=allRecs.filter(r=>r.total>=75);
- else if(f==='fail') fl=allRecs.filter(r=>r.total<60);
- if(!fl.length){
- el.innerHTML='<div class="empty"><i class="ti ti-clipboard-x" style="font-size:36px;display:block;margin-bottom:10px"></i><strong>No Records Yet</strong> <br><span style="font-size:12px;display:block;margin-top:4px">Submitted scores from all users appear here · Records from all team members appear here</span></div>';
- return;
- }
- el.innerHTML=fl.map(r=>`<div class="hcard" onclick="td('hd-${r.id}')">
- <div class="htop"><div>
- <div class="hstore">${r.store} ${r._local?'':''}</div>
- <div class="hmeta"><i class="ti ti-user" style="font-size:11px"></i> ${r.promoter} ${r.star||''} &nbsp;·&nbsp; ${r.date} ${r.time||''} &nbsp;·&nbsp; Auditor: ${r.auditor_name||r.auditor||'—'}</div>
- </div><div class="hpill" style="background:${r.gradeBg};color:${r.gradeC};border:1.5px solid ${r.gradeBd||r.gradeC}">${r.total}<span style="font-size:11px">/100</span></div></div>
- <div class="hbars">${(r.secs||[]).map(s=>`<div class="hbw"><div class="hblbl">${s.id}</div><div class="hbbg"><div class="hbf" style="width:${Math.round(s.score/s.max*100)}%;background:${s.col}"></div></div><div class="hbv">${s.score}/${s.max}</div></div>`).join('')}</div>
- <div class="hdet" id="hd-${r.id}">
- ${r.h1?`<div class="hnr"><div class="hnl">Highlights</div><div class="hnv">${r.h1}</div></div>`:''}
- ${r.h2?`<div class="hnr"><div class="hnl">Actions Required</div><div class="hnv">${r.h2}</div></div>`:''}
- ${r.h3?`<div class="hnr"><div class="hnl">Promoter Feedback</div><div class="hnv">${r.h3}</div></div>`:''}
- ${r._local?`<button onclick="event.stopPropagation();retryUpload('${r.id}')" style="font-size:11px;padding:4px 10px;background:#27AE60;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:6px"><i class="ti ti-cloud-upload"></i> Retry Upload</button>`:''}
- </div>
- </div>`).join('');
+ var el=document.getElementById("hl");
+ var fl=allRecs;
+ if(f==="Jarir")fl=allRecs.filter(function(r){return r.store.indexOf("Jarir")>=0});
+ else if(f==="Extra")fl=allRecs.filter(function(r){return r.store.indexOf("Extra")>=0});
+ else if(f==="Lulu")fl=allRecs.filter(function(r){return r.store.toLowerCase().indexOf("lulu")>=0});
+ else if(f==="Nesto")fl=allRecs.filter(function(r){return r.store.indexOf("Nesto")>=0});
+ else if(f==="Wafa")fl=allRecs.filter(function(r){return r.store.indexOf("Wafa")>=0});
+ else if(f==="pass")fl=allRecs.filter(function(r){return r.total>=75});
+ else if(f==="fail")fl=allRecs.filter(function(r){return r.total<60});
+ if(!fl.length){el.innerHTML='<div class="empty"><strong>No Records Yet</strong><br><span style="font-size:12px;display:block;margin-top:4px">Submitted scores from all users appear here</span></div>';return}
+ var html="";
+ fl.forEach(function(r){
+  var bars="";(r.secs||[]).forEach(function(s){bars+='<div class="hbw"><div class="hblbl">'+s.id+'</div><div class="hbbg"><div class="hbf" style="width:'+Math.round(s.score/s.max*100)+"%;background:"+s.col+'"></div></div><div class="hbv">'+s.score+"/"+s.max+"</div></div>"});
+  var det="";
+  if(r.h1)det+='<div class="hnr"><div class="hnl">Highlights</div><div class="hnv">'+r.h1+"</div></div>";
+  if(r.h2)det+='<div class="hnr"><div class="hnl">Actions Required</div><div class="hnv">'+r.h2+"</div></div>";
+  if(r.h3)det+='<div class="hnr"><div class="hnl">Promoter Feedback</div><div class="hnv">'+r.h3+"</div></div>";
+  if(r._local)det+='<button onclick="event.stopPropagation();retryUp(\''+r.id+'\')" style="font-size:11px;padding:4px 10px;background:#27AE60;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:6px">Retry Upload</button>';
+  html+='<div class="hcard" onclick="td(\''+r.id+'\')"><div class="htop"><div><div class="hstore">'+r.store+(r._local?" [Local]":"")+'</div><div class="hmeta">'+r.promoter+" "+(r.star||"")+" | "+r.date+" "+(r.time||"")+" | Auditor: "+(r.auditor_name||r.auditor||"--")+'</div></div><div class="hpill" style="background:'+(r.gradeBg||"#F9FAFB")+";color:"+(r.gradeC||"#667085")+";border:1.5px solid "+(r.gradeBd||r.gradeC||"#D0D5DD")+'">'+r.total+'<span style="font-size:11px">/100</span></div></div><div class="hbars">'+bars+'</div><div class="hdet" id="hd-'+r.id+'">'+det+"</div></div>"});
+ el.innerHTML=html;
+}
+function td(id){var e=document.getElementById("hd-"+id);if(e)e.classList.toggle("o")}
+function retryUp(id){
+ var rec=allRecs.find(function(r){return String(r.id)===String(id)});if(!rec)return;
+ setConn("spin","Uploading...");
+ apiPost(rec).then(function(d){
+  if(d.ok){rec._local=false;setConn("ok","Synced");toast("Uploaded!");rh(curFilter)}
+  else{setConn("err","Failed");toast("Failed: "+(d.error||""))}
+ }).catch(function(){setConn("err","Failed");toast("Network error")});
 }
 
-function td(id){const e=document.getElementById('hd-'+id);if(e)e.classList.toggle('o')}
-
-async function retryUpload(id){
- const rec=allRecs.find(r=>String(r.id)===String(id));if(!rec)return;
- setConn('spin','Uploading…');
- try{
- const d=await apiPost(rec);
- if(d.ok){rec._local=false;setConn('ok','Synced');toast('Upload successful!');rh(curFilter);}
- else{setConn('err','Failed');toast('Upload failed: '+(d.error||'unknown error'))}
- }catch(e){setConn('err','Failed');toast('Network error')}
-}
-
-// ══════════════════════════════════════════════════
-// DASHBOARD
-// ══════════════════════════════════════════════════
+// ====== Dashboard ======
 function rd(){
- const el=document.getElementById('dc');
- if(!allRecs.length){
- el.innerHTML='<div class="empty"><i class="ti ti-chart-bar" style="font-size:36px;display:block;margin-bottom:10px"></i><strong>No Data Yet</strong> <br><span style="font-size:12px;display:block;margin-top:4px">Stats appear automatically after submitting records · Stats update automatically after submissions</span></div>';
- return;
+ var el=document.getElementById("dc");
+ if(!allRecs.length){el.innerHTML='<div class="empty"><strong>No Data Yet</strong><br><span style="font-size:12px;display:block;margin-top:4px">Stats appear after submitting records</span></div>';return}
+ var avg=Math.round(allRecs.reduce(function(a,r){return a+r.total},0)/allRecs.length);
+ var pass=allRecs.filter(function(r){return r.total>=75}).length;
+ var fail=allRecs.filter(function(r){return r.total<60}).length;
+ var sm={};allRecs.forEach(function(r){if(!sm[r.store])sm[r.store]=[];sm[r.store].push(r.total)});
+ var pplMap={};allRecs.forEach(function(r){var k=r.auditor_name||r.auditor||"?";if(!pplMap[k])pplMap[k]=0;pplMap[k]++});
+ var secA=SEC.map(function(sec){
+  var a=Math.round(allRecs.reduce(function(a,r){var s=(r.secs||[]).find(function(x){return x.id===sec.id});return a+(s?s.score/s.max*100:0)},0)/allRecs.length);
+  return{sec:sec,a:a}}).sort(function(a,b){return a.a-b.a});
+ var secBars=secA.map(function(o){return '<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">'+o.sec.id+". "+o.sec.en+'</span><span style="font-weight:700;color:'+(o.a>=80?"#027A48":o.a>=60?"#C96A00":"#B42318")+'">'+o.a+'%</span></div><div style="height:8px;background:#F2F4F7;border-radius:4px;overflow:hidden"><div style="height:100%;width:'+o.a+"%;background:"+o.sec.col+';border-radius:4px"></div></div></div>'}).join("");
+ var storeRows=Object.keys(sm).sort(function(a,b){var aa=sm[a].reduce(function(x,y){return x+y},0)/sm[a].length;var ba=sm[b].reduce(function(x,y){return x+y},0)/sm[b].length;return ba-aa}).map(function(s){var vals=sm[s];var a=Math.round(vals.reduce(function(x,y){return x+y},0)/vals.length);return '<div class="sli"><div><div style="font-size:13px;font-weight:600">'+s+'</div><div style="font-size:11px;color:#98A2B3">'+vals.length+" visits | avg: "+a+'</div></div><div style="font-size:17px;font-weight:700">'+a+"</div></div>"}).join("");
+ var auditorRows=Object.keys(pplMap).sort(function(a,b){return pplMap[b]-pplMap[a]}).map(function(name){return '<div class="sli"><div style="font-size:13px;font-weight:600">'+name+'</div><div style="font-size:13px;font-weight:600;color:#2E75B6">'+pplMap[name]+" visits</div></div>"}).join("");
+
+ el.innerHTML='<div class="dsec"><div class="dtitle">Overview</div><div class="mgrid"><div class="mcard"><div class="mval">'+avg+'</div><div class="mlbl">Avg Score / 100</div></div><div class="mcard"><div class="mval">'+allRecs.length+'</div><div class="mlbl">Total Visits</div></div><div class="mcard"><div class="mval" style="color:#027A48">'+pass+'</div><div class="mlbl">Pass &ge;75</div></div><div class="mcard"><div class="mval" style="color:#B42318">'+fail+'</div><div class="mlbl">Fail &lt;60</div></div></div></div>'
+ +'<div class="dsec"><div class="dtitle">Section Avg Score Rate</div>'+secBars+"</div>"
+ +'<div class="dsec"><div class="dtitle">Store Performance</div><div class="sec-card">'+storeRows+"</div></div>"
+ +'<div class="dsec"><div class="dtitle">Auditor Activity</div><div class="sec-card">'+auditorRows+"</div></div>"
+ +'<button class="btn-excel" onclick="exportExcel(\'detailed\')">Export Detailed Excel</button>'
+ +'<button class="btn-excel" style="background:#2E75B6" onclick="exportExcel(\'summary\')">Export Summary Excel</button>'
+ +'<button class="btn-excel" style="background:#1B2A4A;color:#C9A227" onclick="exportExcel(\'all\')">Export Complete Report (All Sheets)</button>';
+}
+
+// ====== Excel Export ======
+function exportExcel(mode){
+ if(!allRecs.length){toast("No data to export");return}
+ if(typeof XLSX==="undefined"){toast("Excel library loading... try again");return}
+ var wb=XLSX.utils.book_new();
+ if(mode==="detailed"||mode==="all"){
+  var h=["Date","Time","Store","Promoter","Star Level","Auditor","A. Display (30)","B. Materials (20)","C. Sales (30)","D. Operations (15)","E. Service (5)","Total","Grade","Highlights","Actions Required","Promoter Feedback"];
+  var rows=allRecs.map(function(r){var gs=function(id){var s=(r.secs||[]).find(function(x){return x.id===id});return s?s.score:0};return[r.date,r.time||"",r.store,r.promoter,r.star||"",r.auditor_name||r.auditor||"",gs("A"),gs("B"),gs("C"),gs("D"),gs("E"),r.total,r.grade||"",r.h1||"",r.h2||"",r.h3||""]});
+  var ws=XLSX.utils.aoa_to_sheet([h].concat(rows));ws["!cols"]=h.map(function(c){return{wch:Math.max(c.length+2,14)}});
+  XLSX.utils.book_append_sheet(wb,ws,"Detailed Scores");
  }
- const avg=Math.round(allRecs.reduce((a,r)=>a+r.total,0)/allRecs.length);
- const pass=allRecs.filter(r=>r.total>=75).length;
- const fail=allRecs.filter(r=>r.total<60).length;
- const sm={};allRecs.forEach(r=>{if(!sm[r.store])sm[r.store]=[];sm[r.store].push(r.total)});
- const pplMap={};allRecs.forEach(r=>{const k=r.auditor_name||r.auditor||'?';if(!pplMap[k])pplMap[k]=0;pplMap[k]++});
- const secA=SEC.map(sec=>{
- const a=Math.round(allRecs.reduce((a,r)=>{const s=(r.secs||[]).find(x=>x.id===sec.id);return a+(s?s.score/s.max*100:0)},0)/allRecs.length);
- return{sec,a};
- }).sort((a,b)=>a.a-b.a);
-
- el.innerHTML=`
- <div class="dsec"><div class="dtitle">Overview </div><div class="mgrid">
- <div class="mcard"><div class="mval">${avg}</div><div class="mlbl">Avg Score / 100</div></div>
- <div class="mcard"><div class="mval">${allRecs.length}</div><div class="mlbl">Total Visits</div></div>
- <div class="mcard"><div class="mval" style="color:#027A48">${pass}</div><div class="mlbl">Pass ≥75 </div></div>
- <div class="mcard"><div class="mval" style="color:#B42318">${fail}</div><div class="mlbl">Fail &lt;60 </div></div>
- </div></div>
- <div class="dsec"><div class="dtitle">Section Avg Score Rate </div>
- ${secA.map(({sec,a})=>`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:500">${sec.id}. ${sec.zh}</span><span style="font-weight:700;color:${a>=80?'#027A48':a>=60?'#C96A00':'#B42318'}">${a}%</span></div><div style="height:8px;background:#F2F4F7;border-radius:4px;overflow:hidden"><div style="height:100%;width:${a}%;background:${sec.col};border-radius:4px"></div></div></div>`).join('')}
- </div>
- <div class="dsec"><div class="dtitle">Store Performance </div>
- <div class="sec-card">${Object.entries(sm).sort((a,b)=>{const aa=a[1].reduce((x,y)=>x+y,0)/a[1].length;const ba=b[1].reduce((x,y)=>x+y,0)/b[1].length;return ba-aa}).map(([s,vals])=>{const a=Math.round(vals.reduce((x,y)=>x+y,0)/vals.length);const tr=vals.length>1?(vals[0]>vals[1]?'up':vals[0]<vals[1]?'down':'flat'):'flat';return`<div class="sli"><div><div style="font-size:13px;font-weight:600">${s}</div><div style="font-size:11px;color:#98A2B3">${vals.length} visits · avg: ${a}</div></div><div style="display:flex;align-items:center;gap:8px"><div style="font-size:17px;font-weight:700">${a}</div><div class="chip${tr==='down'?' d':tr==='flat'?' f':''}">${tr==='up'?'↑ Up':tr==='down'?'↓ Down':'→ Flat'}</div></div></div>`;}).join('')}</div>
- </div>
- <div class="dsec"><div class="dtitle">Auditor Activity </div>
- <div class="sec-card">${Object.entries(pplMap).sort((a,b)=>b[1]-a[1]).map(([name,cnt])=>`<div class="sli"><div style="font-size:13px;font-weight:600">${name}</div><div style="font-size:13px;font-weight:600;color:#2E75B6">${cnt} visits</div></div>`).join('')}</div>
- </div>
- <button onclick="exportData()" style="width:100%;padding:11px;border-radius:8px;background:#1B2A4A;color:#C9A227;border:none;font-size:13px;font-weight:600;cursor:pointer"><i class="ti ti-download"></i> Export All Records JSON </button>
- `;
+ if(mode==="summary"||mode==="all"){
+  var h2=["Date","Store","Promoter","Star","Auditor","A %","B %","C %","D %","E %","Total","Grade"];
+  var rows2=allRecs.map(function(r){var gp=function(id){var s=(r.secs||[]).find(function(x){return x.id===id});return s?Math.round(s.score/s.max*100)+"%":"0%"};return[r.date,r.store,r.promoter,r.star||"",r.auditor_name||r.auditor||"",gp("A"),gp("B"),gp("C"),gp("D"),gp("E"),r.total+"/100",r.grade||""]});
+  var ws2=XLSX.utils.aoa_to_sheet([h2].concat(rows2));ws2["!cols"]=h2.map(function(c){return{wch:Math.max(c.length+2,14)}});
+  XLSX.utils.book_append_sheet(wb,ws2,"Summary");
+ }
+ if(mode==="all"){
+  var chainMap={};allRecs.forEach(function(r){var chain=r.store.split(" ")[0]||"Other";if(!chainMap[chain])chainMap[chain]={count:0,total:0,pass:0};chainMap[chain].count++;chainMap[chain].total+=r.total;if(r.total>=75)chainMap[chain].pass++});
+  var aH=["Store Chain","Visit Count","Average Score","Pass Rate"];
+  var aR=Object.keys(chainMap).sort(function(a,b){return chainMap[b].count-chainMap[a].count}).map(function(c){var s=chainMap[c];return[c,s.count,Math.round(s.total/s.count),Math.round(s.pass/s.count*100)+"%"]});
+  var ws3=XLSX.utils.aoa_to_sheet([aH].concat(aR));ws3["!cols"]=aH.map(function(c){return{wch:Math.max(c.length+2,14)}});
+  XLSX.utils.book_append_sheet(wb,ws3,"Analytics by Chain");
+ }
+ XLSX.writeFile(wb,"TECNO_KSA_Scorecard_"+new Date().toISOString().slice(0,10)+".xlsx");
+ toast("Excel exported! "+allRecs.length+" records");
 }
 
-// ══════════════════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════════════════
+// ====== Settings ======
 function cfgSave(){
- myName=document.getElementById('cfg-name').value.trim();
- gasUrl=document.getElementById('cfg-url').value.trim();
- LS.set('myName',myName);LS.set('gasUrl',gasUrl);
- document.getElementById('user-pill').textContent='👤 '+myName;
- document.getElementById('f-a').value=myName;
- toast('Settings saved!');
- pull();
+ myName=document.getElementById("cfg-name").value.trim();
+ gasUrl=document.getElementById("cfg-url").value.trim();
+ lsSet("myName",myName);lsSet("gasUrl",gasUrl);
+ document.getElementById("user-pill").textContent=myName;
+ document.getElementById("f-a").value=myName;
+ toast("Settings saved!");pull();
 }
-async function testConn(){
- const url=document.getElementById('cfg-url').value.trim();
- if(!url){alert('Please enter the URL');return}
- setConn('spin','Testing…');
- try{
- const res=await fetch(url+'?action=list');
- const d=await res.json();
- if(d.ok!==undefined){setConn('ok','Connected');toast('Connection OK! '+(d.total||0)+' records');}
- else{setConn('err','Unexpected response');toast('Unexpected response — check script code')}
- }catch(e){setConn('err','Connection failed');toast('Connection failed: '+e.message)}
-}
-function exportData(){
- const b=new Blob([JSON.stringify(allRecs,null,2)],{type:'application/json'});
- const a=document.createElement('a');
- a.href=URL.createObjectURL(b);
- a.download='TECNO_KSA_'+new Date().toISOString().slice(0,10)+'.json';
- a.click();toast('Export complete!');
+function testConn(){
+ var url=document.getElementById("cfg-url").value.trim();
+ if(!url){alert("Please enter URL");return}
+ setConn("spin","Testing...");
+ fetch(url+"?action=list").then(function(r){return r.json()}).then(function(d){
+  if(d.ok!==undefined){setConn("ok","Connected");toast("Connection OK! "+(d.total||0)+" records")}
+  else{setConn("err","Unexpected");toast("Unexpected response")}
+ }).catch(function(e){setConn("err","Failed");toast("Failed: "+e.message)});
 }
 
-// ══════════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════════
 init();
 </script>
 </body>
