@@ -295,7 +295,7 @@ var SEC=[
  {en:"Professional, respectful, no high-pressure",pts:2}]}
 ];
 
-var GAS_CODE='// TECNO KSA Store Visit Scorecard — Google Apps Script Backend\n// Paste into script.google.com → update SHEET_ID → deploy as Web App\n\nconst SHEET_ID = \'YOUR_GOOGLE_SHEET_ID_HERE\';\nconst SHEET_NAME = \'Visits\';\n\nfunction cors(out){ return out.setMimeType(ContentService.MimeType.JSON); }\nfunction ok(d) { return cors(ContentService.createTextOutput(JSON.stringify({ok:true,...d}))); }\nfunction fail(m) { return cors(ContentService.createTextOutput(JSON.stringify({ok:false,error:m}))); }\n\nfunction getSheet(){\n const ss=SpreadsheetApp.openById(SHEET_ID);\n let s=ss.getSheetByName(SHEET_NAME);\n if(!s){\n  s=ss.insertSheet(SHEET_NAME);\n  const h=[\'id\',\'store\',\'promoter\',\'star\',\'auditor\',\'date\',\'time\',\'total\',\'grade\',\n   \'A_display\',\'B_materials\',\'C_skills\',\'D_ops\',\'E_service\',\n   \'highlights\',\'actions\',\'feedback\',\'auditor_name\',\'created_at\'];\n  s.appendRow(h);\n  s.setFrozenRows(1);\n  s.getRange(1,1,1,h.length).setBackground(\'#1B2A4A\').setFontColor(\'#C9A227\').setFontWeight(\'bold\');\n }\n return s;\n}\n\nfunction doPost(e){\n try{\n  const b=JSON.parse(e.postData.contents);\n  const r=b.record, secs=r.secs||[];\n  const g=id=>{const s=secs.find(x=>x.id===id);return s?s.score:0};\n  const s=getSheet();\n  s.appendRow([String(r.id),r.store||\'\',r.promoter||\'\',r.star||\'\',\n   r.auditor||\'\',r.date||\'\',r.time||\'\',Number(r.total)||0,r.grade||\'\',\n   g(\'A\'),g(\'B\'),g(\'C\'),g(\'D\'),g(\'E\'),\n   r.h1||\'\',r.h2||\'\',r.h3||\'\',r.auditor_name||\'\',\n   new Date().toISOString()]);\n  return ok({saved:true,id:String(r.id)});\n }catch(ex){return fail(ex.message)}\n}\n\nfunction doGet(e){\n try{\n  const s=getSheet();\n  if(s.getLastRow()<2) return ok({records:[],total:0});\n  const data=s.getDataRange().getValues();\n  const hdrs=data[0];\n  const rows=data.slice(1).map(row=>{\n   const o={};hdrs.forEach((h,i)=>o[h]=row[i]);return o;\n  }).reverse();\n  return ok({records:rows,total:rows.length});\n }catch(ex){return fail(ex.message)}\n}';
+var GAS_CODE='// TECNO KSA Store Visit Scorecard — Google Apps Script Backend\n// Paste into script.google.com → update SHEET_ID → deploy as Web App\n\nconst SHEET_ID = \'YOUR_GOOGLE_SHEET_ID_HERE\';\nconst SHEET_NAME = \'Visits\';\n\nfunction cors(out){ return out.setMimeType(ContentService.MimeType.JSON); }\nfunction ok(d) { return cors(ContentService.createTextOutput(JSON.stringify({ok:true,...d}))); }\nfunction fail(m) { return cors(ContentService.createTextOutput(JSON.stringify({ok:false,error:m}))); }\n\nfunction getSheet(){\n const ss=SpreadsheetApp.openById(SHEET_ID);\n let s=ss.getSheetByName(SHEET_NAME);\n if(!s){\n  s=ss.insertSheet(SHEET_NAME);\n  const h=[\'id\',\'store\',\'promoter\',\'star\',\'auditor\',\'date\',\'time\',\'total\',\'grade\',\n   \'A_display\',\'B_materials\',\'C_skills\',\'D_ops\',\'E_service\',\n   \'highlights\',\'actions\',\'feedback\',\'auditor_name\',\'item_scores\',\'created_at\'];\n  s.appendRow(h);\n  s.setFrozenRows(1);\n  s.getRange(1,1,1,h.length).setBackground(\'#1B2A4A\').setFontColor(\'#C9A227\').setFontWeight(\'bold\');\n }\n return s;\n}\n\nfunction doPost(e){\n try{\n  const b=JSON.parse(e.postData.contents);\n  const r=b.record, secs=r.secs||[];\n  const g=id=>{const s=secs.find(x=>x.id===id);return s?s.score:0};\n  const s=getSheet();\n  s.appendRow([String(r.id),r.store||\'\',r.promoter||\'\',r.star||\'\',\n   r.auditor||\'\',r.date||\'\',r.time||\'\',Number(r.total)||0,r.grade||\'\',\n   g(\'A\'),g(\'B\'),g(\'C\'),g(\'D\'),g(\'E\'),\n   r.h1||\'\',r.h2||\'\',r.h3||\'\',r.auditor_name||\'\',\n   JSON.stringify(r.itemScores||{}),\n   new Date().toISOString()]);\n  return ok({saved:true,id:String(r.id)});\n }catch(ex){return fail(ex.message)}\n}\n\nfunction doGet(e){\n try{\n  const s=getSheet();\n  if(s.getLastRow()<2) return ok({records:[],total:0});\n  const data=s.getDataRange().getValues();\n  const hdrs=data[0];\n  const rows=data.slice(1).map(row=>{\n   const o={};hdrs.forEach((h,i)=>o[h]=row[i]);return o;\n  }).reverse();\n  return ok({records:rows,total:rows.length});\n }catch(ex){return fail(ex.message)}\n}';
 
 var sc={};
 SEC.forEach(function(s){s.items.forEach(function(_,i){sc[s.id+"_"+i]=0})});
@@ -415,9 +415,12 @@ function parseRecs(rows){
     {id:"C",en:"Sales",score:Number(r.C_skills)||0,max:30,col:"#1A7A4A"},
     {id:"D",en:"Compliance",score:Number(r.D_ops)||0,max:15,col:"#C96A00"},
     {id:"E",en:"Service",score:Number(r.E_service)||0,max:5,col:"#6B3FA0"}],
-   h1:r.highlights||"",h2:r.actions||"",h3:r.feedback||"",_local:false};
+   h1:r.highlights||"",h2:r.actions||"",h3:r.feedback||"",
+   itemScores:r.item_scores?tryParse(r.item_scores):null,
+   _local:false};
  });
 }
+function tryParse(s){try{return typeof s==="string"?JSON.parse(s):s}catch(e){return null}}
 
 // ====== Store/Promoter ======
 function onStore(){
@@ -475,6 +478,7 @@ function doSubmit(){
   auditor:document.getElementById("f-a").value||myName,auditor_name:myName,
   date:document.getElementById("f-d").value,time:document.getElementById("f-t").value,
   total:t,grade:g.lbl,gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
+  itemScores:JSON.parse(JSON.stringify(sc)),
   secs:SEC.map(function(s){return{id:s.id,en:s.en,score:stot(s),max:s.max,col:s.col}}),
   h1:document.getElementById("n1").value,h2:document.getElementById("n2").value,
   h3:document.getElementById("n3").value,_local:false};
@@ -523,7 +527,26 @@ function rh(f){
  var html="";
  fl.forEach(function(r){
   var bars="";(r.secs||[]).forEach(function(s){bars+='<div class="hbw"><div class="hblbl">'+s.id+'</div><div class="hbbg"><div class="hbf" style="width:'+Math.round(s.score/s.max*100)+"%;background:"+s.col+'"></div></div><div class="hbv">'+s.score+"/"+s.max+"</div></div>"});
-  var det="";
+  var det='<div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:#1B2A4A;margin-bottom:8px;border-bottom:2px solid #E4E7EC;padding-bottom:6px">SCORE DETAILS</div>';
+  (r.secs||[]).forEach(function(s){
+   var sec=SEC.find(function(x){return x.id===s.id});
+   var pct=Math.round(s.score/s.max*100);
+   var pcol=pct>=80?"#027A48":pct>=60?"#C96A00":"#B42318";
+   det+='<div style="background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:10px 12px;margin-bottom:6px">';
+   det+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:12px;font-weight:600;color:'+s.col+'">'+s.id+'. '+(sec?sec.en:s.en)+'</span><span style="font-size:12px;font-weight:700;color:'+pcol+'">'+s.score+'/'+s.max+' ('+pct+'%)</span></div>';
+   det+='<div style="height:4px;background:#F2F4F7;border-radius:2px;overflow:hidden;margin-bottom:8px"><div style="height:100%;width:'+pct+'%;background:'+s.col+';border-radius:2px"></div></div>';
+   if(sec){sec.items.forEach(function(item,i){
+    var itemKey=s.id+"_"+i;
+    var itemScore=r.itemScores?r.itemScores[itemKey]:null;
+    if(itemScore!==null&&itemScore!==undefined){
+     var ipct=Math.round(itemScore/item.pts*100);
+     var ic=ipct>=80?"#027A48":ipct>=60?"#C96A00":"#B42318";
+     det+='<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px;border-bottom:1px solid #F9FAFB"><span style="color:#667085;flex:1">'+item.en+'</span><span style="font-weight:600;color:'+ic+';min-width:40px;text-align:right">'+itemScore+'/'+item.pts+'</span></div>';
+    }
+   })}
+   det+='</div>';
+  });
+  det+='</div>';
   if(r.h1)det+='<div class="hnr"><div class="hnl">Highlights</div><div class="hnv">'+r.h1+"</div></div>";
   if(r.h2)det+='<div class="hnr"><div class="hnl">Actions Required</div><div class="hnv">'+r.h2+"</div></div>";
   if(r.h3)det+='<div class="hnr"><div class="hnl">Promoter Feedback</div><div class="hnv">'+r.h3+"</div></div>";
