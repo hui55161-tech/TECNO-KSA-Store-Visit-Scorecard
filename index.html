@@ -180,6 +180,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
  <button class="tab on" onclick="sw('form',this)" id="t-form">Fill Scorecard</button>
  <button class="tab" onclick="sw('hist',this)" id="t-hist">All Records <span class="badge" id="rec-count">0</span></button>
  <button class="tab" onclick="sw('dash',this)" id="t-dash">Dashboard</button>
+ <button class="tab" onclick="sw('exp',this)" id="t-exp">Export Excel</button>
  <button class="tab" onclick="sw('cfg',this)" id="t-cfg">Settings</button>
 </div>
 
@@ -231,6 +232,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;ba
 
 <!-- Dashboard -->
 <div id="v-dash" style="display:none"><div id="dc"></div></div>
+
+<!-- Export -->
+<div id="v-exp" style="display:none">
+ <div class="cfg-panel">
+ <h3>Export to Excel</h3>
+ <p style="font-size:12px;color:#667085;margin-bottom:16px">Export all synced records to Excel file. Records count: <strong id="exp-count">0</strong></p>
+ <button class="btn-excel" onclick="exportExcel('detailed')" style="margin-bottom:10px">Export Detailed Report<br><span style="font-size:11px;font-weight:400;opacity:.7">All scoring items, highlights, actions, feedback per visit</span></button>
+ <button class="btn-excel" style="background:#2E75B6;margin-bottom:10px" onclick="exportExcel('summary')">Export Summary Report<br><span style="font-size:11px;font-weight:400;opacity:.7">Category percentages and overall scores</span></button>
+ <button class="btn-excel" style="background:#1B2A4A;color:#C9A227;margin-bottom:10px" onclick="exportExcel('all')">Export Complete Report (All Sheets)<br><span style="font-size:11px;font-weight:400;opacity:.7">Detailed + Summary + Analytics by Store Chain</span></button>
+ <button onclick="exportJSON()" style="width:100%;padding:11px;border-radius:8px;background:transparent;color:#667085;border:1px solid #D0D5DD;font-size:13px;cursor:pointer">Export as JSON (backup)</button>
+ </div>
+</div>
 
 <!-- Settings -->
 <div id="v-cfg" style="display:none">
@@ -486,11 +499,12 @@ function doSubmit(){
 // ====== Tabs ======
 var curFilter="all";
 function sw(tab,btn){
- ["form","hist","dash","cfg"].forEach(function(t){
+ ["form","hist","dash","exp","cfg"].forEach(function(t){
   document.getElementById("v-"+t).style.display=t===tab?"":"none";
   document.getElementById("t-"+t).classList.toggle("on",t===tab);
  });
  if(tab==="hist")rh(curFilter);if(tab==="dash")rd();
+ if(tab==="exp"){var ec=document.getElementById("exp-count");if(ec)ec.textContent=allRecs.length}
 }
 function fh(f,btn){curFilter=f;document.querySelectorAll(".hf").forEach(function(b){b.classList.remove("on")});btn.classList.add("on");rh(f)}
 
@@ -578,6 +592,14 @@ function exportExcel(mode){
  }
  XLSX.writeFile(wb,"TECNO_KSA_Scorecard_"+new Date().toISOString().slice(0,10)+".xlsx");
  toast("Excel exported! "+allRecs.length+" records");
+}
+
+function exportJSON(){
+ if(!allRecs.length){toast("No data to export");return}
+ var b=new Blob([JSON.stringify(allRecs,null,2)],{type:"application/json"});
+ var a=document.createElement("a");a.href=URL.createObjectURL(b);
+ a.download="TECNO_KSA_"+new Date().toISOString().slice(0,10)+".json";
+ a.click();toast("JSON exported!");
 }
 
 // ====== Settings ======
