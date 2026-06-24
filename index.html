@@ -3,1302 +3,1207 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TECNO KSA · Promoter Leave Store System</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
+<title>TECNO KSA Store Visit Scorecard v2</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#F0F2F5;color:#1A1A2E;font-size:14px;min-height:100vh}
-.app{max-width:1200px;margin:0 auto;padding:16px}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#1B2A4A;border-radius:12px;margin-bottom:14px;flex-wrap:wrap;gap:10px}
-.t1{color:#C9A227;font-size:16px;font-weight:600}
-.t2{font-size:11px;color:#8899AA;margin-top:2px;display:flex;align-items:center;gap:6px}
+.app{max-width:860px;margin:0 auto;padding:16px}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#1B2A4A;border-radius:12px;margin-bottom:14px;box-shadow:0 2px 8px rgba(27,42,74,.18);flex-wrap:wrap;gap:8px}
+.t1{color:#C9A227;font-size:16px;font-weight:700}
+.t2{font-size:11px;margin-top:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .cdot{width:7px;height:7px;border-radius:50%;background:#98A2B3;flex-shrink:0;transition:background .3s}
 .cdot.ok{background:#27AE60}.cdot.err{background:#E74C3C}.cdot.sp{background:#C9A227;animation:blink 1s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.topbar-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.lang-tog{display:flex;gap:2px;border:1px solid rgba(201,162,39,.4);border-radius:8px;overflow:hidden}
-.lb{padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;background:transparent;border:none;color:#8899AA;transition:all .15s}
-.lb.on{background:#C9A227;color:#1B2A4A}
-.btn-top{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:1px solid #C9A227;background:transparent;color:#C9A227;font-size:12px;font-weight:500;cursor:pointer}
-.btn-top:hover{background:rgba(201,162,39,.1)}
-.btn-logout{padding:7px 10px;border-radius:8px;border:1px solid rgba(201,162,39,.3);background:transparent;color:#8899AA;font-size:12px;cursor:pointer}
-.setup{max-width:440px;margin:40px auto;background:#fff;border-radius:14px;border:1px solid #E4E7EC;padding:28px}
-.setup h2{font-size:18px;font-weight:600;color:#1B2A4A;text-align:center;margin-bottom:6px}
-.setup p{font-size:13px;color:#667085;text-align:center;margin-bottom:20px;line-height:1.6}
-.fg{margin-bottom:12px}
-.fg label{font-size:11px;font-weight:600;color:#667085;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-.fg input,.fg select{width:100%;font-size:13px;border:1px solid #D0D5DD;border-radius:8px;padding:9px 11px;outline:none;color:#1A1A2E;font-family:inherit}
-.fg input:focus,.fg select:focus{border-color:#C9A227;box-shadow:0 0 0 3px rgba(201,162,39,.1)}
-.btn-enter{width:100%;padding:11px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.score-box{text-align:right}
+.big-score{font-size:32px;font-weight:700;color:#C9A227;line-height:1}
+.score-lbl{font-size:11px;color:#8899AA}
 
-/* LIVE STATUS BOARD - NEW */
-.live-board{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:14px;margin-bottom:14px;display:none}
-.live-board-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.live-board-title{font-size:13px;font-weight:600;color:#1B2A4A;display:flex;align-items:center;gap:6px}
-.live-dot{width:8px;height:8px;border-radius:50%;background:#E74C3C;animation:blink 1.2s infinite}
-.live-cards{display:flex;gap:8px;flex-wrap:wrap}
-.live-card{border-radius:8px;padding:8px 12px;border:1px solid;min-width:160px;flex:1}
-.live-card.warn{background:#FEF3F2;border-color:#FECDCA}
-.live-card.alert{background:#FFF4E5;border-color:#FEC84B}
-.live-card-store{font-size:11px;font-weight:600;color:#344054;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.live-card-name{font-size:12px;font-weight:700;color:#B42318;margin-top:2px}
-.live-card-meta{font-size:10px;color:#667085;margin-top:2px}
-.live-card-dur{font-size:11px;font-weight:700;padding:2px 7px;border-radius:6px;margin-top:4px;display:inline-block}
-.live-card-dur.over30{background:#FEF3F2;color:#B42318}
-.live-card-dur.under30{background:#FFF4E5;color:#854F0B}
-.live-card-ret-btn{font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid #D1FAE5;background:#ECFDF3;color:#027A48;cursor:pointer;margin-top:5px;width:100%}
+/* STORE TYPE TOGGLE */
+.store-type-bar{display:flex;gap:8px;margin-bottom:14px}
+.stype-btn{flex:1;padding:12px;border-radius:10px;border:2px solid #D0D5DD;background:#fff;cursor:pointer;text-align:center;transition:all .15s}
+.stype-btn:hover{border-color:#C9A227;background:#FFFBEE}
+.stype-btn.active{border-color:#1B2A4A;background:#1B2A4A;color:#C9A227}
+.stype-btn .stype-icon{font-size:20px;display:block;margin-bottom:4px}
+.stype-btn .stype-lbl{font-size:13px;font-weight:600}
+.stype-btn .stype-sub{font-size:11px;opacity:.7;margin-top:2px}
+.stype-btn.active .stype-sub{opacity:.6}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-.stat{background:#fff;border:1px solid #E4E7EC;border-radius:10px;padding:12px;text-align:center;position:relative}
-.sv{font-size:24px;font-weight:700;color:#1B2A4A}
-.sl{font-size:11px;color:#98A2B3;margin-top:3px}
-.stat-badge{position:absolute;top:8px;right:8px;font-size:9px;color:#98A2B3;font-weight:500}
-
-/* QUICK TYPE BUTTONS - NEW */
-.quick-type-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.qtb{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #D0D5DD;background:#fff;color:#667085;font-weight:500;transition:all .12s}
-.qtb:hover{border-color:#C9A227;color:#9A7010}
-.qtb.sel{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A}
-
-/* QUICK RETURN BUTTON - NEW */
-.quick-return-bar{background:#ECFDF3;border:1px solid #A6F4C5;border-radius:10px;padding:10px 14px;margin-bottom:10px;display:none;align-items:center;justify-content:space-between;gap:10px}
-.quick-return-info{font-size:12px;color:#027A48;font-weight:500}
-.quick-return-btn{padding:6px 14px;border-radius:7px;border:none;background:#027A48;color:#fff;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
-
-/* INLINE RETURN MODAL - NEW */
-.ret-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:9000;align-items:center;justify-content:center}
-.ret-modal.open{display:flex}
-.ret-box{background:#fff;border-radius:14px;padding:24px;max-width:320px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.18)}
-.ret-box h3{font-size:15px;font-weight:600;color:#1B2A4A;margin-bottom:4px}
-.ret-box p{font-size:12px;color:#667085;margin-bottom:14px}
-.ret-time-input{width:100%;font-size:18px;border:2px solid #C9A227;border-radius:8px;padding:10px;text-align:center;font-family:monospace;font-weight:600;outline:none;color:#1B2A4A;margin-bottom:12px}
-.ret-now-btn{width:100%;padding:8px;background:#F9FAFB;border:1px solid #D0D5DD;border-radius:7px;font-size:12px;cursor:pointer;color:#344054;margin-bottom:10px}
-.ret-actions{display:flex;gap:8px}
-.ret-confirm{flex:1;padding:10px;background:#027A48;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
-.ret-cancel{padding:10px 14px;border:1px solid #D0D5DD;border-radius:8px;background:#fff;font-size:13px;cursor:pointer;color:#667085}
-
-.fcard{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:16px;margin-bottom:14px}
-.fcard-t{font-size:13px;font-weight:600;color:#1B2A4A;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.fg3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.fl{font-size:11px;font-weight:600;color:#667085;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-.req{color:#E74C3C}
-.fi{width:100%;font-size:13px;border:1px solid #D0D5DD;border-radius:8px;padding:8px 10px;outline:none;color:#1A1A2E;font-family:inherit;background:#fff}
-.fi:focus{border-color:#C9A227;box-shadow:0 0 0 3px rgba(201,162,39,.1)}
-textarea.fi{min-height:60px;resize:vertical}
-.fi-now-wrap{position:relative;display:flex;gap:4px;align-items:center}
-.fi-now-wrap .fi{flex:1}
-.btn-now{padding:8px 9px;border-radius:7px;border:1px solid #C9A227;background:transparent;color:#C9A227;font-size:11px;cursor:pointer;white-space:nowrap;font-weight:600}
-.btn-now:hover{background:rgba(201,162,39,.1)}
-.form-acts{display:flex;gap:8px;margin-top:12px}
-.btn-sub{flex:1;padding:10px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
-.btn-sub:disabled{opacity:.45;cursor:not-allowed}
-.btn-clr{padding:10px 14px;border-radius:8px;border:1px solid #D0D5DD;background:transparent;font-size:13px;cursor:pointer;color:#667085}
-.filter-section{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:14px;margin-bottom:14px}
-.filter-section-title{font-size:12px;font-weight:600;color:#667085;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
-.filter-group{display:flex;flex-direction:column;gap:4px;min-width:130px;flex:1}
-.filter-group label{font-size:11px;font-weight:600;color:#667085;text-transform:uppercase;letter-spacing:.04em}
-.filter-group select,.filter-group input{font-size:12px;border:1px solid #D0D5DD;border-radius:8px;padding:7px 9px;outline:none;color:#1A1A2E;font-family:inherit;background:#fff;width:100%}
-.filter-group select:focus,.filter-group input:focus{border-color:#C9A227}
-.filter-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
-.fpill{padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #D0D5DD;background:#fff;color:#667085;font-weight:500}
-.fpill:hover{border-color:#C9A227;color:#9A7010}
-.fpill.on{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A}
-.btn-reset-filter{padding:7px 13px;border-radius:8px;border:1px solid #D0D5DD;background:#fff;color:#667085;font-size:12px;cursor:pointer;margin-left:auto;display:flex;align-items:center;gap:4px}
-.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.tabx{padding:8px 16px;border-radius:8px;border:1px solid #D0D5DD;background:#fff;font-size:13px;cursor:pointer;color:#667085;font-weight:500}
-.tabx.on{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A}
-.tbl-wrap{background:#fff;border:1px solid #E4E7EC;border-radius:12px;overflow:hidden}
-.tbl-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #F2F4F7;flex-wrap:wrap;gap:8px}
-.tbl-title{font-size:13px;font-weight:600;color:#1B2A4A}
-.tbl-meta{display:flex;align-items:center;gap:8px}
-.cnt{font-size:11px;color:#98A2B3;background:#F9FAFB;padding:2px 8px;border-radius:10px;border:1px solid #E4E7EC}
-.btn-refresh{display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;border:1px solid #D0D5DD;background:#fff;font-size:11px;cursor:pointer;color:#667085}
-.btn-export-tbl{display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;border:1px solid #27AE60;background:#fff;font-size:11px;cursor:pointer;color:#27AE60;font-weight:500}
-.tbl-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#F9FAFB;padding:8px 10px;text-align:left;font-weight:600;font-size:11px;color:#667085;border-bottom:1px solid #E4E7EC;white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
-td{padding:9px 10px;border-bottom:1px solid #F2F4F7;color:#344054;vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#FAFAFA}
-/* FIX: over-30min alert row */
-tr.row-alert td{background:#FFF4E5!important}
-tr.row-warn td{background:#FEF3F2!important}
-.pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
-.pill-out{background:#FEF3F2;color:#B42318}
-.pill-back{background:#ECFDF3;color:#027A48}
-.dur{font-size:11px;color:#667085;background:#F9FAFB;padding:2px 8px;border-radius:8px;white-space:nowrap;display:inline-block}
-.dur.warn30{background:#FFF4E5;color:#854F0B}
-.dur.warn60{background:#FEF3F2;color:#B42318}
-.act-btns{display:flex;gap:4px;align-items:center}
-.btn-ret{font-size:11px;padding:3px 7px;border-radius:6px;border:1px solid #D1FAE5;background:#ECFDF3;color:#027A48;cursor:pointer;white-space:nowrap}
-.btn-del{background:none;border:none;cursor:pointer;color:#98A2B3;padding:3px;border-radius:4px}
-.btn-del:hover{color:#B42318}
-.empty{text-align:center;padding:40px;color:#98A2B3;font-size:13px}
-
-/* DASHBOARD - NEW */
-.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin-bottom:14px}
-.dash-card{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:14px}
-.dash-card-title{font-size:11px;font-weight:700;color:#98A2B3;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.setup-screen{background:#fff;border-radius:12px;border:1px solid #E4E7EC;padding:28px;max-width:480px;margin:40px auto}
+.setup-screen input{width:100%;font-size:13px;border:1px solid #D0D5DD;border-radius:8px;padding:10px 12px;outline:none;color:#1A1A2E;margin-bottom:10px;font-family:inherit}
+.setup-screen input:focus{border-color:#C9A227}
+.info{background:#EBF5FB;border:1px solid #AED6F1;border-radius:8px;padding:12px;font-size:12px;color:#1A5276;line-height:1.7;margin-bottom:16px}
+.info code{background:#D6EAF8;padding:1px 5px;border-radius:4px;font-size:11px}
+.tabs{display:flex;gap:5px;margin-bottom:14px;flex-wrap:wrap}
+.tab{flex:1;min-width:70px;padding:7px 4px;border-radius:8px;border:1.5px solid #D0D5DD;background:#fff;font-size:12px;cursor:pointer;color:#667085;text-align:center;font-weight:500;transition:all .15s;line-height:1.3}
+.tab:hover{background:#F9F0D6;border-color:#C9A227}
+.tab.on{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A;font-weight:600}
+.meta-g{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.meta-box{background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:8px 12px}
+.meta-box label{font-size:11px;color:#667085;display:block;margin-bottom:3px;font-weight:500}
+.meta-box input,.meta-box select{width:100%;font-size:13px;background:transparent;border:none;outline:none;color:#1A1A2E;padding:0;font-family:inherit}
+.sec-card{background:#fff;border:1px solid #E4E7EC;border-radius:12px;margin-bottom:8px;overflow:hidden}
+.sec-hdr{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid #F2F4F7;cursor:pointer;user-select:none}
+.sec-hdr:hover{background:#FAFAFA}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sec-name{font-size:13px;font-weight:600;flex:1}
+.sec-badge{font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;background:#F9FAFB}
+.pbar{height:3px;background:#F2F4F7}.pfill{height:100%;transition:width .3s}
+.irow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #F2F4F7}
+.irow:last-child{border-bottom:none}.irow:nth-child(even){background:#FAFAFA}
+.izh{font-size:12px;line-height:1.4;color:#344054}
+.izh .item-pts{font-size:10px;color:#98A2B3;font-weight:500;margin-top:1px}
+.sbtns{display:flex;gap:3px;flex-wrap:wrap}
+.sb{min-width:26px;height:26px;padding:0 4px;border-radius:6px;border:1px solid #D0D5DD;background:#F9FAFB;color:#667085;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:600;transition:all .12s}
+.sb:hover{background:#FDF3D0;border-color:#C9A227}
+.sb.on{color:#fff;border-color:transparent}
+.sb.zero-btn{background:#FEF3F2;border-color:#FECDCA;color:#B42318}
+.sb.zero-btn.on{background:#B42318;border-color:#B42318;color:#fff}
+.sb.na-btn{background:#F9FAFB;border-color:#D0D5DD;color:#98A2B3;font-size:10px}
+.sb.na-btn.on{background:#667085;border-color:#667085;color:#fff}
+.irow.na-row{opacity:.45}
+.sumbar{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:10px 0}
+.scard{background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:8px 6px;text-align:center}
+.sval{font-size:16px;font-weight:700}.slbl{font-size:10px;color:#98A2B3;margin-top:2px}
+.grade-b{border-radius:10px;padding:14px;text-align:center;margin-bottom:12px;border:1.5px solid transparent}
+.gnote{background:#fff;border:1px solid #E4E7EC;border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.gnote label{font-size:11px;color:#667085;margin-bottom:4px;display:block;font-weight:500}
+.gnote textarea{width:100%;border:none;background:transparent;resize:none;font-size:12px;color:#344054;outline:none;min-height:48px;line-height:1.6;font-family:inherit}
+.act-row{display:flex;gap:8px;margin-top:12px}
+.btn-pri{flex:1;padding:11px;border-radius:8px;background:#1B2A4A;color:#C9A227;border:none;font-size:13px;font-weight:600;cursor:pointer}
+.btn-pri:hover{opacity:.88}.btn-pri:disabled{opacity:.4;cursor:not-allowed}
+.btn-sec{padding:11px 14px;border-radius:8px;background:#fff;border:1.5px solid #D0D5DD;font-size:13px;cursor:pointer;color:#344054;font-weight:500}
+.hfil{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.hf{padding:5px 13px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid #D0D5DD;background:#fff;color:#667085;font-weight:500}
+.hf.on{background:#1B2A4A;color:#C9A227;border-color:#1B2A4A}
+.date-filter{display:flex;gap:4px;align-items:center}
+.date-filter input{font-size:11px;border:1px solid #D0D5DD;border-radius:6px;padding:4px 6px;font-family:inherit;outline:none;width:112px}
+.date-filter input:focus{border-color:#C9A227}
+.pull-btn{padding:5px 12px;border-radius:6px;border:1px solid #D0D5DD;background:#fff;cursor:pointer;font-size:11px;color:#667085;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.hcard{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:13px 15px;margin-bottom:8px}
+.hcard:hover{border-color:#C9A227}
+.hcard-top{cursor:pointer}
+.htop{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.hstore{font-size:14px;font-weight:600;color:#1B2A4A}
+.hmeta{font-size:11px;color:#98A2B3;margin-top:2px}
+.hpill{font-size:15px;font-weight:700;padding:3px 14px;border-radius:20px;flex-shrink:0}
+.hbars{display:flex;gap:4px;margin-top:8px;align-items:flex-end}
+.hbw{flex:1}.hblbl{font-size:9px;color:#98A2B3;margin-bottom:2px;text-align:center}
+.hbbg{height:26px;background:#F2F4F7;border-radius:4px;overflow:hidden}
+.hbf{height:100%;border-radius:4px}.hbv{font-size:9px;text-align:center;margin-top:2px;color:#98A2B3;font-weight:600}
+.hdet{background:#F9FAFB;border-radius:8px;padding:10px 12px;margin-top:8px;display:none;border:1px solid #E4E7EC}
+.hdet.o{display:block}
+.hnr{margin-bottom:8px}.hnl{font-size:10px;color:#98A2B3;font-weight:600;margin-bottom:2px}.hnv{font-size:12px;color:#344054;line-height:1.5}
+.dsec{margin-bottom:18px}.dtitle{font-size:11px;font-weight:700;color:#98A2B3;margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em}
+.mgrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mcard{background:#fff;border:1px solid #E4E7EC;border-radius:10px;padding:14px}
+.mval{font-size:24px;font-weight:700;color:#1B2A4A}.mlbl{font-size:11px;color:#98A2B3;margin-top:3px}
+.sli{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid #F2F4F7}
+.sli:last-child{border-bottom:none}
+.cfg-panel{background:#fff;border:1px solid #E4E7EC;border-radius:12px;padding:16px;margin-bottom:14px}
+.cfg-panel h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#1B2A4A}
+.cfg-panel label{font-size:11px;color:#667085;display:block;margin-bottom:4px;font-weight:500}
+.cfg-panel input{width:100%;font-size:12px;border:1px solid #D0D5DD;border-radius:6px;padding:8px 10px;outline:none;color:#1A1A2E;margin-bottom:10px;font-family:inherit}
+.cfg-panel input:focus{border-color:#C9A227}
+.code-pre{background:#1E2A3A;border-radius:8px;padding:12px;font-size:10.5px;color:#A8D8A8;line-height:1.6;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;font-family:Consolas,monospace;margin:10px 0}
+.empty{text-align:center;padding:48px 20px;color:#98A2B3;font-size:13px;background:#fff;border-radius:12px;border:1px solid #E4E7EC}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1B2A4A;color:#C9A227;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.18);white-space:nowrap;max-width:90vw}
+.badge{font-size:10px;padding:1px 7px;border-radius:10px;margin-left:5px;background:#C9A22722;color:#9A7010}
+.live-pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:10px;background:#ECFDF3;color:#027A48;font-weight:600}
+.user-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 10px;border-radius:20px;background:#EBF5FB;color:#1A5276;font-weight:500;border:1px solid #AED6F1}
+.btn-excel{width:100%;padding:11px;border-radius:8px;background:#1A7A4A;color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px}
+.btn-excel:hover{opacity:.88}
+/* NA badge */
+.na-badge{display:inline-block;background:#F2F4F7;color:#667085;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:600;margin-left:4px}
+/* store type badge */
+.type-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px}
+.type-tag.with-promoter{background:#EEF4FF;color:#1849A9}
+.type-tag.no-promoter{background:#FFF4E5;color:#854F0B}
+/* Non-promoter info card */
+.np-info{background:#FFF9EC;border:1px solid #FEC84B;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#854F0B;line-height:1.7}
+.np-info strong{color:#1B2A4A}
+/* BA info */
+.ba-info{background:#EBF5FB;border:1px solid #AED6F1;border-radius:8px;padding:8px 12px;margin-bottom:10px;font-size:12px;color:#1A5276}
+/* Trend sparkline */
+.trend-up{color:#027A48;font-size:11px;font-weight:700}
+.trend-dn{color:#B42318;font-size:11px;font-weight:700}
+.trend-fl{color:#98A2B3;font-size:11px}
+/* bar row */
 .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.bar-label{font-size:11px;color:#344054;min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-label{font-size:11px;color:#344054;min-width:100px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bar-track{flex:1;height:8px;background:#F2F4F7;border-radius:4px;overflow:hidden}
 .bar-fill{height:100%;border-radius:4px;transition:width .4s}
-.bar-val{font-size:11px;font-weight:600;color:#344054;min-width:40px;text-align:right}
-.multi-badge-warn{display:inline-block;background:#FEF3F2;color:#B42318;border-radius:10px;padding:1px 8px;font-size:10px;font-weight:600;margin-left:4px}
-
-.sum-table th{background:#1B2A4A;color:#C9A227}
-.sum-table tr:nth-child(even) td{background:#F9FAFB}
-.total-row td{font-weight:600;background:#FDF3D0!important;color:#9A7010}
-.freq-warn{background:#FEF3F2!important}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1B2A4A;color:#C9A227;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,.18);white-space:nowrap}
-[dir="rtl"] th,[dir="rtl"] td{text-align:right}
-[dir="rtl"] .topbar,[dir="rtl"] .form-acts,[dir="rtl"] .filter-row,[dir="rtl"] .live-cards{flex-direction:row-reverse}
-@media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}.fg3{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.fg3{grid-template-columns:1fr}.tabs{gap:4px}.tabx{font-size:12px;padding:7px 10px}}
+.bar-val{font-size:11px;font-weight:600;color:#344054;min-width:36px;text-align:right}
+/* draft bar */
+.draft-bar{background:#FFF4E5;border:1px solid #FEC84B;border-radius:8px;padding:8px 14px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#854F0B;gap:8px}
+/* quick bar */
+.quick-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.qbtn{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1.5px solid #D0D5DD;background:#fff;color:#667085;font-weight:500}
+.qbtn:hover{background:#F9F0D6;border-color:#C9A227}
+.val-warn{background:#FEF3F2;border:1px solid #FECDCA;border-radius:8px;padding:8px 14px;font-size:12px;color:#B42318;margin-bottom:10px}
+@media(max-width:600px){
+ .meta-g{grid-template-columns:1fr}
+ .mgrid4{grid-template-columns:repeat(2,1fr)}
+ .tabs{gap:3px}.tab{font-size:11px;padding:6px 2px;min-width:50px}
+ .store-type-bar{flex-direction:column}
+}
 </style>
 </head>
 <body>
-
-<!-- SETUP -->
-<div id="setup-screen" style="display:none">
-  <div class="setup">
-    <div style="text-align:center;font-size:36px;margin-bottom:12px">📋</div>
-    <h2 id="su-title">Promoter Leave Store System</h2>
-    <p id="su-sub">Enter the backend URL and your name to start</p>
-    <div class="fg"><label id="su-lbl-url">Apps Script URL</label>
-      <input type="url" id="su-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
-    <div class="fg"><label id="su-lbl-name">Your Name</label>
-      <input type="text" id="su-name" placeholder="KDR Manager / Trainer"></div>
-    <div class="fg"><label>Language / اللغة</label>
-      <select id="su-lang"><option value="en">English</option><option value="ar">العربية</option></select></div>
-    <button class="btn-enter" onclick="setupSave()" id="su-btn">Enter System</button>
-  </div>
-</div>
-
-<!-- INLINE RETURN MODAL -->
-<div class="ret-modal" id="ret-modal">
-  <div class="ret-box">
-    <h3 id="ret-modal-title">Log Return Time</h3>
-    <p id="ret-modal-sub"></p>
-    <input class="ret-time-input" type="time" id="ret-time-val">
-    <button class="ret-now-btn" onclick="setRetNow()">⏱ Use current time</button>
-    <div class="ret-actions">
-      <button class="ret-cancel" onclick="closeRetModal()">Cancel</button>
-      <button class="ret-confirm" id="ret-confirm-btn" onclick="confirmReturn()">Confirm Return</button>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN -->
-<div id="main-app" style="display:none">
 <div class="app">
-  <div class="topbar">
-    <div>
-      <div class="t1" id="main-title">Promoter Leave Store System</div>
-      <div class="t2">
-        <span class="cdot" id="cdot"></span>
-        <span id="clbl">Connecting…</span>
-        <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 9px;border-radius:20px;background:rgba(201,162,39,.15);color:#C9A227;font-weight:500" id="user-badge"></span>
-      </div>
-    </div>
-    <div class="topbar-r">
-      <div class="lang-tog">
-        <button class="lb on" onclick="setLang('en')" id="lb-en">EN</button>
-        <button class="lb" onclick="setLang('ar')" id="lb-ar">عربي</button>
-      </div>
-      <button class="btn-top" onclick="exportActive()">
-        <i class="ti ti-download" style="font-size:13px"></i>
-        <span id="export-lbl">Export Excel</span>
-      </button>
-      <button class="btn-logout" onclick="logout()"><i class="ti ti-logout" style="font-size:13px"></i></button>
-    </div>
-  </div>
 
-  <!-- LIVE STATUS BOARD -->
-  <div class="live-board" id="live-board">
-    <div class="live-board-hdr">
-      <div class="live-board-title">
-        <span class="live-dot"></span>
-        <span id="live-board-title">Currently Out</span>
-        <span id="live-board-count" style="font-size:11px;color:#667085;font-weight:400"></span>
-      </div>
-      <button style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid #D0D5DD;background:#fff;cursor:pointer;color:#667085" onclick="document.getElementById('live-board').style.display='none'">Hide</button>
-    </div>
-    <div class="live-cards" id="live-cards"></div>
+<!-- Setup -->
+<div id="setup" style="display:none">
+ <div class="setup-screen">
+  <div style="text-align:center;margin-bottom:20px">
+   <div style="font-size:32px;margin-bottom:6px">📊</div>
+   <div style="font-size:20px;font-weight:700;color:#1B2A4A">TECNO KSA Store Visit Scorecard</div>
+   <div style="font-size:12px;color:#98A2B3;margin-top:4px">With Promoter · Non-Promoter · Multi-user Sync</div>
   </div>
+  <div class="info"><strong>First time setup:</strong><br>Ask your admin for the <code>Apps Script URL</code>.<br>If you are the admin, click "Admin Setup Guide" to deploy the backend.</div>
+  <label style="font-size:11px;color:#667085;font-weight:500">Apps Script URL</label>
+  <input type="url" id="su-url" placeholder="https://script.google.com/macros/s/.../exec">
+  <label style="font-size:11px;color:#667085;font-weight:500">Your Name</label>
+  <input type="text" id="su-name" placeholder="e.g. KSA Retail Manager">
+  <button onclick="setupSave()" style="width:100%;padding:11px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px">Enter System</button>
+  <button onclick="showGuide()" style="width:100%;padding:11px;background:transparent;color:#667085;border:1px solid #D0D5DD;border-radius:8px;font-size:13px;cursor:pointer">Admin Setup Guide</button>
+ </div>
+</div>
 
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat"><div class="sv" id="s-total">0</div><div class="sl" id="s-total-lbl">Total records</div><div class="stat-badge" id="s-total-scope">all</div></div>
-    <div class="stat"><div class="sv" id="s-out" style="color:#B42318">0</div><div class="sl" id="s-out-lbl">Currently out</div></div>
-    <div class="stat"><div class="sv" id="s-today">0</div><div class="sl" id="s-today-lbl">Today</div><div class="stat-badge" id="s-today-scope">all stores</div></div>
-    <div class="stat"><div class="sv" id="s-stores">0</div><div class="sl" id="s-stores-lbl">Stores covered</div></div>
+<!-- Guide -->
+<div id="guide" style="display:none">
+ <div class="cfg-panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+   <h3 style="margin-bottom:0">Admin Setup Guide</h3>
+   <button onclick="showSetup()" style="font-size:12px;color:#667085;background:none;border:1px solid #D0D5DD;padding:4px 10px;border-radius:6px;cursor:pointer">← Back</button>
   </div>
-
-  <!-- Form -->
-  <div class="fcard">
-    <div class="fcard-t">
-      <i class="ti ti-plus-circle" style="font-size:15px;color:#C9A227"></i>
-      <span id="form-title">New absence record</span>
-    </div>
-    <!-- QUICK RETURN BANNER -->
-    <div class="quick-return-bar" id="qr-bar">
-      <div class="quick-return-info" id="qr-info"></div>
-      <button class="quick-return-btn" id="qr-btn" onclick="quickReturn()">Log Return Now</button>
-    </div>
-    <!-- QUICK TYPE BUTTONS -->
-    <div style="margin-bottom:10px">
-      <div class="fl" id="lbl-quick-type" style="margin-bottom:6px">Quick leave type</div>
-      <div class="quick-type-bar" id="quick-type-bar"></div>
-    </div>
-    <div class="fg3">
-      <div>
-        <label class="fl" id="lbl-store">Store <span class="req">*</span></label>
-        <select class="fi" id="f-store" onchange="onStoreChange()">
-          <option value="">— Select —</option>
-          <optgroup label="Jarir"><option>Jarir Olaya</option><option>Jarir Khurais</option><option>Jarir Exit 25</option><option>Jarir Tabuk</option><option>Jarir Faisalyah</option><option>Jarir Khamis Musait</option></optgroup>
-          <optgroup label="Extra"><option>Extra Woroud</option><option>Extra Al-Badiah</option><option>Extra JS1 Sultan</option><option>Extra Jeddah Thaliah Alazezyah</option><option>Extra Tabuk</option><option>Extra Khurais</option><option>Extra J11 Jizan</option><option>Extra Remal</option><option>Extra Sweedy</option><option>Extra Abha</option><option>Extra Khamis Mushait</option></optgroup>
-          <optgroup label="LuLu"><option>LuLu HM Riyadh Avenue Murabba</option><option>Lulu Hypermarket Batha Riyadh E</option><option>Lulu Batha M</option><option>Lulu Hypermarket Yarmouk</option><option>LuLu HM Al Yasmin Riyadh</option><option>Lulu Hypermarket Khurais</option><option>Lulu Hypermarket Al Ahsa</option><option>LuLu Hypermarket AlKhobar</option><option>LuLu Hypermarket Jubail</option><option>Lulu Mall Dammam</option><option>Lulu Hamdaniya</option><option>LuLu Hypermarket Amir Fawaz</option><option>Lulu Malaz</option><option>Lulu Hypermarket Hail</option><option>LuLu HM Madeena Road Jeddah</option><option>LuLu HM Marwa Jeddah</option></optgroup>
-          <optgroup label="Nesto"><option>Nesto Batha M</option><option>Nesto Batha E</option><option>Nesto Aziziya</option><option>Nesto New Sanaya</option><option>Nesto Al Kharj</option><option>Nesto Buraidah</option><option>Nesto Jubail</option><option>Nesto Khobar</option><option>Nesto Dabab</option><option>Nesto Mina</option><option>Nesto Villagio</option></optgroup>
-          <optgroup label="Wafa"><option>Wafa Exit 16</option><option>Wafa Shola</option><option>Wafa Seiko</option><option>Wafa Makkah</option></optgroup>
-        </select>
-      </div>
-      <div>
-        <label class="fl" id="lbl-name">Promoter Name <span class="req">*</span></label>
-        <input class="fi" type="text" id="f-name" list="name-list" placeholder="Full name" autocomplete="off">
-        <datalist id="name-list"></datalist>
-      </div>
-      <div>
-        <label class="fl" id="lbl-date">Date <span class="req">*</span></label>
-        <input class="fi" type="date" id="f-date">
-      </div>
-      <div>
-        <label class="fl" id="lbl-type">Leave Type <span class="req">*</span></label>
-        <select class="fi" id="f-type">
-          <option value="">— Select —</option>
-          <option value="Away from counter">Away from counter</option>
-          <option value="Left store">Left store</option>
-          <option value="Break">Break</option>
-          <option value="Prayer">Prayer</option>
-          <option value="Medical">Medical</option>
-          <option value="Personal errand">Personal errand</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div>
-        <label class="fl" id="lbl-out">Departure Time <span class="req">*</span></label>
-        <div class="fi-now-wrap">
-          <input class="fi" type="time" id="f-out">
-          <button class="btn-now" onclick="setNow('f-out')" title="Use current time">Now</button>
-        </div>
-      </div>
-      <div>
-        <label class="fl" id="lbl-back">Return Time</label>
-        <div class="fi-now-wrap">
-          <input class="fi" type="time" id="f-back">
-          <button class="btn-now" onclick="setNow('f-back')" title="Use current time">Now</button>
-        </div>
-      </div>
-    </div>
-    <div class="fg2">
-      <div>
-        <label class="fl" id="lbl-reason">Reason / Details <span class="req">*</span></label>
-        <textarea class="fi" id="f-reason" placeholder="Describe reason for leaving…"></textarea>
-      </div>
-      <div>
-        <label class="fl" id="lbl-approver">Approved By</label>
-        <input class="fi" type="text" id="f-approver" placeholder="KDR manager / supervisor" style="margin-bottom:8px">
-        <label class="fl" id="lbl-recorder">Recorded By</label>
-        <input class="fi" type="text" id="f-recorder" readonly style="background:#F9FAFB;color:#667085">
-      </div>
-    </div>
-    <div class="form-acts">
-      <button class="btn-clr" onclick="clearForm()" id="btn-clear">Clear</button>
-      <button class="btn-sub" id="btn-submit" onclick="submitRecord()">
-        <i class="ti ti-cloud-upload" style="font-size:13px"></i>
-        <span id="btn-sub-lbl"> Submit & Sync</span>
-      </button>
-    </div>
+  <div style="font-size:12px;color:#344054;line-height:1.9;background:#F9FAFB;border-radius:8px;padding:12px;margin-bottom:12px">
+   <strong>Step 1:</strong> Create a new <a href="https://sheets.google.com" target="_blank" style="color:#2E75B6">Google Sheet</a> → copy its ID (between <code>/d/</code> and <code>/edit</code>)<br>
+   <strong>Step 2:</strong> Open <a href="https://script.google.com" target="_blank" style="color:#2E75B6">script.google.com</a> → New project → Paste code below → Replace <code>SHEET_ID</code><br>
+   <strong>Step 3:</strong> Deploy → New deployment → Web app / Execute as Me / Access: Anyone → Authorize → Copy URL<br>
+   <strong>Step 4:</strong> Share the URL with your team
   </div>
+  <label style="font-size:11px;color:#667085;font-weight:500">Apps Script Code</label>
+  <div class="code-pre" id="guide-code"></div>
+  <button onclick="copyCode()" style="padding:7px 14px;border:1px solid #D0D5DD;background:#fff;border-radius:6px;cursor:pointer;font-size:12px">Copy Code</button>
+ </div>
+</div>
 
-  <!-- Filter -->
-  <div class="filter-section">
-    <div class="filter-section-title" id="filter-title">Filters</div>
-    <div class="filter-row">
-      <div class="filter-group">
-        <label id="flbl-channel">Channel</label>
-        <select id="fil-channel" onchange="onChannelFilter()">
-          <option value="">All channels</option>
-          <option>Jarir</option><option>Extra</option>
-          <option>LuLu</option><option>Nesto</option><option>Wafa</option>
-        </select>
-      </div>
-      <div class="filter-group" style="flex:2">
-        <label id="flbl-store">Store</label>
-        <select id="fil-store" onchange="applyFilters()">
-          <option value="">All stores</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label id="flbl-promoter">Promoter</label>
-        <select id="fil-promoter" onchange="applyFilters()">
-          <option value="">All promoters</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label id="flbl-date-from">Date from</label>
-        <input type="date" id="fil-date-from" onchange="applyFilters()">
-      </div>
-      <div class="filter-group">
-        <label id="flbl-date-to">Date to</label>
-        <input type="date" id="fil-date-to" onchange="applyFilters()">
-      </div>
-      <div class="filter-group">
-        <label id="flbl-type">Leave type</label>
-        <select id="fil-type" onchange="applyFilters()">
-          <option value="">All types</option>
-          <option value="Away from counter">Away from counter</option>
-          <option value="Left store">Left store</option>
-          <option value="Break">Break</option>
-          <option value="Prayer">Prayer</option>
-          <option value="Medical">Medical</option>
-          <option value="Personal errand">Personal errand</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-    </div>
-    <div class="filter-pills">
-      <span style="font-size:11px;color:#98A2B3;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Quick:</span>
-      <button class="fpill on" onclick="quickFilter('all',this)" id="qf-all">All</button>
-      <button class="fpill" onclick="quickFilter('out',this)" id="qf-out">Currently out</button>
-      <button class="fpill" onclick="quickFilter('today',this)" id="qf-today">Today</button>
-      <button class="fpill" onclick="quickFilter('week',this)" id="qf-week">This week</button>
-      <button class="fpill" onclick="quickFilter('month',this)" id="qf-month">This month</button>
-      <button class="btn-reset-filter" onclick="resetFilters()">
-        <i class="ti ti-filter-off" style="font-size:12px"></i>
-        <span id="reset-lbl">Reset</span>
-      </button>
-    </div>
+<!-- Main App -->
+<div id="mainapp" style="display:none">
+<div class="topbar">
+ <div>
+  <div class="t1">TECNO KSA · Store Visit Scorecard</div>
+  <div class="t2">
+   <span class="cdot" id="cdot"></span>
+   <span id="clbl" style="color:#8899AA">Connecting...</span>
+   <span class="live-pill" id="live-pill" style="display:none"><span class="cdot ok" style="margin:0"></span> Live</span>
+   <span class="user-pill" id="user-pill"></span>
   </div>
+ </div>
+ <div class="score-box">
+  <div class="big-score" id="ls">0</div>
+  <div class="score-lbl" id="score-lbl">/ 100 pts</div>
+ </div>
+</div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tabx on" onclick="setView('log',this)" id="tab-log"><i class="ti ti-list" style="font-size:13px"></i> <span id="tab-log-lbl">Absence log</span></button>
-    <button class="tabx" onclick="setView('summary',this)" id="tab-sum"><i class="ti ti-chart-bar" style="font-size:13px"></i> <span id="tab-sum-lbl">Daily summary</span></button>
-    <button class="tabx" onclick="setView('dashboard',this)" id="tab-dash"><i class="ti ti-dashboard" style="font-size:13px"></i> <span id="tab-dash-lbl">Dashboard</span></button>
-    <button class="tabx" onclick="setView('monthly',this)" id="tab-month"><i class="ti ti-calendar-stats" style="font-size:13px"></i> <span id="tab-month-lbl">Monthly Report</span></button>
+<div class="tabs">
+ <button class="tab on" onclick="sw('form',this)" id="t-form">📝 Scorecard</button>
+ <button class="tab" onclick="sw('hist',this)" id="t-hist">Records <span class="badge" id="rec-count">0</span></button>
+ <button class="tab" onclick="sw('dash',this)" id="t-dash">Dashboard</button>
+ <button class="tab" onclick="sw('cov',this)" id="t-cov">Coverage <span class="badge" id="cov-badge" style="display:none;background:#E74C3C22;color:#B42318"></span></button>
+ <button class="tab" onclick="sw('exp',this)" id="t-exp">Export</button>
+ <button class="tab" onclick="sw('cfg',this)" id="t-cfg">⚙</button>
+</div>
+
+<!-- FORM -->
+<div id="v-form">
+ <!-- Draft banner -->
+ <div class="draft-bar" id="draft-bar" style="display:none">
+  <span>📄 Unsaved draft: <strong id="draft-info"></strong></span>
+  <div style="display:flex;gap:6px;flex-shrink:0">
+   <button onclick="restoreDraft()" style="padding:4px 10px;background:#C9A227;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">Restore</button>
+   <button onclick="clearDraft()" style="padding:4px 8px;background:transparent;color:#854F0B;border:1px solid #FEC84B;border-radius:6px;cursor:pointer;font-size:11px">Discard</button>
   </div>
+ </div>
+ <!-- Quick store bar -->
+ <div id="quick-bar-wrap" style="display:none;margin-bottom:10px">
+  <div style="font-size:11px;color:#98A2B3;margin-bottom:4px;font-weight:500">⚡ Recent Stores</div>
+  <div class="quick-bar" id="quick-bar"></div>
+ </div>
+ <!-- Validation warn -->
+ <div class="val-warn" id="val-warn" style="display:none"></div>
 
-  <!-- Log -->
-  <div id="view-log">
-    <div class="tbl-wrap">
-      <div class="tbl-hdr">
-        <div class="tbl-title" id="log-title">Absence log</div>
-        <div class="tbl-meta">
-          <span class="cnt" id="tbl-count">0 records</span>
-          <button class="btn-refresh" onclick="pull()"><i class="ti ti-refresh" style="font-size:12px"></i> <span id="refresh-lbl">Refresh</span></button>
-          <button class="btn-export-tbl" onclick="exportLog()"><i class="ti ti-file-spreadsheet" style="font-size:12px"></i> <span id="export-log-lbl">Export</span></button>
-        </div>
-      </div>
-      <div class="tbl-scroll">
-        <table><thead><tr id="log-thead"></tr></thead><tbody id="log-tbody"></tbody></table>
-      </div>
-    </div>
+ <!-- STORE TYPE SELECTOR -->
+ <div class="store-type-bar">
+  <button class="stype-btn active" id="stype-promoter" onclick="setStoreType('promoter',this)">
+   <span class="stype-icon">🏪</span>
+   <span class="stype-lbl">With Promoter Store</span>
+   <span class="stype-sub">Full 100-pt scorecard</span>
+  </button>
+  <button class="stype-btn" id="stype-nonpromoter" onclick="setStoreType('nonpromoter',this)">
+   <span class="stype-icon">📦</span>
+   <span class="stype-lbl">Non-Promoter Store</span>
+   <span class="stype-sub">Display & visibility check · 40 pts</span>
+  </button>
+ </div>
+
+ <!-- Non-promoter info banner (hidden by default) -->
+ <div class="np-info" id="np-info" style="display:none">
+  <strong>Non-Promoter Store Visit</strong> — Focus on brand visibility and display quality. No promoter scoring. BA/KAM visits only.<br>
+  Score is normalized to 100 for fair comparison across store types.
+ </div>
+
+ <!-- Meta fields -->
+ <div class="meta-g">
+  <div class="meta-box"><label>Store <span style="color:#E74C3C">*</span></label>
+   <select id="f-s" onchange="onStore()">
+    <option value="">Select store</option>
+   </select>
   </div>
+  <div class="meta-box" id="promoter-field"><label>Promoter</label><select id="f-p"><option value="">Select store first</option></select></div>
+  <div class="meta-box" id="ba-field" style="display:none"><label>BA / KAM</label><input type="text" id="f-ba" placeholder="Business Associate name"></div>
+  <div class="meta-box" id="star-field"><label>Star Level</label><select id="f-st"><option value="">--</option><option>1-Star</option><option>3-Star</option><option>5-Star</option></select></div>
+  <div class="meta-box" id="city-field" style="display:none"><label>City</label><input type="text" id="f-city" readonly style="background:#F9FAFB;color:#667085"></div>
+  <div class="meta-box"><label>Auditor</label><input type="text" id="f-a" placeholder="Auto-filled"></div>
+  <div class="meta-box"><label>Date</label><input type="date" id="f-d"></div>
+  <div class="meta-box"><label>Time</label><input type="time" id="f-t"></div>
+ </div>
+ <div id="sw-form"></div>
+ <div class="sumbar" id="sb-bar"></div>
+ <div id="ga-div" style="margin-bottom:12px"></div>
+ <div class="gnote"><label>✅ Highlights</label><textarea id="n1" placeholder="What was done well..."></textarea></div>
+ <div class="gnote"><label>⚠️ Actions Required</label><textarea id="n2" placeholder="Items to fix before next visit..."></textarea></div>
+ <div class="gnote" id="n3-wrap"><label>💬 Promoter Feedback</label><textarea id="n3" placeholder="Feedback on product, customers, competition..."></textarea></div>
+ <div class="act-row">
+  <button class="btn-sec" onclick="rst()">Reset</button>
+  <button class="btn-pri" id="btn-submit" onclick="doSubmit()">Submit &amp; Sync to Cloud</button>
+ </div>
+</div>
 
-  <!-- Summary -->
-  <div id="view-summary" style="display:none">
-    <div class="tbl-wrap">
-      <div class="tbl-hdr">
-        <div class="tbl-title" id="sum-title">Daily summary</div>
-        <div class="tbl-meta">
-          <span class="cnt" id="sum-count">0 entries</span>
-          <button class="btn-export-tbl" onclick="exportSummary()"><i class="ti ti-file-spreadsheet" style="font-size:12px"></i> <span id="export-sum-lbl">Export</span></button>
-        </div>
-      </div>
-      <div class="tbl-scroll">
-        <table class="sum-table"><thead><tr id="sum-thead"></tr></thead><tbody id="sum-tbody"></tbody></table>
-      </div>
-    </div>
+<!-- HISTORY -->
+<div id="v-hist" style="display:none">
+ <div class="hfil">
+  <button class="hf on" onclick="fh('all',this)">All</button>
+  <button class="hf" onclick="fh('promoter',this)">🏪 With Promoter</button>
+  <button class="hf" onclick="fh('nonpromoter',this)">📦 Non-Promoter</button>
+  <button class="hf" onclick="fh('Jarir',this)">Jarir</button>
+  <button class="hf" onclick="fh('Extra',this)">Extra</button>
+  <button class="hf" onclick="fh('Lulu',this)">LuLu</button>
+  <button class="hf" onclick="fh('Nesto',this)">Nesto</button>
+  <button class="hf" onclick="fh('Wafa',this)">Wafa</button>
+  <button class="hf" onclick="fh('pass',this)">Pass ≥75</button>
+  <button class="hf" onclick="fh('mid',this)">60–74</button>
+  <button class="hf" onclick="fh('fail',this)">Fail &lt;60</button>
+  <div class="date-filter">
+   <input type="date" id="h-from" onchange="rh(curFilter)">
+   <span style="color:#98A2B3">–</span>
+   <input type="date" id="h-to" onchange="rh(curFilter)">
   </div>
+  <button class="pull-btn" onclick="pull()">↻ Refresh</button>
+ </div>
+ <div id="hl"></div>
+</div>
 
-  <!-- Dashboard -->
-  <div id="view-dashboard" style="display:none">
-    <div id="dash-content"></div>
+<!-- DASHBOARD -->
+<div id="v-dash" style="display:none"><div id="dc"></div></div>
+
+<!-- COVERAGE -->
+<div id="v-cov" style="display:none">
+ <div class="cfg-panel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+   <h3 style="margin-bottom:0">📋 Visit Coverage</h3>
+   <input type="date" id="cov-date" onchange="renderCoverage()" style="font-size:12px;border:1px solid #D0D5DD;border-radius:6px;padding:5px 9px;font-family:inherit;outline:none">
   </div>
+  <div class="mgrid4" id="cov-metrics" style="margin-bottom:12px"></div>
+  <div style="height:6px;background:#E4E7EC;border-radius:3px;overflow:hidden;margin:8px 0"><div id="cov-progress" style="height:100%;border-radius:3px;background:#27AE60;transition:width .4s;width:0%"></div></div>
+  <div style="font-size:11px;color:#667085;text-align:right;margin-top:4px" id="cov-rate-lbl"></div>
+ </div>
+ <div class="dsec"><div class="dtitle" id="cov-miss-title">Not Visited</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px" id="cov-miss"></div></div>
+ <div class="dsec"><div class="dtitle" id="cov-done-title">Visited</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px" id="cov-done"></div></div>
+</div>
 
-  <!-- Monthly Report -->
-  <div id="view-monthly" style="display:none">
-    <div class="tbl-wrap">
-      <div class="tbl-hdr">
-        <div class="tbl-title" id="month-title">Monthly Promoter Report</div>
-        <div class="tbl-meta">
-          <select id="month-sel" onchange="renderMonthly()" style="font-size:12px;border:1px solid #D0D5DD;border-radius:7px;padding:5px 8px;outline:none;font-family:inherit;color:#344054"></select>
-          <button class="btn-export-tbl" onclick="exportMonthly()"><i class="ti ti-file-spreadsheet" style="font-size:12px"></i> Export</button>
-        </div>
-      </div>
-      <div class="tbl-scroll">
-        <table class="sum-table"><thead><tr id="month-thead"></tr></thead><tbody id="month-tbody"></tbody></table>
-      </div>
-    </div>
+<!-- EXPORT -->
+<div id="v-exp" style="display:none">
+ <div class="cfg-panel">
+  <h3>Export to Excel</h3>
+  <p style="font-size:12px;color:#667085;margin-bottom:16px">Records: <strong id="exp-count">0</strong></p>
+  <button class="btn-excel" onclick="exportExcel('detailed')">Export Detailed Report<br><span style="font-size:11px;font-weight:400;opacity:.7">All scoring items per visit (promoter + non-promoter)</span></button>
+  <button class="btn-excel" style="background:#2E75B6;margin-bottom:10px" onclick="exportExcel('summary')">Export Summary Report<br><span style="font-size:11px;font-weight:400;opacity:.7">Category % and overall scores</span></button>
+  <button class="btn-excel" style="background:#1B2A4A;color:#C9A227;margin-bottom:10px" onclick="exportExcel('all')">Export Complete Report (All Sheets)<br><span style="font-size:11px;font-weight:400;opacity:.7">Detailed + Summary + Analytics by Chain</span></button>
+  <button onclick="exportJSON()" style="width:100%;padding:11px;border-radius:8px;background:transparent;color:#667085;border:1px solid #D0D5DD;font-size:13px;cursor:pointer">Export as JSON (backup)</button>
+ </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="v-cfg" style="display:none">
+ <div class="cfg-panel">
+  <h3>Personal Settings</h3>
+  <label>Your Name</label><input type="text" id="cfg-name" placeholder="Your name">
+  <label>Apps Script URL</label><input type="url" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec">
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+   <button onclick="cfgSave()" style="flex:1;padding:10px;background:#1B2A4A;color:#C9A227;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">Save</button>
+   <button onclick="testConn()" style="padding:10px 14px;background:#27AE60;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer">Test Connection</button>
+   <button onclick="doLogout()" style="padding:10px 12px;background:transparent;color:#E74C3C;border:1px solid #FDECEA;border-radius:8px;font-size:13px;cursor:pointer">Logout</button>
   </div>
-
+  <button onclick="showGuide()" style="width:100%;padding:9px;background:transparent;color:#667085;border:1px solid #D0D5DD;border-radius:8px;font-size:12px;cursor:pointer">Admin Setup Guide</button>
+ </div>
+</div>
 </div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
-const T={
-  en:{
-    mainTitle:'Promoter Leave Store System',
-    sTotalLbl:'Filtered records',sOutLbl:'Currently out',sTodayLbl:'Today (all)',sStoresLbl:'Stores covered',
-    formTitle:'New absence record',
-    lStore:'Store',lName:'Promoter Name',lDate:'Date',lType:'Leave Type',
-    lOut:'Departure Time',lBack:'Return Time',lReason:'Reason / Details',
-    lApprover:'Approved By',lRecorder:'Recorded By',lQuickType:'Quick leave type',
-    btnClear:'Clear',btnSubmit:' Submit & Sync',
-    exportLbl:'Export Excel',logTitle:'Absence log',refresh:'Refresh',
-    filterTitle:'Filters',resetLbl:'Reset',
-    flblChannel:'Channel',flblStore:'Store',flblPromoter:'Promoter',
-    flblDateFrom:'Date from',flblDateTo:'Date to',flblType:'Leave type',
-    qfAll:'All',qfOut:'Currently out',qfToday:'Today',qfWeek:'This week',qfMonth:'This month',
-    tabLog:'Absence log',tabSum:'Daily summary',tabDash:'Dashboard',tabMonth:'Monthly Report',
-    exportLogLbl:'Export',exportSumLbl:'Export',
-    thStore:'Store',thName:'Promoter',thDate:'Date',thType:'Leave type',
-    thOut:'Departure',thBack:'Return',thDur:'Duration',thReason:'Reason',
-    thApprover:'Approver',thRecorder:'Recorded by',thAct:'',
-    sumTitle:'Daily summary — time out per promoter per day',
-    thSumDate:'Date',thSumStore:'Store',thSumName:'Promoter',thSumRecords:'Records',
-    thSumTotal:'Total time out',thSumDetail:'Leave types',
-    monthTitle:'Monthly Promoter Report',
-    thMoName:'Promoter',thMoStore:'Store',thMoRecords:'Total records',
-    thMoTotal:'Total time out',thMoAvg:'Avg per record',thMoBreakdown:'Type breakdown',
-    statusOut:'Out',statusBack:'Returned',btnReturn:'Log return',
-    alertReq:'Please fill in all required fields.',
-    confirmDel:'Delete this record?',
-    returnUpdated:'Return time logged.',
-    submitting:'Submitting…',submitted:'Submitted!',submitFail:'Submit failed.',
-    pulling:'Refreshing…',pulled:'records',synced:'Synced',syncFail:'Sync failed',
-    noRecords:'No records match the current filters.',
-    typeOptions:['Away from counter','Left store','Break','Prayer','Medical','Personal errand','Other'],
-    allChannels:'All channels',allStores:'All stores',allPromoters:'All promoters',allTypes:'All types',
-    recordsLabel:'records',liveTitle:'Currently Out',
-    qrInfo:'has an open absence — click to log return',qrBtn:'Log Return Now',
-    retModalTitle:'Log Return Time',retModalSub:'',
-    dashTitle:'Dashboard',dashTypeDist:'Leave Type Distribution',
-    dashTopPromoters:'Most Frequent (this period)',dashStoreFreq:'Store Activity',
-    multiWarn:'⚠ 3+ absences today',
-    durWarn30:'>30 min',durWarn60:'>60 min',
-  },
-  ar:{
-    mainTitle:'نظام مغادرة المروّج للمتجر',
-    sTotalLbl:'السجلات المُصفَّاة',sOutLbl:'خارج حالياً',sTodayLbl:'اليوم (الكل)',sStoresLbl:'المتاجر المشمولة',
-    formTitle:'تسجيل غياب جديد',
-    lStore:'المتجر',lName:'اسم المروّج',lDate:'التاريخ',lType:'نوع المغادرة',
-    lOut:'وقت المغادرة',lBack:'وقت العودة',lReason:'السبب / التفاصيل',
-    lApprover:'اعتمد من قِبَل',lRecorder:'سجّله',lQuickType:'نوع سريع',
-    btnClear:'مسح',btnSubmit:' حفظ وإرسال',
-    exportLbl:'تصدير Excel',logTitle:'سجل المغادرات',refresh:'تحديث',
-    filterTitle:'الفلاتر',resetLbl:'إعادة تعيين',
-    flblChannel:'القناة',flblStore:'المتجر',flblPromoter:'المروّج',
-    flblDateFrom:'من تاريخ',flblDateTo:'إلى تاريخ',flblType:'نوع المغادرة',
-    qfAll:'الكل',qfOut:'خارج حالياً',qfToday:'اليوم',qfWeek:'هذا الأسبوع',qfMonth:'هذا الشهر',
-    tabLog:'سجل المغادرات',tabSum:'ملخص يومي',tabDash:'لوحة القيادة',tabMonth:'تقرير شهري',
-    exportLogLbl:'تصدير',exportSumLbl:'تصدير',
-    thStore:'المتجر',thName:'المروّج',thDate:'التاريخ',thType:'نوع المغادرة',
-    thOut:'وقت المغادرة',thBack:'وقت العودة',thDur:'المدة',thReason:'السبب',
-    thApprover:'المعتمِد',thRecorder:'المسجِّل',thAct:'',
-    sumTitle:'ملخص يومي — وقت الغياب لكل مروّج',
-    thSumDate:'التاريخ',thSumStore:'المتجر',thSumName:'المروّج',thSumRecords:'السجلات',
-    thSumTotal:'إجمالي وقت الغياب',thSumDetail:'أنواع المغادرة',
-    monthTitle:'التقرير الشهري',
-    thMoName:'المروّج',thMoStore:'المتجر',thMoRecords:'إجمالي السجلات',
-    thMoTotal:'إجمالي وقت الغياب',thMoAvg:'متوسط لكل سجل',thMoBreakdown:'توزيع الأنواع',
-    statusOut:'خارج',statusBack:'عاد',btnReturn:'تسجيل عودة',
-    alertReq:'يرجى ملء جميع الحقول المطلوبة.',
-    confirmDel:'هل تريد حذف هذا السجل؟',returnUpdated:'تم تسجيل وقت العودة.',
-    submitting:'جارٍ الإرسال…',submitted:'تم الإرسال!',submitFail:'فشل الإرسال.',
-    pulling:'جارٍ التحديث…',pulled:'سجل',synced:'تمت المزامنة',syncFail:'فشل الاتصال',
-    noRecords:'لا توجد سجلات تطابق الفلاتر الحالية.',
-    typeOptions:['بعيد عن الكاونتر','غادر المتجر','استراحة','صلاة','طبي','أمر شخصي','أخرى'],
-    allChannels:'جميع القنوات',allStores:'جميع المتاجر',allPromoters:'جميع المروّجين',allTypes:'جميع الأنواع',
-    recordsLabel:'سجلات',liveTitle:'خارج حالياً',
-    qrInfo:'لديه غياب مفتوح — انقر لتسجيل العودة',qrBtn:'تسجيل العودة الآن',
-    retModalTitle:'تسجيل وقت العودة',retModalSub:'',
-    dashTitle:'لوحة القيادة',dashTypeDist:'توزيع أنواع المغادرة',
-    dashTopPromoters:'الأكثر غياباً',dashStoreFreq:'نشاط المتاجر',
-    multiWarn:'⚠ 3+ غيابات اليوم',
-    durWarn30:'>30 دقيقة',durWarn60:'>60 دقيقة',
-  }
-};
-const typeMapToAr={'Away from counter':'بعيد عن الكاونتر','Left store':'غادر المتجر','Break':'استراحة','Prayer':'صلاة','Medical':'طبي','Personal errand':'أمر شخصي','Other':'أخرى'};
-const QUICK_TYPES=['Prayer','Break','Away from counter','Left store'];
-const STORE_CHANNELS={
-  'Jarir':['Jarir Olaya','Jarir Khurais','Jarir Exit 25','Jarir Tabuk','Jarir Faisalyah','Jarir Khamis Musait'],
-  'Extra':['Extra Woroud','Extra Al-Badiah','Extra JS1 Sultan','Extra Jeddah Thaliah Alazezyah','Extra Tabuk','Extra Khurais','Extra J11 Jizan','Extra Remal','Extra Sweedy','Extra Abha','Extra Khamis Mushait'],
-  'LuLu':['LuLu HM Riyadh Avenue Murabba','Lulu Hypermarket Batha Riyadh E','Lulu Batha M','Lulu Hypermarket Yarmouk','LuLu HM Al Yasmin Riyadh','Lulu Hypermarket Khurais','Lulu Hypermarket Al Ahsa','LuLu Hypermarket AlKhobar','LuLu Hypermarket Jubail','Lulu Mall Dammam','Lulu Hamdaniya','LuLu Hypermarket Amir Fawaz','Lulu Malaz','Lulu Hypermarket Hail','LuLu HM Madeena Road Jeddah','LuLu HM Marwa Jeddah'],
-  'Nesto':['Nesto Batha M','Nesto Batha E','Nesto Aziziya','Nesto New Sanaya','Nesto Al Kharj','Nesto Buraidah','Nesto Jubail','Nesto Khobar','Nesto Dabab','Nesto Mina','Nesto Villagio'],
-  'Wafa':['Wafa Exit 16','Wafa Shola','Wafa Seiko','Wafa Makkah'],
+// ===== STORE DATA =====
+// With-Promoter stores
+const SM_PROMOTER={
+  "Nesto Batha M":["SHUAIB AHMAD SHAKEEL AHMAD"],"Nesto Batha E":["KAZI MONSUR ALAM"],
+  "LuLu HM Riyadh Avenue Murabba":["IMTINAN ABDULLATIF","AVINASH CHERUVALATH"],
+  "Lulu Hypermarket Batha Riyadh E":["MOHAMMAD SADDAM BHUIYAN OLI AHMED"],
+  "Lulu Batha M":["TAWSEEF AHMAD BHAT"],"Extra Woroud":["DINA ABDULLAH A ALOTAIBI"],
+  "Extra Al-Badiah":["KAWTHAR AHMED SALAH BINAZOON"],
+  "Nesto Aziziya":["ANASUDH EEN ATHAKKANTAKATH PUTHIYAPURA"],"Nesto New Sanaya":["TOFAZZUL ABU TAHER"],
+  "Nesto Al Kharj":["MUHAMMED SWALIH KAITHAKKATTU MOOSAHAJI"],"Nesto Buraidah":["MD SHAKIL RARI"],
+  "Lulu Hypermarket Yarmouk":["MONNAN YEAKUB"],"Wafa Exit 16":["FARUK MAHBUL HOQUE"],
+  "LuLu HM Al Yasmin Riyadh":["RAKAN MOHAMMED S S ALBAQAMI"],
+  "Lulu Hypermarket Khurais":["ABDULRAHMAN THEYAB H ALHARBI"],"Wafa Shola":["SHAKEER MARADATH"],
+  "Lulu Hypermarket Al Ahsa":["Ahmed Alhamad"],"Nesto Jubail":["MAHEDI HASSAN SIRAJUL ISLAM"],
+  "LuLu Hypermarket AlKhobar":["RAJIB HASAN"],"LuLu Hypermarket Jubail":["MOHAMMAD LADEN HOSSAIN"],
+  "Nesto Khobar":["MUHAMMED SHANIF SOOPIKKAVEED"],"Wafa Seiko":["MD ISMAIL HOSSAIN"],
+  "Lulu Mall Dammam":["RAIHAN HAWLADER"],"Nesto Dabab":["ABDUL SALAM PERDALA"],
+  "Nesto Mina":["HAFSAR AREEKAT"],"Wafa Makkah":["AQSA TANVIR"],
+  "Extra JS1 Sultan":["SULTAN HAMAD A ALQARNI"],"Extra Jeddah Thaliah Alazezyah":["MWAHEB ABDULLAH M ALGARNI"],
+  "Extra Tabuk":["Maha Alblowai"],"Extra Khurais":["WAJD HELAL G ALANAZI"],
+  "Extra J11 Jizan":["SHWGAH AL GAIZANIE"],"LuLu HM Madeena Road Jeddah":["ASSEM JOUHAR POOVANOOR"],
+  "LuLu HM Marwa Jeddah":["SIAM UDDIN BADSHA"],"Extra Remal":["FAISAL MOHAMMED O ALMUTAIRI"],
+  "Lulu Hamdaniya":["MUJEEB CHELAT AYAKOT"],"LuLu Hypermarket Amir Fawaz":["MUHAMMAD FAROOQ PULLISSERY"],
+  "Extra Sweedy":["RAKAN ALSUBAIE"],"Extra Abha":["ABDULRAHMAN HASSAN B ALSHEHRI"],
+  "Nesto Villagio":["HAMDY ELSAID ABDELFATTAH GABALLA"],
+  "Extra Khamis Mushait":["ABDULRAHMAN HASSAN I ALIBRAHIM"],"Lulu Malaz":["Shabeir"],
+  "Lulu Hypermarket Hail":["HAMOUD H ALSHAMMARI"],"Jarir Olaya":["SHATAH ABBAS"],
+  "Jarir Khurais":["MOHAMMED MUSHI A ALTHAFIR"],"Jarir Exit 25":["Imtinan Almutari"],
+  "Jarir Tabuk":["ARWA ALHAWITI"],"Jarir Faisalyah":["SULAMAN KHALID S ALDHOBAI"],
+  "Jarir Khamis Musait":["ALI ALSAHMRANI"]
 };
 
-// FIX: getChain normalises LuLu/Lulu
+// Non-Promoter stores with BA info
+const NP_STORES=[
+  {name:"Alwafa Kharj",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Wafa"},
+  {name:"Alwafa Shifa",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Wafa"},
+  {name:"Alwafa Kuhrais",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Wafa"},
+  {name:"Wafa Malaz",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Wafa"},
+  {name:"Wafa - Tuwaiq",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Wafa"},
+  {name:"Nesto MAJMAAH",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Nesto"},
+  {name:"Nesto SHAQRA",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Nesto"},
+  {name:"Nesto Malaz",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"Nesto"},
+  {name:"Nesto AL AHSA",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Nesto"},
+  {name:"Wafa Masic",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Wafa"},
+  {name:"Wafa Taif",ba:"SAJID",region:"Western",city:"Taif",chain:"Wafa"},
+  {name:"Lulu Tuwaiq",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"LuLu"},
+  {name:"Lulu Sweedy",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"LuLu"},
+  {name:"LuLu Unayzah",ba:"REFFAT",region:"Central",city:"Riyadh",chain:"LuLu"},
+  {name:"LuLu Dhahrat Laba",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"LuLu"},
+  {name:"LuLu Al Kharj",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"LuLu"},
+  {name:"LuLu Dammam",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"LuLu"},
+  {name:"LuLu AlRayyan",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"LuLu"},
+  {name:"Lulu Hafar AlBatin",ba:"SAMEH",region:"Eastern",city:"Hafr Al Batin",chain:"LuLu"},
+  {name:"Lulu Saihat",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"LuLu"},
+  {name:"LuLu Al Rakah",ba:"ISHAQ",region:"Eastern",city:"Khobar",chain:"LuLu"},
+  {name:"LuLu BAGHDADIA",ba:"SAJID",region:"Western",city:"Jeddah",chain:"LuLu"},
+  {name:"Lulu Rusayfah Makkah",ba:"SAJID",region:"Western",city:"Makkah",chain:"LuLu"},
+  {name:"LuLu Mujan",ba:"SAJID",region:"Western",city:"Jeddah",chain:"LuLu"},
+  {name:"LuLu Yanbu",ba:"SAJID",region:"Western",city:"Yanbu",chain:"LuLu"},
+  {name:"LuLu Park Tabuk",ba:"SHAWKI",region:"Western",city:"Tabuk",chain:"LuLu"},
+  {name:"LuLu HM-Marwa Jeddah",ba:"SAJID",region:"Western",city:"Jeddah",chain:"LuLu"},
+  {name:"LuLu Kilo 7 Jeddah",ba:"SAJID",region:"Western",city:"Jeddah",chain:"LuLu"},
+  {name:"Jarir Majmah",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Hail",ba:"REFFAT",region:"Central",city:"Hail",chain:"Jarir"},
+  {name:"Jarir Kharj",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Dwadmi",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Badea Mall",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Masif",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Khaleej",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Kuhrais 2",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Narjis",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Rawdah",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Hayat Mall",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir King Abdulaziz",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Thaghr Plaza",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Rubeen Plaza",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Thoumama",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Exit 5",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Rabwah",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Panorama Mall",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Mansourah",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Ahisa",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Hamrah",ba:"Ali",region:"Central",city:"Riyadh",chain:"Jarir"},
+  {name:"Jarir Hafuf 3",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Hafir Baten",ba:"SAMEH",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Hafuf 2",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Rashid Mall",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Rakah",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Dahran",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Hafuf",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Dammam 2",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Dammam 1",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Jubail",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Coriniche",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Skakah",ba:"SHAWKI",region:"Northern",city:"Sakaka",chain:"Jarir"},
+  {name:"Jarir Najran",ba:"ABDELKREAM",region:"Southern",city:"Najran",chain:"Jarir"},
+  {name:"Jarir Khamis Musit (NP)",ba:"ABDELKREAM",region:"Southern",city:"Khamis Mushait",chain:"Jarir"},
+  {name:"Jarir Jazan",ba:"ABDELKREAM",region:"Southern",city:"Jazan",chain:"Jarir"},
+  {name:"Jarir Burida",ba:"REFFAT",region:"Central",city:"Al-Qaseem",chain:"Jarir"},
+  {name:"Jarir Unaiyazh",ba:"REFFAT",region:"Central",city:"Al-Qaseem",chain:"Jarir"},
+  {name:"Jarir Amer Sultan",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Yanbu",ba:"SHARAF",region:"Western",city:"Yanbu",chain:"Jarir"},
+  {name:"Jarir Andlis",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Madinah Airport",ba:"SAJID",region:"Western",city:"Madinah",chain:"Jarir"},
+  {name:"Jarir King Abdulaziz Road",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Jamah 2",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Amer Majid",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Mall Jeddah",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Tahliah",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Taif",ba:"SAJID",region:"Western",city:"Makkah",chain:"Jarir"},
+  {name:"Jarir Makkah 3",ba:"SAJID",region:"Western",city:"Makkah",chain:"Jarir"},
+  {name:"Jarir Makkah 2",ba:"SAJID",region:"Western",city:"Makkah",chain:"Jarir"},
+  {name:"Jarir Makkah",ba:"SAJID",region:"Western",city:"Makkah",chain:"Jarir"},
+  {name:"Jarir Sary",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+  {name:"Jarir Madinah",ba:"SAJID",region:"Western",city:"Madinah",chain:"Jarir"},
+  {name:"Extra Shifa",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Ghadeer",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Majma'a",ba:"ALI",region:"Central",city:"Al Majmaah",chain:"Extra"},
+  {name:"Extra Dwadmi",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra HAIL",ba:"REFFAT",region:"Central",city:"Hail",chain:"Extra"},
+  {name:"Extra Onaiza",ba:"REFFAT",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Al-Raed",ba:"ALI",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Al-Kharj",ba:"ALI",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra AL-SAHAFA",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra King Abdullah",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Burida",ba:"REFFAT",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Ghurnata",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Extra Hafr Elbaten",ba:"SAMEH",region:"Eastern",city:"Hafr Al Batin",chain:"Extra"},
+  {name:"Extra AL-HASSA 2",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Extra"},
+  {name:"Extra Al-Hassa",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Extra"},
+  {name:"Extra Raka",ba:"ISHAQ",region:"Eastern",city:"Khobar",chain:"Extra"},
+  {name:"Extra Jubail",ba:"ISHAQ",region:"Eastern",city:"Jubail",chain:"Extra"},
+  {name:"Extra Azzizya",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Extra"},
+  {name:"Extra Faisalya Airport Rd",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Extra"},
+  {name:"Extra SAKAKA",ba:"SHAWKI",region:"Northern",city:"Sakaka",chain:"Extra"},
+  {name:"Extra Bisha",ba:"ABDELKREAM",region:"Southern",city:"Bishah",chain:"Extra"},
+  {name:"Extra Yambu",ba:"SHARAF",region:"Western",city:"Yanbu",chain:"Extra"},
+  {name:"Extra Taif",ba:"SAJID",region:"Western",city:"Taif",chain:"Extra"},
+  {name:"Extra Obhur North",ba:"SHAWKI",region:"Western",city:"Jeddah",chain:"Extra"},
+  {name:"Extra Jeddah 4",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Extra"},
+  {name:"Extra Makkah 4",ba:"SAJID",region:"Western",city:"Makkah",chain:"Extra"},
+  {name:"Extra Mekkah 3",ba:"SAJID",region:"Western",city:"Makkah",chain:"Extra"},
+  {name:"Extra Old Airport",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Extra"},
+  {name:"Extra Madina",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Extra"},
+  {name:"Extra Konfouda",ba:"ABDELKREAM",region:"Western",city:"Jeddah",chain:"Extra"},
+  {name:"Extra Mekkah 2",ba:"SAJID",region:"Western",city:"Makkah",chain:"Extra"},
+  {name:"Extra Ameir Majed",ba:"SAJID",region:"Western",city:"Makkah",chain:"Extra"},
+  {name:"Extra Narjes",ba:"Ali",region:"Central",city:"Riyadh",chain:"Extra"},
+  {name:"Wafa Baghdadiya",ba:"SAJID",region:"Western",city:"Makkah",chain:"Wafa"},
+  {name:"Wafa Dammam",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Wafa"},
+  {name:"Lulu Kharj (NP)",ba:"MUBASH",region:"Central",city:"Riyadh",chain:"LuLu"},
+  {name:"Jarir Plaza Dammam",ba:"ISHAQ",region:"Eastern",city:"Dammam",chain:"Jarir"},
+  {name:"Jarir Village Mall",ba:"SAJID",region:"Western",city:"Jeddah",chain:"Jarir"},
+];
+
+// ===== SCORING SECTIONS =====
+// With-Promoter (100 pts)
+const SEC_PROMOTER=[
+  {id:"A",en:"Display & Visual Merchandising",max:30,col:"#C9A227",items:[
+    {en:"Premium/mid-high models at most prominent focal point",pts:10},
+    {en:"All units on, brightness & wallpaper uniform",pts:7},
+    {en:"Price tags accurate, legible",pts:7},
+    {en:"Cables hidden, surface clean, no fingerprints",pts:6}]},
+  {id:"B",en:"Materials & Brand Image",max:20,col:"#2E75B6",items:[
+    {en:"Posters correctly placed, no damage or tilt",pts:5},
+    {en:"POP matches on-sale models, no expired materials",pts:4},
+    {en:"Promoter in TECNO uniform, neat appearance",pts:5},
+    {en:"Wearing correct star-level nameplate",pts:6}]},
+  {id:"C",en:"Product Knowledge & Sales Skills",max:30,col:"#1A7A4A",items:[
+    {en:"Pitches any premium/mid-high product within 1 minute",pts:7},
+    {en:"States key specs accurately (chip/battery/Hz)",pts:5},
+    {en:"Proactively uses FABE method in demo",pts:5},
+    {en:"Handles 3+ objections confidently",pts:6},
+    {en:"Reads buying signals, closes naturally",pts:7}]},
+  {id:"D",en:"Operations & Compliance",max:15,col:"#C96A00",items:[
+    {en:"Daily sales report completed & submitted",pts:4},
+    {en:"Physical stock matches system records",pts:4},
+    {en:"Display checklist signed today",pts:3},
+    {en:"Competitor prices recorded & reported",pts:4}]},
+  {id:"E",en:"Customer Reception & Service",max:5,col:"#6B3FA0",items:[
+    {en:"Engages within 5s of stopping (20 min obs.)",pts:3},
+    {en:"Professional, respectful, no high-pressure",pts:2}]}
+];
+
+// Non-Promoter (40 pts raw → normalized to 100)
+const SEC_NONPROMOTER=[
+  {id:"X",en:"Display & Product Visibility",max:20,col:"#C9A227",items:[
+    {en:"TECNO products placed in visible, high-traffic area (eye level / entrance)",pts:6},
+    {en:"Adequate shelf space — not squeezed or hidden",pts:4},
+    {en:"All displayed units powered on",pts:4},
+    {en:"Price tags present, accurate and legible",pts:6}]},
+  {id:"Y",en:"Brand Materials & Identity",max:12,col:"#2E75B6",items:[
+    {en:"TECNO branding / signage visible at point of sale",pts:4},
+    {en:"POP/poster materials present and not damaged/expired",pts:4},
+    {en:"Product not mixed with competitor shelf clutter",pts:4}]},
+  {id:"Z",en:"Stock & Inventory",max:8,col:"#1A7A4A",items:[
+    {en:"Minimum 2 SKU models displayed",pts:3},
+    {en:"Stock is not empty / out-of-stock on display",pts:3},
+    {en:"Pricing competitive vs nearby competitors (BA checks)",pts:2}]}
+];
+
+const GAS_CODE='// TECNO KSA Store Visit Scorecard v2 Backend\nconst SHEET_ID=\'YOUR_SHEET_ID\';\nconst SHEET_NAME=\'Visits\';\nfunction cors(o){return o.setMimeType(ContentService.MimeType.JSON)}\nfunction ok(d){return cors(ContentService.createTextOutput(JSON.stringify({ok:true,...d})))}\nfunction fail(m){return cors(ContentService.createTextOutput(JSON.stringify({ok:false,error:m})))}\nfunction getSheet(){\n const ss=SpreadsheetApp.openById(SHEET_ID);\n let s=ss.getSheetByName(SHEET_NAME);\n if(!s){\n  s=ss.insertSheet(SHEET_NAME);\n  const h=[\'id\',\'store_type\',\'store\',\'promoter\',\'ba\',\'star\',\'city\',\'auditor\',\'date\',\'time\',\'total\',\'total_normalized\',\'grade\',\'A_display\',\'B_materials\',\'C_skills\',\'D_ops\',\'E_service\',\'X_visibility\',\'Y_brand\',\'Z_stock\',\'highlights\',\'actions\',\'feedback\',\'auditor_name\',\'item_scores\',\'created_at\'];\n  s.appendRow(h);\n  s.setFrozenRows(1);\n  s.getRange(1,1,1,h.length).setBackground(\'#1B2A4A\').setFontColor(\'#C9A227\').setFontWeight(\'bold\');\n }\n return s;\n}\nfunction doPost(e){\n try{\n  const b=JSON.parse(e.postData.contents),r=b.record,secs=r.secs||[];\n  const g=id=>{const s=secs.find(x=>x.id===id);return s?s.score:0};\n  getSheet().appendRow([String(r.id),r.store_type||\'\',r.store||\'\',r.promoter||\'\',r.ba||\'\',r.star||\'\',r.city||\'\',r.auditor||\'\',r.date||\'\',r.time||\'\',Number(r.total)||0,Number(r.total_normalized)||0,r.grade||\'\',g(\'A\'),g(\'B\'),g(\'C\'),g(\'D\'),g(\'E\'),g(\'X\'),g(\'Y\'),g(\'Z\'),r.h1||\'\',r.h2||\'\',r.h3||\'\',r.auditor_name||\'\',JSON.stringify(r.itemScores||{}),new Date().toISOString()]);\n  return ok({saved:true,id:String(r.id)});\n }catch(ex){return fail(ex.message)}}\nfunction doGet(e){\n try{\n  const s=getSheet();\n  if(s.getLastRow()<2)return ok({records:[],total:0});\n  const data=s.getDataRange().getValues(),hdrs=data[0],rows=data.slice(1).map(row=>{const o={};hdrs.forEach((h,i)=>o[h]=row[i]);return o}).reverse();\n  return ok({records:rows,total:rows.length});\n }catch(ex){return fail(ex.message)}}';
+
+// ===== STATE =====
+let sc={},storeType='promoter',activeSec=SEC_PROMOTER;
+let allRecs=[],gasUrl='',myName='',pollTimer=null,curFilter='all';
+
+function lsGet(k){return localStorage.getItem('tecno_'+k)||''}
+function lsSet(k,v){localStorage.setItem('tecno_'+k,v)}
+function lsDel(k){localStorage.removeItem('tecno_'+k)}
+function today(){return new Date().toISOString().slice(0,10)}
+
+function initSc(secs){sc={};secs.forEach(s=>s.items.forEach((_,i)=>{sc[s.id+'_'+i]=0}))}
+
+function tot(){let s=0;for(let k in sc)if(sc[k]>0)s+=sc[k];return s;}
+function stot(s){let sum=0;s.items.forEach((_,i)=>{if(sc[s.id+'_'+i]>0)sum+=sc[s.id+'_'+i]});return sum;}
+function maxPossible(){return activeSec.reduce((a,s)=>a+s.max,0);}
+function normalizedScore(){const m=maxPossible();return m>0?Math.round(tot()/m*100):0;}
+
+function gi(t){
+  if(t>=90)return{lbl:"Excellent",sub:"Eligible for promotion",bg:"#ECFDF3",c:"#027A48",bd:"#6CE9A6"};
+  if(t>=75)return{lbl:"Good",sub:"Meets standard",bg:"#FDF3D0",c:"#9A7010",bd:"#FDE68A"};
+  if(t>=60)return{lbl:"Pass",sub:"Follow-up required",bg:"#FFF4E5",c:"#854F0B",bd:"#FEC84B"};
+  if(t>=40)return{lbl:"Fail",sub:"Re-audit within 1 week",bg:"#FEF3F2",c:"#B42318",bd:"#FCA5A5"};
+  return{lbl:"Critical",sub:"Immediate action required",bg:"#FDF2F8",c:"#831843",bd:"#F9A8D4"};
+}
 function getChain(store){
   const s=(store||'').toLowerCase();
-  if(s.includes('jarir'))return'Jarir';
-  if(s.includes('extra'))return'Extra';
-  if(s.includes('lulu'))return'LuLu';
-  if(s.includes('nesto'))return'Nesto';
-  if(s.includes('wafa'))return'Wafa';
-  return'Other';
+  if(s.includes('jarir'))return'Jarir';if(s.includes('extra'))return'Extra';
+  if(s.includes('lulu'))return'LuLu';if(s.includes('nesto'))return'Nesto';
+  if(s.includes('wafa'))return'Wafa';return'Other';
 }
+function toast(msg,dur=2600){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',dur);
+}
+function setConn(st,msg){document.getElementById('cdot').className='cdot '+st;document.getElementById('clbl').textContent=msg;}
 
-let lang='en',gasUrl='',myName='',records=[],filteredRecs=[],pollTimer=null;
-let quickMode='all',currentView='log',retModalId=null;
-let offlineCount=0;
-const LS={get:(k,d='')=>localStorage.getItem('absence_'+k)||d,set:(k,v)=>localStorage.setItem('absence_'+k,v)};
-const tx=()=>T[lang];
-
+// ===== INIT =====
 function init(){
-  gasUrl=LS.get('gasUrl');myName=LS.get('myName');lang=LS.get('lang','en');
+  gasUrl=lsGet('gasUrl');myName=lsGet('myName');
   if(gasUrl&&myName){showMain();}else{showSetup();}
 }
-function showSetup(){
-  document.getElementById('setup-screen').style.display='';
-  document.getElementById('main-app').style.display='none';
+function showSetup(){document.getElementById('setup').style.display='';document.getElementById('guide').style.display='none';document.getElementById('mainapp').style.display='none';}
+function showGuide(){document.getElementById('setup').style.display='none';document.getElementById('guide').style.display='';document.getElementById('mainapp').style.display='none';document.getElementById('guide-code').textContent=GAS_CODE;}
+function showMain(){
+  document.getElementById('setup').style.display='none';document.getElementById('guide').style.display='none';document.getElementById('mainapp').style.display='';
+  document.getElementById('user-pill').textContent=myName;
+  document.getElementById('f-a').value=myName;
+  document.getElementById('cfg-name').value=myName;document.getElementById('cfg-url').value=gasUrl;
+  const now=new Date();
+  document.getElementById('f-d').value=now.toISOString().slice(0,10);
+  document.getElementById('f-t').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('cov-date').value=today();
+  setStoreType('promoter',document.getElementById('stype-promoter'));
+  buildStoreList();renderQuickBar();checkDraft();
+  pull();startPoll();
+  ['n1','n2','n3','f-d','f-t','f-st'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',saveDraft)});
 }
 function setupSave(){
-  const url=document.getElementById('su-url').value.trim();
-  const name=document.getElementById('su-name').value.trim();
-  const l=document.getElementById('su-lang').value;
-  if(!url||!name){alert('Please fill in all fields.');return}
-  gasUrl=url;myName=name;lang=l;
-  LS.set('gasUrl',url);LS.set('myName',name);LS.set('lang',l);
-  showMain();
+  const url=document.getElementById('su-url').value.trim(),nm=document.getElementById('su-name').value.trim();
+  if(!url||!nm){alert('Please fill in all fields');return}
+  gasUrl=url;myName=nm;lsSet('gasUrl',url);lsSet('myName',nm);showMain();
 }
-function showMain(){
-  document.getElementById('setup-screen').style.display='none';
-  document.getElementById('main-app').style.display='';
-  document.documentElement.dir=lang==='ar'?'rtl':'ltr';
-  document.getElementById('user-badge').textContent='👤 '+myName;
-  document.getElementById('f-recorder').value=myName;
-  const now=new Date();
-  document.getElementById('f-date').value=now.toISOString().slice(0,10);
-  setNow('f-out');
-  renderQuickTypeBar();
-  updateUI();pull();startPoll();
-}
-function logout(){
-  if(!confirm('Logout?'))return;
-  stopPoll();['gasUrl','myName'].forEach(k=>localStorage.removeItem('absence_'+k));
-  records=[];filteredRecs=[];showSetup();
+function doLogout(){if(!confirm('Logout?'))return;lsDel('gasUrl');lsDel('myName');stopPoll();allRecs=[];showSetup();}
+function copyCode(){try{navigator.clipboard.writeText(GAS_CODE);toast('Code copied!')}catch(e){toast('Please copy manually')}}
+
+// ===== STORE TYPE =====
+function setStoreType(type,btn){
+  storeType=type;
+  document.querySelectorAll('.stype-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeSec=type==='promoter'?SEC_PROMOTER:SEC_NONPROMOTER;
+  initSc(activeSec);
+  document.getElementById('np-info').style.display=type==='nonpromoter'?'':'none';
+  document.getElementById('promoter-field').style.display=type==='promoter'?'':'none';
+  document.getElementById('ba-field').style.display=type==='nonpromoter'?'':'none';
+  document.getElementById('star-field').style.display=type==='promoter'?'':'none';
+  document.getElementById('city-field').style.display=type==='nonpromoter'?'':'none';
+  document.getElementById('n3-wrap').style.display=type==='promoter'?'':'none';
+  document.getElementById('score-lbl').textContent=type==='promoter'?'/ 100 pts':'/ 40 pts → 100 normalized';
+  buildStoreList();draw();
 }
 
-// FIX: parseTime - robust handling of all Sheets time formats
-function parseTime(t){
-  if(!t&&t!==0)return'';
-  t=String(t).trim();
-  if(/^\d{1,2}:\d{2}$/.test(t))return t.padStart(5,'0').slice(0,5);
-  if(/^\d{1,2}:\d{2}:\d{2}/.test(t)){const[h,m]=t.split(':');return h.padStart(2,'0')+':'+m;}
-  // ISO date string with time
-  if(t.includes('T')){const m=t.match(/T(\d{2}):(\d{2})/);if(m)return m[1]+':'+m[2];}
-  // Google Sheets decimal fraction (time stored as 0-1)
-  const n=Number(t);
-  if(!isNaN(n)&&n>=0&&n<1){
-    const mins=Math.round(n*1440),hh=Math.floor(mins/60)%24,mm=mins%60;
-    return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+function buildStoreList(){
+  const sel=document.getElementById('f-s');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">Select store</option>';
+  if(storeType==='promoter'){
+    const chains={};
+    Object.keys(SM_PROMOTER).forEach(s=>{const c=getChain(s);if(!chains[c])chains[c]=[];chains[c].push(s);});
+    Object.keys(chains).sort().forEach(c=>{
+      const og=document.createElement('optgroup');og.label=c;
+      chains[c].sort().forEach(s=>{const o=document.createElement('option');o.textContent=s;og.appendChild(o);});
+      sel.appendChild(og);
+    });
+  } else {
+    const chains={};
+    NP_STORES.forEach(s=>{if(!chains[s.chain])chains[s.chain]=[];chains[s.chain].push(s);});
+    Object.keys(chains).sort().forEach(c=>{
+      const og=document.createElement('optgroup');og.label=c+' (No Promoter)';
+      chains[c].sort((a,b)=>a.name.localeCompare(b.name)).forEach(s=>{const o=document.createElement('option');o.textContent=s.name;og.appendChild(o);});
+      sel.appendChild(og);
+    });
   }
-  const m=t.match(/(\d{1,2}):(\d{2})/);
-  if(m)return m[1].padStart(2,'0')+':'+m[2];
-  return'';
-}
-function minsFromTime(t){
-  t=parseTime(t);if(!t)return null;
-  const[h,m]=t.split(':').map(Number);return h*60+m;
-}
-// FIX: calcDur with max cap (>12h = likely input error → null)
-function calcDur(out,back){
-  if(!out||!back)return null;
-  let m=minsFromTime(back)-minsFromTime(out);
-  if(m===null)return null;
-  if(m<0)m+=1440;
-  if(m>720)return null; // >12h is almost certainly an error
-  if(m===0)return'0 min';
-  const h=Math.floor(m/60),mn=m%60;
-  return h>0?`${h}h ${mn}m`:`${mn} min`;
-}
-function calcMins(out,back){
-  if(!out||!back)return 0;
-  let m=minsFromTime(back)-minsFromTime(out);
-  if(m===null)return 0;
-  if(m<0)m+=1440;
-  if(m>720)return 0;
-  return m;
-}
-function minsToStr(m){if(!m)return'0 min';const h=Math.floor(m/60),mn=m%60;return h>0?`${h}h ${mn}m`:`${mn} min`;}
-function setNow(id){
-  const now=new Date();
-  document.getElementById(id).value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-}
-function setRetNow(){
-  const now=new Date();
-  document.getElementById('ret-time-val').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  if(cur)sel.value=cur;
 }
 
-// Language
-function setLang(l){
-  lang=l;LS.set('lang',l);
-  document.documentElement.dir=l==='ar'?'rtl':'ltr';
-  document.getElementById('lb-en').classList.toggle('on',l==='en');
-  document.getElementById('lb-ar').classList.toggle('on',l==='ar');
-  updateUI();renderQuickTypeBar();updateFilterDropdowns();
-  renderLog();renderSummary();if(currentView==='dashboard')renderDashboard();if(currentView==='monthly')renderMonthly();
-}
-function updateUI(){
-  const t=tx(),isAr=lang==='ar';
-  document.getElementById('main-title').textContent=t.mainTitle;
-  document.getElementById('export-lbl').textContent=t.exportLbl;
-  document.getElementById('form-title').textContent=t.formTitle;
-  document.getElementById('log-title').textContent=t.logTitle;
-  document.getElementById('sum-title').textContent=t.sumTitle;
-  document.getElementById('month-title').textContent=t.monthTitle;
-  document.getElementById('refresh-lbl').textContent=t.refresh;
-  document.getElementById('filter-title').textContent=t.filterTitle;
-  document.getElementById('reset-lbl').textContent=t.resetLbl;
-  document.getElementById('export-log-lbl').textContent=t.exportLogLbl;
-  document.getElementById('export-sum-lbl').textContent=t.exportSumLbl;
-  document.getElementById('tab-log-lbl').textContent=t.tabLog;
-  document.getElementById('tab-sum-lbl').textContent=t.tabSum;
-  document.getElementById('tab-dash-lbl').textContent=t.tabDash;
-  document.getElementById('tab-month-lbl').textContent=t.tabMonth;
-  document.getElementById('s-total-lbl').textContent=t.sTotalLbl;
-  document.getElementById('s-out-lbl').textContent=t.sOutLbl;
-  document.getElementById('s-today-lbl').textContent=t.sTodayLbl;
-  document.getElementById('s-stores-lbl').textContent=t.sStoresLbl;
-  document.getElementById('lbl-store').innerHTML=t.lStore+' <span class="req">*</span>';
-  document.getElementById('lbl-name').innerHTML=t.lName+' <span class="req">*</span>';
-  document.getElementById('lbl-date').innerHTML=t.lDate+' <span class="req">*</span>';
-  document.getElementById('lbl-type').innerHTML=t.lType+' <span class="req">*</span>';
-  document.getElementById('lbl-out').innerHTML=t.lOut+' <span class="req">*</span>';
-  document.getElementById('lbl-back').textContent=t.lBack;
-  document.getElementById('lbl-reason').innerHTML=t.lReason+' <span class="req">*</span>';
-  document.getElementById('lbl-approver').textContent=t.lApprover;
-  document.getElementById('lbl-recorder').textContent=t.lRecorder;
-  document.getElementById('lbl-quick-type').textContent=t.lQuickType;
-  document.getElementById('btn-clear').textContent=t.btnClear;
-  document.getElementById('btn-sub-lbl').textContent=t.btnSubmit;
-  document.getElementById('flbl-channel').textContent=t.flblChannel;
-  document.getElementById('flbl-store').textContent=t.flblStore;
-  document.getElementById('flbl-promoter').textContent=t.flblPromoter;
-  document.getElementById('flbl-date-from').textContent=t.flblDateFrom;
-  document.getElementById('flbl-date-to').textContent=t.flblDateTo;
-  document.getElementById('flbl-type').textContent=t.flblType;
-  document.getElementById('qf-all').textContent=t.qfAll;
-  document.getElementById('qf-out').textContent=t.qfOut;
-  document.getElementById('qf-today').textContent=t.qfToday;
-  document.getElementById('qf-week').textContent=t.qfWeek;
-  document.getElementById('qf-month').textContent=t.qfMonth;
-  document.getElementById('live-board-title').textContent=t.liveTitle;
-  document.getElementById('qr-btn').textContent=t.qrBtn;
-  document.getElementById('ret-modal-title').textContent=t.retModalTitle;
-  const en=T.en.typeOptions,ar=T.ar.typeOptions,isArL=lang==='ar';
-  const typeEl=document.getElementById('f-type'),cur=typeEl.value;
-  typeEl.innerHTML=`<option value="">— ${isArL?'اختر':'Select'} —</option>`+en.map((e,i)=>`<option value="${e}">${isArL?ar[i]:e}</option>`).join('');
-  typeEl.value=cur;
-  const ftEl=document.getElementById('fil-type'),ftCur=ftEl.value;
-  ftEl.innerHTML=`<option value="">${t.allTypes}</option>`+en.map((e,i)=>`<option value="${e}">${isArL?ar[i]:e}</option>`).join('');
-  ftEl.value=ftCur;
-  updateStats();
-}
-
-// Stats - FIX: s-total based on filteredRecs, s-today always global
-function updateStats(){
-  const today=new Date().toISOString().slice(0,10);
-  document.getElementById('s-total').textContent=filteredRecs.length;
-  // Currently out uses global records
-  document.getElementById('s-out').textContent=records.filter(r=>!r.back).length;
-  // Today always global
-  document.getElementById('s-today').textContent=records.filter(r=>r.date===today).length;
-  document.getElementById('s-stores').textContent=new Set(filteredRecs.map(r=>r.store)).size;
-}
-
-// Live board
-function renderLiveBoard(){
-  const out=records.filter(r=>!r.back);
-  const board=document.getElementById('live-board');
-  if(!out.length){board.style.display='none';return;}
-  board.style.display='block';
-  document.getElementById('live-board-count').textContent='('+out.length+')';
-  const now=new Date(),nowMins=now.getHours()*60+now.getMinutes();
-  document.getElementById('live-cards').innerHTML=out.map(r=>{
-    const outMins=minsFromTime(r.out)||0;
-    let elapsed=nowMins-outMins;if(elapsed<0)elapsed+=1440;
-    const isLong=elapsed>=30;
-    const durStr=elapsed>0?minsToStr(elapsed):'';
-    const durCls=elapsed>=60?'over30':elapsed>=30?'over30':'under30';
-    return`<div class="live-card ${isLong?'warn':'alert'}">
-      <div class="live-card-store" title="${r.store}">${r.store.split(',')[0]}</div>
-      <div class="live-card-name">${r.name}</div>
-      <div class="live-card-meta">${r.type} · out ${r.out}</div>
-      ${durStr?`<div class="live-card-dur ${durCls}">⏱ ${durStr}</div>`:''}
-      <button class="live-card-ret-btn" onclick="openRetModal('${r.id}')">${tx().btnReturn}</button>
-    </div>`;
-  }).join('');
-}
-
-// Quick type bar
-function renderQuickTypeBar(){
-  const isAr=lang==='ar',en=T.en.typeOptions,ar=T.ar.typeOptions;
-  document.getElementById('quick-type-bar').innerHTML=QUICK_TYPES.map(type=>{
-    const idx=en.indexOf(type);
-    const label=isAr&&idx>=0?ar[idx]:type;
-    return`<button class="qtb" onclick="pickQuickType('${type}',this)">${label}</button>`;
-  }).join('');
-}
-function pickQuickType(type,btn){
-  document.querySelectorAll('.qtb').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-  document.getElementById('f-type').value=type;
-}
-
-// Quick return: if this store has an open record, show banner
-function onStoreChange(){
-  const store=document.getElementById('f-store').value;
+function onStore(){
+  const store=document.getElementById('f-s').value;
   if(!store)return;
-  // Update name datalist with known names for this store
-  const names=[...new Set(records.filter(r=>r.store===store).map(r=>r.name))];
-  document.getElementById('name-list').innerHTML=names.map(n=>`<option value="${n}">`).join('');
-  // Check for open absence
-  const open=records.find(r=>r.store===store&&!r.back&&r.date===new Date().toISOString().slice(0,10));
-  const bar=document.getElementById('qr-bar');
-  if(open){
-    document.getElementById('qr-info').textContent=open.name+' '+tx().qrInfo+' ('+open.out+')';
-    bar.style.display='flex';
-    bar._openId=open.id;
-  }else{
-    bar.style.display='none';
-  }
-}
-function quickReturn(){
-  const bar=document.getElementById('qr-bar');
-  if(bar._openId)openRetModal(bar._openId);
-}
-
-// Return modal - FIX: replaces prompt()
-function openRetModal(id){
-  retModalId=id;
-  const rec=records.find(r=>r.id===String(id));
-  if(rec){
-    document.getElementById('ret-modal-sub').textContent=(rec.name||'')+' · '+rec.store+' · out '+rec.out;
-    document.getElementById('ret-confirm-btn').textContent=tx().btnReturn;
-  }
-  setRetNow();
-  document.getElementById('ret-modal').classList.add('open');
-}
-function closeRetModal(){
-  document.getElementById('ret-modal').classList.remove('open');
-  retModalId=null;
-}
-async function confirmReturn(){
-  const val=document.getElementById('ret-time-val').value;
-  if(!val){alert('Please enter a time');return}
-  // Validate HH:MM format
-  if(!/^\d{2}:\d{2}$/.test(val)){alert('Please enter time in HH:MM format');return}
-  closeRetModal();
-  await markReturnById(retModalId,val);
-}
-
-// FIX: updateFilterDropdowns - uses getChain for LuLu/Lulu
-function updateFilterDropdowns(){
-  const t=tx();
-  const ch=document.getElementById('fil-channel').value;
-  const stEl=document.getElementById('fil-store'),stCur=stEl.value;
-  const inRecords=new Set(records.map(r=>r.store));
-  let stores=ch?(STORE_CHANNELS[ch]||[]):Object.values(STORE_CHANNELS).flat();
-  stores=stores.filter(s=>inRecords.has(s));
-  stEl.innerHTML=`<option value="">${t.allStores}</option>`+stores.map(s=>`<option${s===stCur?' selected':''}>${s}</option>`).join('');
-  const stVal=stEl.value;
-  const prEl=document.getElementById('fil-promoter'),prCur=prEl.value;
-  const promoters=[...new Set(records.filter(r=>{
-    if(ch&&getChain(r.store)!==ch)return false;
-    if(stVal&&r.store!==stVal)return false;
-    return true;
-  }).map(r=>r.name))].sort();
-  prEl.innerHTML=`<option value="">${t.allPromoters}</option>`+promoters.map(p=>`<option${p===prCur?' selected':''}>${p}</option>`).join('');
-  // Update name datalist globally
-  const names=[...new Set(records.map(r=>r.name))].sort();
-  document.getElementById('name-list').innerHTML=names.map(n=>`<option value="${n}">`).join('');
-  // Monthly report month selector
-  const months=[...new Set(records.map(r=>r.date.slice(0,7)))].sort().reverse();
-  const msel=document.getElementById('month-sel'),mCur=msel.value;
-  msel.innerHTML=months.map(m=>`<option value="${m}"${m===mCur?' selected':''}>${m}</option>`).join('');
-}
-
-// FIX: channel filter uses getChain
-function onChannelFilter(){updateFilterDropdowns();applyFilters();}
-
-function applyFilters(){
-  quickMode='custom';
-  document.querySelectorAll('.fpill').forEach(b=>b.classList.remove('on'));
-  _filter();
-}
-function quickFilter(mode,btn){
-  quickMode=mode;
-  document.querySelectorAll('.fpill').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  const now=new Date(),today=now.toISOString().slice(0,10);
-  if(mode==='today'){
-    document.getElementById('fil-date-from').value=today;
-    document.getElementById('fil-date-to').value=today;
-  }else if(mode==='week'){
-    const dow=now.getDay(),mon=new Date(now);
-    mon.setDate(now.getDate()-(dow===0?6:dow-1));
-    document.getElementById('fil-date-from').value=mon.toISOString().slice(0,10);
-    document.getElementById('fil-date-to').value=today;
-  }else if(mode==='month'){
-    const y=now.getFullYear(),mo=String(now.getMonth()+1).padStart(2,'0');
-    document.getElementById('fil-date-from').value=`${y}-${mo}-01`;
-    document.getElementById('fil-date-to').value=today;
-  }else if(mode==='all'){
-    document.getElementById('fil-date-from').value='';
-    document.getElementById('fil-date-to').value='';
-  }
-  _filter();
-}
-function resetFilters(){
-  document.getElementById('fil-channel').value='';
-  document.getElementById('fil-store').value='';
-  document.getElementById('fil-promoter').value='';
-  document.getElementById('fil-date-from').value='';
-  document.getElementById('fil-date-to').value='';
-  document.getElementById('fil-type').value='';
-  updateFilterDropdowns();
-  quickMode='all';
-  document.querySelectorAll('.fpill').forEach(b=>b.classList.remove('on'));
-  document.getElementById('qf-all').classList.add('on');
-  _filter();
-}
-function _filter(){
-  const ch=document.getElementById('fil-channel').value;
-  const st=document.getElementById('fil-store').value;
-  const pr=document.getElementById('fil-promoter').value;
-  const df=document.getElementById('fil-date-from').value;
-  const dt=document.getElementById('fil-date-to').value;
-  const ty=document.getElementById('fil-type').value;
-  filteredRecs=records.filter(r=>{
-    // FIX: use getChain for channel filtering
-    if(ch&&getChain(r.store)!==ch)return false;
-    if(st&&r.store!==st)return false;
-    if(pr&&r.name!==pr)return false;
-    if(df&&r.date<df)return false;
-    if(dt&&r.date>dt)return false;
-    if(ty&&r.type!==ty)return false;
-    if(quickMode==='out'&&r.back)return false;
-    return true;
-  });
-  updateStats();renderLog();renderSummary();
-  if(currentView==='dashboard')renderDashboard();
-  if(currentView==='monthly')renderMonthly();
-}
-
-function setView(v,btn){
-  currentView=v;
-  document.querySelectorAll('.tabx').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  ['log','summary','dashboard','monthly'].forEach(id=>{
-    document.getElementById('view-'+id).style.display=id===v?'':'none';
-  });
-  if(v==='dashboard')renderDashboard();
-  if(v==='monthly')renderMonthly();
-}
-
-function renderLog(){
-  const t=tx(),isAr=lang==='ar';
-  const cols=[t.thStore,t.thName,t.thDate,t.thType,t.thOut,t.thBack,t.thDur,t.thReason,t.thApprover,t.thRecorder,t.thAct];
-  const ws=['13%','10%','7%','10%','7%','7%','6%','15%','8%','7%','10%'];
-  document.getElementById('log-thead').innerHTML=cols.map((c,i)=>`<th style="width:${ws[i]}">${c}</th>`).join('');
-  const cnt=filteredRecs.length;
-  document.getElementById('tbl-count').textContent=cnt+' '+t.recordsLabel;
-  const tbody=document.getElementById('log-tbody');
-  if(!cnt){tbody.innerHTML=`<tr><td colspan="11" class="empty">${t.noRecords}</td></tr>`;return;}
-  // Count today absences per promoter for multi-absence warning
-  const today=new Date().toISOString().slice(0,10);
-  const todayCount={};
-  records.filter(r=>r.date===today).forEach(r=>{todayCount[r.name]=(todayCount[r.name]||0)+1;});
-  tbody.innerHTML=filteredRecs.map(r=>{
-    const dur=calcDur(r.out,r.back);
-    const durMins=calcMins(r.out,r.back);
-    const displayType=isAr?(typeMapToAr[r.type]||r.type):r.type;
-    let durCls='',rowCls='';
-    if(dur){
-      if(durMins>=60){durCls='warn60';rowCls='row-warn';}
-      else if(durMins>=30){durCls='warn30';rowCls='row-alert';}
+  if(storeType==='promoter'){
+    const ps=SM_PROMOTER[store]||[];
+    const p=document.getElementById('f-p');
+    p.innerHTML=ps.length?ps.map(x=>`<option>${x}</option>`).join(''):'<option value="">-- N/A --</option>';
+    if(ps.length===1)p.value=ps[0];
+    const prev=allRecs.find(r=>r.store===store);
+    if(prev)toast(`Last visit: ${prev.date} · ${prev.total_normalized||prev.total}/100 (${prev.grade})`,3500);
+  } else {
+    const info=NP_STORES.find(s=>s.name===store);
+    if(info){
+      document.getElementById('f-ba').value=info.ba||'';
+      document.getElementById('f-city').value=info.city||'';
     }
-    const durHtml=dur?`<span class="dur ${durCls}">${dur}</span>`:'<span class="dur">—</span>';
-    // FIX: inline return button uses modal instead of prompt
-    const retBtn=!r.back?`<button class="btn-ret" onclick="openRetModal('${r.id}')">${t.btnReturn}</button>`:'';
-    const multiWarn=r.date===today&&todayCount[r.name]>=3?`<span class="multi-badge-warn">${t.multiWarn}</span>`:'';
-    return`<tr class="${rowCls}">
-      <td>${r.store}</td>
-      <td>${r.name}${multiWarn}</td>
-      <td>${r.date}</td>
-      <td>${displayType}</td>
-      <td>${r.out}</td>
-      <td>${r.back||'—'}</td>
-      <td>${durHtml}</td>
-      <td style="max-width:150px;word-break:break-word">${r.reason}</td>
-      <td>${r.approver||'—'}</td>
-      <td>${r.recorder||'—'}</td>
-      <td><div class="act-btns">${retBtn}
-        <button class="btn-del" onclick="deleteRecord('${r.id}')"><i class="ti ti-trash" style="font-size:13px"></i></button>
-      </div></td>
-    </tr>`;
-  }).join('');
+    const prev=allRecs.find(r=>r.store===store);
+    if(prev)toast(`Last visit: ${prev.date} · ${prev.total_normalized||prev.total}/100 (${prev.grade})`,3500);
+  }
+  saveDraft();
 }
 
-function buildSummary(){
-  const map={};
-  filteredRecs.forEach(r=>{
-    const key=`${r.date}||${r.store}||${r.name}`;
-    if(!map[key])map[key]={date:r.date,store:r.store,name:r.name,records:0,totalMins:0,types:{}};
-    map[key].records++;
-    map[key].totalMins+=calcMins(r.out,r.back);
-    map[key].types[r.type]=(map[key].types[r.type]||0)+1;
-  });
-  return Object.values(map).sort((a,b)=>b.date.localeCompare(a.date)||a.name.localeCompare(b.name));
+// ===== QUICK BAR =====
+function renderQuickBar(){
+  const recent=JSON.parse(lsGet('recentStores')||'[]');
+  const wrap=document.getElementById('quick-bar-wrap'),bar=document.getElementById('quick-bar');
+  if(!recent.length){wrap.style.display='none';return}
+  wrap.style.display='';
+  bar.innerHTML=recent.map(s=>`<button class="qbtn" onclick="quickSelect('${s.replace(/'/g,"\\'")}')">⚡ ${s.split(' ').slice(0,2).join(' ')}</button>`).join('');
 }
-function renderSummary(){
-  const t=tx(),isAr=lang==='ar';
-  const cols=[t.thSumDate,t.thSumStore,t.thSumName,t.thSumRecords,t.thSumTotal,t.thSumDetail];
-  document.getElementById('sum-thead').innerHTML=cols.map(c=>`<th>${c}</th>`).join('');
-  const rows=buildSummary();
-  document.getElementById('sum-count').textContent=rows.length+' '+t.recordsLabel;
-  const tbody=document.getElementById('sum-tbody');
-  if(!rows.length){tbody.innerHTML=`<tr><td colspan="6" class="empty">${t.noRecords}</td></tr>`;return;}
-  const grandTotal=rows.reduce((a,r)=>a+r.totalMins,0);
-  const grandRec=rows.reduce((a,r)=>a+r.records,0);
-  let html=rows.map(r=>{
-    const typeStr=Object.entries(r.types).map(([k,v])=>{
-      const d=isAr?(typeMapToAr[k]||k):k;return v>1?`${d}(${v})`:d;
-    }).join(', ');
-    const warn60=r.totalMins>=60,warn30=r.totalMins>=30;
-    const cls=warn60?'warn60':warn30?'warn30':'';
-    return`<tr${warn60?' class="freq-warn"':''}>
-      <td>${r.date}</td><td>${r.store}</td><td><strong>${r.name}</strong></td>
-      <td style="text-align:center">${r.records}</td>
-      <td><span class="dur ${cls}">${minsToStr(r.totalMins)}</span></td>
-      <td style="font-size:11px;color:#667085">${typeStr}</td>
-    </tr>`;
-  }).join('');
-  html+=`<tr class="total-row">
-    <td colspan="3" style="text-align:${lang==='ar'?'left':'right'};font-weight:600">Grand Total</td>
-    <td style="text-align:center">${grandRec}</td>
-    <td><span class="dur warn60">${minsToStr(grandTotal)}</span></td><td></td>
-  </tr>`;
-  tbody.innerHTML=html;
+function quickSelect(store){
+  // Detect if promoter or non-promoter
+  const isNP=NP_STORES.some(s=>s.name===store);
+  const type=isNP?'nonpromoter':'promoter';
+  setStoreType(type,document.getElementById('stype-'+type));
+  setTimeout(()=>{const sel=document.getElementById('f-s');for(let i=0;i<sel.options.length;i++){if(sel.options[i].value===store){sel.value=store;onStore();return;}}},50);
+}
+function addRecentStore(store){
+  const r=JSON.parse(lsGet('recentStores')||'[]');
+  const filtered=r.filter(s=>s!==store);filtered.unshift(store);
+  if(filtered.length>5)filtered.pop();
+  lsSet('recentStores',JSON.stringify(filtered));renderQuickBar();
 }
 
-// DASHBOARD
-function renderDashboard(){
-  const el=document.getElementById('dash-content');
-  const t=tx(),isAr=lang==='ar';
-  if(!filteredRecs.length){el.innerHTML=`<div class="empty">No data in current filter period</div>`;return;}
-  // Type distribution
-  const typeCnt={};filteredRecs.forEach(r=>{typeCnt[r.type]=(typeCnt[r.type]||0)+1;});
-  const typeMax=Math.max(...Object.values(typeCnt));
-  const typeBars=Object.entries(typeCnt).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{
-    const label=isAr?(typeMapToAr[k]||k):k;
-    const pct=Math.round(v/filteredRecs.length*100);
-    const colors={'Prayer':'#6B3FA0','Break':'#2E75B6','Away from counter':'#C96A00','Left store':'#B42318','Medical':'#027A48','Personal errand':'#C9A227','Other':'#98A2B3'};
-    const col=colors[k]||'#98A2B3';
-    return`<div class="bar-row">
-      <div class="bar-label" title="${label}">${label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/typeMax*100)}%;background:${col}"></div></div>
-      <div class="bar-val">${v} <span style="color:#98A2B3;font-size:10px">(${pct}%)</span></div>
-    </div>`;
-  }).join('');
-  // Top promoters by absences
-  const promMap={};filteredRecs.forEach(r=>{
-    if(!promMap[r.name])promMap[r.name]={count:0,totalMins:0};
-    promMap[r.name].count++;
-    promMap[r.name].totalMins+=calcMins(r.out,r.back);
-  });
-  const promMax=Math.max(...Object.values(promMap).map(p=>p.count));
-  const promBars=Object.entries(promMap).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([name,p])=>{
-    return`<div class="bar-row">
-      <div class="bar-label" title="${name}">${name}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(p.count/promMax*100)}%;background:#1B2A4A"></div></div>
-      <div class="bar-val">${p.count} <span style="color:#98A2B3;font-size:10px">${minsToStr(p.totalMins)}</span></div>
-    </div>`;
-  }).join('');
-  // Store frequency
-  const storeCnt={};filteredRecs.forEach(r=>{storeCnt[r.store]=(storeCnt[r.store]||0)+1;});
-  const storeMax=Math.max(...Object.values(storeCnt));
-  const storeBars=Object.entries(storeCnt).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([s,v])=>{
-    const chainCols={'Jarir':'#C9A227','Extra':'#2E75B6','LuLu':'#027A48','Nesto':'#6B3FA0','Wafa':'#C96A00'};
-    const col=chainCols[getChain(s)]||'#98A2B3';
-    return`<div class="bar-row">
-      <div class="bar-label" title="${s}">${s.split(',')[0]}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/storeMax*100)}%;background:${col}"></div></div>
-      <div class="bar-val">${v}</div>
-    </div>`;
-  }).join('');
-  // Summary metrics
-  const totalMins=filteredRecs.reduce((a,r)=>a+calcMins(r.out,r.back),0);
-  const avgMins=filteredRecs.length?Math.round(totalMins/filteredRecs.length):0;
-  const openCount=filteredRecs.filter(r=>!r.back).length;
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
-      <div class="stat"><div class="sv">${filteredRecs.length}</div><div class="sl">Total Records</div></div>
-      <div class="stat"><div class="sv">${minsToStr(totalMins)}</div><div class="sl">Total Time Out</div></div>
-      <div class="stat"><div class="sv">${minsToStr(avgMins)}</div><div class="sl">Avg per Record</div></div>
-      <div class="stat"><div class="sv" style="color:${openCount?'#B42318':'#027A48'}">${openCount}</div><div class="sl">Still Out</div></div>
-    </div>
-    <div class="dash-grid">
-      <div class="dash-card"><div class="dash-card-title">${t.dashTypeDist}</div>${typeBars}</div>
-      <div class="dash-card"><div class="dash-card-title">${t.dashTopPromoters}</div>${promBars}</div>
-      <div class="dash-card"><div class="dash-card-title">${t.dashStoreFreq}</div>${storeBars}</div>
-    </div>`;
+// ===== DRAFT =====
+function saveDraft(){
+  const d={storeType,store:document.getElementById('f-s').value,
+    star:document.getElementById('f-st').value,date:document.getElementById('f-d').value,
+    time:document.getElementById('f-t').value,n1:document.getElementById('n1').value,
+    n2:document.getElementById('n2').value,n3:document.getElementById('n3').value,
+    sc:JSON.parse(JSON.stringify(sc)),ts:Date.now()};
+  lsSet('draft',JSON.stringify(d));
 }
-
-// MONTHLY REPORT
-function renderMonthly(){
-  const t=tx(),isAr=lang==='ar';
-  const month=document.getElementById('month-sel').value;
-  if(!month){document.getElementById('month-tbody').innerHTML='';return;}
-  const mRecs=records.filter(r=>r.date.startsWith(month));
-  const map={};
-  mRecs.forEach(r=>{
-    const key=r.name+'||'+r.store;
-    if(!map[key])map[key]={name:r.name,store:r.store,records:0,totalMins:0,types:{}};
-    map[key].records++;
-    map[key].totalMins+=calcMins(r.out,r.back);
-    map[key].types[r.type]=(map[key].types[r.type]||0)+1;
-  });
-  const rows=Object.values(map).sort((a,b)=>b.totalMins-a.totalMins);
-  const cols=[t.thMoName,t.thMoStore,t.thMoRecords,t.thMoTotal,t.thMoAvg,t.thMoBreakdown];
-  document.getElementById('month-thead').innerHTML=cols.map(c=>`<th>${c}</th>`).join('');
-  if(!rows.length){document.getElementById('month-tbody').innerHTML=`<tr><td colspan="6" class="empty">${t.noRecords}</td></tr>`;return;}
-  const grandTotalMins=rows.reduce((a,r)=>a+r.totalMins,0);
-  const grandRecs=rows.reduce((a,r)=>a+r.records,0);
-  let html=rows.map(r=>{
-    const avg=r.records?Math.round(r.totalMins/r.records):0;
-    const breakdown=Object.entries(r.types).map(([k,v])=>{
-      const d=isAr?(typeMapToAr[k]||k):k;return v>1?`${d}×${v}`:d;
-    }).join(', ');
-    const cls=r.totalMins>=120?'freq-warn':'';
-    return`<tr class="${cls}">
-      <td><strong>${r.name}</strong></td>
-      <td>${r.store}</td>
-      <td style="text-align:center">${r.records}</td>
-      <td><span class="dur ${r.totalMins>=60?'warn60':r.totalMins>=30?'warn30':''}">${minsToStr(r.totalMins)}</span></td>
-      <td>${minsToStr(avg)}</td>
-      <td style="font-size:11px;color:#667085">${breakdown}</td>
-    </tr>`;
-  }).join('');
-  html+=`<tr class="total-row">
-    <td colspan="2" style="font-weight:600">Grand Total</td>
-    <td style="text-align:center">${grandRecs}</td>
-    <td><span class="dur warn60">${minsToStr(grandTotalMins)}</span></td>
-    <td>${minsToStr(grandRecs?Math.round(grandTotalMins/grandRecs):0)}</td>
-    <td></td>
-  </tr>`;
-  document.getElementById('month-tbody').innerHTML=html;
-}
-
-// API
-function setConn(st,msg){document.getElementById('cdot').className='cdot '+st;document.getElementById('clbl').textContent=msg;}
-function toast(msg,dur=2500){const el=document.getElementById('toast');el.textContent=msg;el.style.display='block';clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',dur);}
-
-async function pull(silent=false){
-  if(!gasUrl)return;
-  if(!silent)setConn('sp',tx().pulling);
+function checkDraft(){
+  const raw=lsGet('draft');if(!raw)return;
   try{
-    const res=await fetch(gasUrl+'?action=list',{cache:'no-store'});
-    const d=await res.json();
-    if(d.ok&&d.records){
-      offlineCount=0;
-      records=d.records.map(r=>({
-        id:String(r.id),store:r.store||'',name:r.name||'',
-        date:typeof r.date==='object'?String(r.date).slice(0,10):String(r.date||'').slice(0,10),
-        type:r.type||'',out:parseTime(r.out),back:parseTime(r.back),
-        reason:r.reason||'',approver:r.approver||'',
-        recorder:r.recorder||'',createdAt:r.created_at||''
-      }));
-      records.sort((a,b)=>String(b.id).localeCompare(String(a.id)));
-      setConn('ok',tx().synced);
-      updateFilterDropdowns();_filter();renderLiveBoard();
-      if(!silent)toast('✓ '+records.length+' '+tx().pulled);
-    }else{setConn('err',tx().syncFail);}
-  }catch(e){
-    offlineCount++;
-    setConn('err',tx().syncFail);
-    // FIX: only show toast on first failure, not every 30s
-    if(!silent||offlineCount===1)toast(tx().syncFail+': '+e.message);
-  }
+    const d=JSON.parse(raw);
+    const hasContent=d.store||(Object.values(d.sc||{}).some(v=>v>0))||d.n1||d.n2;
+    if(!hasContent){lsDel('draft');return}
+    document.getElementById('draft-info').textContent=(d.store||'Unknown')+' — '+new Date(d.ts).toLocaleString();
+    document.getElementById('draft-bar').style.display='flex';
+  }catch(e){lsDel('draft')}
+}
+function restoreDraft(){
+  const raw=lsGet('draft');if(!raw)return;
+  try{
+    const d=JSON.parse(raw);
+    if(d.storeType){setStoreType(d.storeType,document.getElementById('stype-'+d.storeType));}
+    if(d.store){document.getElementById('f-s').value=d.store;onStore();}
+    setTimeout(()=>{
+      if(d.star)document.getElementById('f-st').value=d.star;
+      if(d.date)document.getElementById('f-d').value=d.date;
+      if(d.time)document.getElementById('f-t').value=d.time;
+      if(d.n1)document.getElementById('n1').value=d.n1;
+      if(d.n2)document.getElementById('n2').value=d.n2;
+      if(d.n3)document.getElementById('n3').value=d.n3;
+      if(d.sc){sc=d.sc;draw();}
+      document.getElementById('draft-bar').style.display='none';
+      toast('Draft restored ✓');
+    },120);
+  }catch(e){}
+}
+function clearDraft(){lsDel('draft');document.getElementById('draft-bar').style.display='none';toast('Draft discarded')}
+
+// ===== DRAW =====
+function draw(){
+  const rawScore=tot(),norm=normalizedScore();
+  document.getElementById('ls').textContent=storeType==='promoter'?rawScore:rawScore+' ('+norm+'%)';
+  const w=document.getElementById('sw-form');w.innerHTML='';
+  activeSec.forEach(sec=>{
+    const st=stot(sec),pct=Math.round(st/sec.max*100);
+    const bc=pct>=80?'#1A7A4A':pct>=55?'#C96A00':'#C0392B';
+    const d=document.createElement('div');d.className='sec-card';
+    const bid='sb-'+sec.id;
+    const itemsHtml=sec.items.map((it,i)=>{
+      const k=sec.id+'_'+i,cur=sc[k];
+      let btns=`<button class="sb zero-btn${cur===0?' on':''}" onclick="setScore('${k}',0)" title="0 pts">0</button>`;
+      for(let v=1;v<=it.pts;v++){
+        const on=cur===v;
+        btns+=`<button class="sb${on?' on':''}" style="${on?'background:'+sec.col+';border-color:'+sec.col+';':''}" onclick="setScore('${k}',${v})">${v}</button>`;
+      }
+      return`<div class="irow">
+        <div><div class="izh">${it.en}<div class="item-pts">Max ${it.pts} pts</div></div></div>
+        <div style="display:flex;align-items:center;gap:5px">
+          <div class="sbtns">${btns}</div>
+          <div style="font-size:11px;font-weight:700;min-width:36px;text-align:right;color:${cur>0?sec.col:'#B42318'}">${cur}/${it.pts}</div>
+        </div></div>`;
+    }).join('');
+    d.innerHTML=`<div class="sec-hdr" onclick="toggleSec('${bid}')"><div class="dot" style="background:${sec.col}"></div><div style="flex:1"><div class="sec-name">${sec.id}. ${sec.en}</div></div><div class="sec-badge" style="color:${sec.col}">${st}/${sec.max}</div></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${bc}"></div></div><div id="${bid}">${itemsHtml}</div>`;
+    w.appendChild(d);
+  });
+  // Summary bar
+  document.getElementById('sb-bar').innerHTML=activeSec.map(s=>`<div class="scard"><div class="sval" style="color:${s.col}">${stot(s)}</div><div class="slbl">${s.id} /${s.max}</div></div>`).join('');
+  const displayScore=storeType==='promoter'?rawScore:norm;
+  const g=gi(displayScore);
+  const npNote=storeType==='nonpromoter'?`<div style="font-size:11px;color:${g.c};margin-top:3px;opacity:.75">Raw: ${rawScore}/40 → Normalized: ${norm}/100</div>`:'';
+  document.getElementById('ga-div').innerHTML=`<div class="grade-b" style="background:${g.bg};border-color:${g.bd}"><div style="font-size:16px;font-weight:700;color:${g.c}">${g.lbl} — ${displayScore}/100</div><div style="font-size:12px;color:${g.c};margin-top:4px;opacity:.8">${g.sub}</div>${npNote}</div>`;
+  saveDraft();
+}
+function toggleSec(bid){const e=document.getElementById(bid);e.style.display=e.style.display==='none'?'':'none';}
+function setScore(k,v){sc[k]=(sc[k]===v&&v!==0)?0:v;draw();}
+
+function rst(){
+  initSc(activeSec);
+  document.getElementById('f-s').value='';
+  document.getElementById('f-st').value='';
+  document.getElementById('f-p').innerHTML="<option value=''>Select store first</option>";
+  document.getElementById('f-a').value=myName;
+  document.getElementById('f-ba').value='';
+  document.getElementById('f-city').value='';
+  const now=new Date();
+  document.getElementById('f-d').value=now.toISOString().slice(0,10);
+  document.getElementById('f-t').value=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('n1').value='';document.getElementById('n2').value='';document.getElementById('n3').value='';
+  document.getElementById('val-warn').style.display='none';
+  lsDel('draft');draw();
 }
 
-async function submitRecord(){
-  const t=tx();
-  const store=document.getElementById('f-store').value;
-  const name=document.getElementById('f-name').value.trim();
-  const date=document.getElementById('f-date').value;
-  const type=document.getElementById('f-type').value;
-  const out=document.getElementById('f-out').value;
-  const back=document.getElementById('f-back').value;
-  const reason=document.getElementById('f-reason').value.trim();
-  const approver=document.getElementById('f-approver').value.trim();
-  if(!store||!name||!date||!type||!out||!reason){alert(t.alertReq);return;}
-  // Validate back time if provided
-  if(back&&back<=out){
-    const ok=confirm('Return time is before or same as departure. Continue?');
-    if(!ok)return;
+// ===== SUBMIT =====
+function doSubmit(){
+  const store=document.getElementById('f-s').value;
+  const warnEl=document.getElementById('val-warn');
+  if(!store){warnEl.textContent='⚠ Please select a store.';warnEl.style.display='block';warnEl.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(storeType==='promoter'){
+    const prom=document.getElementById('f-p').value;
+    if(!prom){warnEl.textContent='⚠ Please select a promoter.';warnEl.style.display='block';return;}
   }
-  const rec={id:Date.now(),store,name,date,type,out,back,reason,approver,recorder:myName,createdAt:new Date().toISOString()};
+  if(tot()===0){warnEl.textContent='⚠ Total score is 0. Please score at least some items.';warnEl.style.display='block';warnEl.scrollIntoView({behavior:'smooth',block:'center'});return;}
+  warnEl.style.display='none';
+  const rawScore=tot(),norm=normalizedScore(),displayScore=storeType==='promoter'?rawScore:norm;
+  const g=gi(displayScore);
   const btn=document.getElementById('btn-submit');
-  btn.disabled=true;document.getElementById('btn-sub-lbl').textContent=' '+t.submitting;
-  setConn('sp',t.submitting);
-  try{
-    const res=await fetch(gasUrl,{method:'POST',body:JSON.stringify({record:rec}),headers:{'Content-Type':'text/plain'}});
-    const d=await res.json();
-    if(d.ok){toast('✓ '+t.submitted);setConn('ok',t.synced);clearForm();await pull(true);}
-    else{toast(t.submitFail+' '+(d.error||''));setConn('err',t.syncFail);}
-  }catch(e){toast(t.submitFail);setConn('err',t.syncFail);}
-  btn.disabled=false;document.getElementById('btn-sub-lbl').textContent=t.btnSubmit;
+  btn.disabled=true;btn.textContent='Submitting...';
+  const rec={
+    id:Date.now(),store_type:storeType,store,
+    promoter:storeType==='promoter'?document.getElementById('f-p').value:'',
+    ba:storeType==='nonpromoter'?document.getElementById('f-ba').value:'',
+    star:storeType==='promoter'?document.getElementById('f-st').value:'',
+    city:storeType==='nonpromoter'?document.getElementById('f-city').value:'',
+    auditor:document.getElementById('f-a').value||myName,auditor_name:myName,
+    date:document.getElementById('f-d').value,time:document.getElementById('f-t').value,
+    total:rawScore,total_normalized:norm,grade:g.lbl,
+    gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
+    itemScores:JSON.parse(JSON.stringify(sc)),
+    secs:activeSec.map(s=>({id:s.id,en:s.en,score:stot(s),max:s.max,col:s.col})),
+    h1:document.getElementById('n1').value,
+    h2:document.getElementById('n2').value,
+    h3:storeType==='promoter'?document.getElementById('n3').value:'',
+    _local:false
+  };
+  setConn('sp','Submitting...');
+  fetch(gasUrl,{method:'POST',body:JSON.stringify({record:rec}),headers:{'Content-Type':'text/plain'}})
+    .then(r=>r.json()).then(d=>{
+      if(d.ok){
+        allRecs.unshift(rec);document.getElementById('rec-count').textContent=allRecs.length;
+        setConn('ok','Synced');toast('✓ Submitted! '+store+' — '+displayScore+'/100 ('+g.lbl+')');
+        addRecentStore(store);lsDel('draft');updateCovBadge();rst();
+        setTimeout(()=>sw('hist',document.getElementById('t-hist')),600);
+      }else{
+        rec._local=true;allRecs.unshift(rec);
+        setConn('err','Submit failed');toast('⚠ Saved locally: '+(d.error||'unknown'));
+      }
+    }).catch(e=>{
+      rec._local=true;allRecs.unshift(rec);
+      setConn('err','Offline');toast('⚠ Network error — saved locally');
+    }).finally(()=>{btn.disabled=false;btn.innerHTML='Submit &amp; Sync to Cloud';});
 }
 
-async function markReturnById(id,timeVal){
-  const t=tx();
-  setConn('sp',t.submitting);
-  try{
-    const res=await fetch(gasUrl,{method:'POST',body:JSON.stringify({action:'update_return',id:String(id),back:timeVal}),headers:{'Content-Type':'text/plain'}});
-    const d=await res.json();
-    if(d.ok){
-      // FIX: optimistic local update
-      const r=records.find(x=>x.id===String(id));if(r)r.back=timeVal;
-      toast('✓ '+t.returnUpdated);
-      await pull(true);
-    }else toast('Update failed: '+(d.error||''));
-  }catch(e){toast('Connection error');}
-  setConn('ok',t.synced);
-}
-
-async function deleteRecord(id){
-  if(!confirm(tx().confirmDel))return;
-  setConn('sp',tx().submitting);
-  // FIX: optimistic local removal
-  records=records.filter(r=>r.id!==String(id));
-  _filter();renderLiveBoard();
-  try{
-    const res=await fetch(gasUrl,{method:'POST',body:JSON.stringify({action:'delete',id:String(id)}),headers:{'Content-Type':'text/plain'}});
-    const d=await res.json();
-    if(d.ok){toast('Deleted.');await pull(true);}
-    else{toast('Delete failed: '+(d.error||''));await pull(true);}
-  }catch(e){toast('Connection error');}
-  setConn('ok',tx().synced);
-}
-
-// FIX: clearForm now includes f-name
-function clearForm(){
-  ['f-store','f-name','f-type','f-back','f-reason','f-approver'].forEach(id=>{
-    const el=document.getElementById(id);if(el)el.value='';
-  });
-  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-  setNow('f-out');
-  document.querySelectorAll('.qtb').forEach(b=>b.classList.remove('sel'));
-  document.getElementById('qr-bar').style.display='none';
-}
-
-// Exports
-function exportLog(){
-  const t=tx(),isAr=lang==='ar';
-  if(!filteredRecs.length){toast('No records to export');return;}
-  const hdrs=[t.thStore,t.thName,t.thDate,t.thType,t.thOut,t.thBack,t.thDur,t.thReason,t.thApprover,t.thRecorder];
-  const rows=filteredRecs.map(r=>({
-    [t.thStore]:r.store,[t.thName]:r.name,[t.thDate]:r.date,
-    [t.thType]:isAr?(typeMapToAr[r.type]||r.type):r.type,
-    [t.thOut]:r.out,[t.thBack]:r.back||'',
-    [t.thDur]:calcDur(r.out,r.back)||'',
-    [t.thReason]:r.reason,[t.thApprover]:r.approver||'',[t.thRecorder]:r.recorder||''
-  }));
-  const ws=XLSX.utils.json_to_sheet(rows,{header:hdrs});
-  ws['!cols']=[18,14,10,14,8,8,8,28,14,14].map(w=>({wch:w}));
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,isAr?'سجل المغادرات':'Absence Log');
-  XLSX.writeFile(wb,`TECNO_KSA_AbsenceLog_${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast('✓ Exported!');
-}
-function exportSummary(){
-  const t=tx(),isAr=lang==='ar';
-  const rows=buildSummary();
-  if(!rows.length){toast('No data');return;}
-  const hdrs=[t.thSumDate,t.thSumStore,t.thSumName,t.thSumRecords,t.thSumTotal,t.thSumDetail];
-  const data=rows.map(r=>({
-    [t.thSumDate]:r.date,[t.thSumStore]:r.store,[t.thSumName]:r.name,
-    [t.thSumRecords]:r.records,[t.thSumTotal]:minsToStr(r.totalMins),
-    [t.thSumDetail]:Object.entries(r.types).map(([k,v])=>{const d=isAr?(typeMapToAr[k]||k):k;return v>1?`${d}(${v})`:d;}).join(', ')
-  }));
-  data.push({[t.thSumDate]:'TOTAL',[t.thSumStore]:'',[t.thSumName]:'',
-    [t.thSumRecords]:rows.reduce((a,r)=>a+r.records,0),
-    [t.thSumTotal]:minsToStr(rows.reduce((a,r)=>a+r.totalMins,0)),[t.thSumDetail]:''});
-  const ws=XLSX.utils.json_to_sheet(data,{header:hdrs});
-  ws['!cols']=[12,22,16,10,12,30].map(w=>({wch:w}));
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,isAr?'الملخص اليومي':'Daily Summary');
-  XLSX.writeFile(wb,`TECNO_KSA_AbsenceSummary_${new Date().toISOString().slice(0,10)}.xlsx`);
-  toast('✓ Summary exported!');
-}
-function exportMonthly(){
-  const t=tx(),isAr=lang==='ar';
-  const month=document.getElementById('month-sel').value;
-  if(!month){toast('Select a month');return;}
-  const mRecs=records.filter(r=>r.date.startsWith(month));
-  if(!mRecs.length){toast('No data for this month');return;}
-  const map={};
-  mRecs.forEach(r=>{
-    const key=r.name+'||'+r.store;
-    if(!map[key])map[key]={name:r.name,store:r.store,records:0,totalMins:0,types:{}};
-    map[key].records++;map[key].totalMins+=calcMins(r.out,r.back);
-    map[key].types[r.type]=(map[key].types[r.type]||0)+1;
-  });
-  const rows=Object.values(map).sort((a,b)=>b.totalMins-a.totalMins);
-  const hdrs=[t.thMoName,t.thMoStore,t.thMoRecords,t.thMoTotal,t.thMoAvg,t.thMoBreakdown];
-  const data=rows.map(r=>({
-    [t.thMoName]:r.name,[t.thMoStore]:r.store,[t.thMoRecords]:r.records,
-    [t.thMoTotal]:minsToStr(r.totalMins),
-    [t.thMoAvg]:minsToStr(r.records?Math.round(r.totalMins/r.records):0),
-    [t.thMoBreakdown]:Object.entries(r.types).map(([k,v])=>{const d=isAr?(typeMapToAr[k]||k):k;return v>1?`${d}×${v}`:d;}).join(', ')
-  }));
-  const ws=XLSX.utils.json_to_sheet(data,{header:hdrs});
-  ws['!cols']=[18,22,12,12,12,30].map(w=>({wch:w}));
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,month+' Report');
-  XLSX.writeFile(wb,`TECNO_KSA_Monthly_${month}.xlsx`);
-  toast('✓ Monthly report exported!');
-}
-function exportActive(){
-  if(currentView==='summary')exportSummary();
-  else if(currentView==='monthly')exportMonthly();
-  else exportLog();
-}
-
-// FIX: smart polling with backoff
-function startPoll(){
-  stopPoll();
-  pollTimer=setInterval(async()=>{
-    if(offlineCount>=5){
-      // After 5 failures, slow down to 2min
-      if(offlineCount%4!==0)return;
-    }
-    await pull(true);
-  },30000);
-}
+// ===== CLOUD =====
+function apiPost(r){return fetch(gasUrl,{method:'POST',body:JSON.stringify({record:r}),headers:{'Content-Type':'text/plain'}}).then(x=>x.json())}
+function apiGet(){return fetch(gasUrl+'?action=list').then(r=>r.json())}
+function startPoll(){stopPoll();pollTimer=setInterval(()=>pull(true),30000);}
 function stopPoll(){if(pollTimer){clearInterval(pollTimer);pollTimer=null;}}
+let offCount=0;
+function pull(silent=false){
+  if(!gasUrl)return;
+  if(!silent)setConn('sp','Syncing...');
+  apiGet().then(d=>{
+    if(d.ok&&d.records){
+      offCount=0;
+      allRecs=d.records.map(r=>{
+        const t=Number(r.total)||0,tn=Number(r.total_normalized)||t;
+        const g=gi(r.store_type==='nonpromoter'?tn:t);
+        return{id:String(r.id),store_type:r.store_type||'promoter',store:r.store||'',
+          promoter:r.promoter||'',ba:r.ba||'',star:r.star||'',city:r.city||'',
+          auditor:r.auditor||'',auditor_name:r.auditor_name||r.auditor||'',
+          date:r.date||'',time:r.time||'',total:t,total_normalized:tn,
+          grade:r.grade||g.lbl,gradeC:g.c,gradeBg:g.bg,gradeBd:g.bd,
+          secs:[
+            {id:'A',en:'Display',score:Number(r.A_display)||0,max:30,col:'#C9A227'},
+            {id:'B',en:'Materials',score:Number(r.B_materials)||0,max:20,col:'#2E75B6'},
+            {id:'C',en:'Sales',score:Number(r.C_skills)||0,max:30,col:'#1A7A4A'},
+            {id:'D',en:'Compliance',score:Number(r.D_ops)||0,max:15,col:'#C96A00'},
+            {id:'E',en:'Service',score:Number(r.E_service)||0,max:5,col:'#6B3FA0'},
+            {id:'X',en:'Visibility',score:Number(r.X_visibility)||0,max:20,col:'#C9A227'},
+            {id:'Y',en:'Brand',score:Number(r.Y_brand)||0,max:12,col:'#2E75B6'},
+            {id:'Z',en:'Stock',score:Number(r.Z_stock)||0,max:8,col:'#1A7A4A'},
+          ].filter(s=>{
+            if(r.store_type==='nonpromoter')return['X','Y','Z'].includes(s.id);
+            return['A','B','C','D','E'].includes(s.id);
+          }),
+          h1:r.highlights||'',h2:r.actions||'',h3:r.feedback||'',
+          itemScores:r.item_scores?tryParse(r.item_scores):null,_local:false};
+      });
+      allRecs.sort((a,b)=>String(b.id)>String(a.id)?1:-1);
+      document.getElementById('rec-count').textContent=allRecs.length;
+      if(!silent)toast('Synced '+allRecs.length+' records');
+      setConn('ok','Synced');document.getElementById('live-pill').style.display='';
+      updateCovBadge();
+      if(document.getElementById('t-hist').classList.contains('on'))rh(curFilter);
+      if(document.getElementById('t-dash').classList.contains('on'))rd();
+      if(document.getElementById('t-cov').classList.contains('on'))renderCoverage();
+    }else{setConn('err','Sync failed');}
+  }).catch(e=>{
+    offCount++;setConn('err','Connection failed');
+    if(!silent||offCount===1)toast('Connection failed: '+e.message);
+  });
+}
+function tryParse(s){try{return typeof s==='string'?JSON.parse(s):s}catch(e){return null}}
 
-// Close modal on overlay click
-document.getElementById('ret-modal').addEventListener('click',function(e){if(e.target===this)closeRetModal();});
+// ===== TABS =====
+function sw(tab,btn){
+  ['form','hist','dash','cov','exp','cfg'].forEach(t=>{
+    document.getElementById('v-'+t).style.display=t===tab?'':'none';
+    document.getElementById('t-'+t).classList.toggle('on',t===tab);
+  });
+  if(tab==='hist')rh(curFilter);
+  if(tab==='dash')rd();
+  if(tab==='cov')renderCoverage();
+  if(tab==='exp'){const ec=document.getElementById('exp-count');if(ec)ec.textContent=allRecs.length;}
+  if(tab==='form'){checkDraft();renderQuickBar();}
+}
+
+// ===== HISTORY =====
+function fh(f,btn){curFilter=f;document.querySelectorAll('.hf').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rh(f);}
+function rh(f){
+  const el=document.getElementById('hl');
+  const fromD=document.getElementById('h-from').value,toD=document.getElementById('h-to').value;
+  const fl=allRecs.filter(r=>{
+    const chain=getChain(r.store);
+    if(f==='promoter'&&r.store_type!=='promoter')return false;
+    if(f==='nonpromoter'&&r.store_type!=='nonpromoter')return false;
+    if(f==='Jarir'&&chain!=='Jarir')return false;
+    if(f==='Extra'&&chain!=='Extra')return false;
+    if(f==='Lulu'&&chain!=='LuLu')return false;
+    if(f==='Nesto'&&chain!=='Nesto')return false;
+    if(f==='Wafa'&&chain!=='Wafa')return false;
+    const displayScore=r.store_type==='nonpromoter'?r.total_normalized:r.total;
+    if(f==='pass'&&displayScore<75)return false;
+    if(f==='mid'&&(displayScore<60||displayScore>=75))return false;
+    if(f==='fail'&&displayScore>=60)return false;
+    if(fromD&&r.date<fromD)return false;
+    if(toD&&r.date>toD)return false;
+    return true;
+  });
+  if(!fl.length){el.innerHTML='<div class="empty">No records match current filter</div>';return;}
+  el.innerHTML=fl.map(r=>{
+    const displayScore=r.store_type==='nonpromoter'?r.total_normalized:r.total;
+    const g=gi(displayScore);
+    const typeTag=r.store_type==='nonpromoter'?'<span class="type-tag no-promoter">📦 No Promoter</span>':'<span class="type-tag with-promoter">🏪 Promoter</span>';
+    const bars=(r.secs||[]).map(s=>`<div class="hbw"><div class="hblbl">${s.id}</div><div class="hbbg"><div class="hbf" style="width:${Math.round(s.score/s.max*100)}%;background:${s.col}"></div></div><div class="hbv">${s.score}/${s.max}</div></div>`).join('');
+    const subInfo=r.store_type==='nonpromoter'?(r.ba?'BA: '+r.ba:''):(r.promoter||'');
+    const det=buildDetail(r);
+    return`<div class="hcard"><div class="hcard-top" onclick="td('${r.id}')">
+      <div class="htop"><div>
+        <div class="hstore">${r.store}${typeTag}${r._local?' <span style="font-size:10px;background:#FEF3F2;color:#B42318;padding:1px 6px;border-radius:4px">Local</span>':''}</div>
+        <div class="hmeta">${subInfo} ${r.star||''} · ${r.date} ${r.time||''} · ${r.auditor_name||r.auditor||'--'}</div>
+      </div>
+      <div class="hpill" style="background:${g.bg};color:${g.c};border:1.5px solid ${g.bd}">${displayScore}<span style="font-size:11px">/100</span></div></div>
+      <div class="hbars">${bars}</div></div>
+      <div class="hdet" id="hd-${r.id}">${det}</div></div>`;
+  }).join('');
+}
+function buildDetail(r){
+  const displayScore=r.store_type==='nonpromoter'?r.total_normalized:r.total;
+  let det='<div style="margin-bottom:10px">';
+  (r.secs||[]).forEach(s=>{
+    const secDef=(r.store_type==='nonpromoter'?SEC_NONPROMOTER:SEC_PROMOTER).find(x=>x.id===s.id);
+    const pct=Math.round(s.score/s.max*100),pcol=pct>=80?'#027A48':pct>=60?'#C96A00':'#B42318';
+    det+=`<div style="background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:10px 12px;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px"><span style="font-size:12px;font-weight:600;color:${s.col}">${s.id}. ${secDef?secDef.en:s.en}</span><span style="font-weight:700;color:${pcol}">${s.score}/${s.max} (${pct}%)</span></div>
+      <div style="height:4px;background:#F2F4F7;border-radius:2px;overflow:hidden;margin-bottom:6px"><div style="height:100%;width:${pct}%;background:${s.col};border-radius:2px"></div></div>`;
+    if(secDef&&r.itemScores){secDef.items.forEach((item,i)=>{
+      const v=r.itemScores[s.id+'_'+i];
+      if(v!==null&&v!==undefined){const ic=v/item.pts>=.8?'#027A48':v/item.pts>=.6?'#C96A00':'#B42318';
+      det+=`<div style="display:flex;justify-content:space-between;padding:2px 0;font-size:11px;border-bottom:1px solid #F9FAFB"><span style="color:#667085;flex:1">${item.en}</span><span style="font-weight:600;color:${ic}">${v}/${item.pts}</span></div>`;}
+    });}
+    det+='</div>';
+  });
+  det+='</div>';
+  if(r.store_type==='nonpromoter')det+=`<div style="font-size:11px;padding:6px 10px;background:#FFF9EC;border-radius:6px;color:#854F0B;margin-bottom:8px">Raw score: ${r.total}/40 → Normalized: ${r.total_normalized}/100</div>`;
+  if(r.h1)det+=`<div class="hnr"><div class="hnl">✅ Highlights</div><div class="hnv">${r.h1}</div></div>`;
+  if(r.h2)det+=`<div class="hnr"><div class="hnl">⚠️ Actions Required</div><div class="hnv">${r.h2}</div></div>`;
+  if(r.h3)det+=`<div class="hnr"><div class="hnl">💬 Feedback</div><div class="hnv">${r.h3}</div></div>`;
+  if(r._local)det+=`<button onclick="event.stopPropagation();retryUp('${r.id}')" style="font-size:11px;padding:5px 12px;background:#27AE60;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-top:8px">↑ Retry Upload</button>`;
+  return det;
+}
+function td(id){const e=document.getElementById('hd-'+id);if(e)e.classList.toggle('o');}
+function retryUp(id){
+  const rec=allRecs.find(r=>r.id===String(id));if(!rec)return;
+  setConn('sp','Uploading...');
+  apiPost(rec).then(d=>{
+    if(d.ok){rec._local=false;setConn('ok','Synced');toast('✓ Uploaded!');rh(curFilter);}
+    else{setConn('err','Failed');toast('Failed: '+(d.error||''));}
+  }).catch(()=>{setConn('err','Failed');toast('Network error');});
+}
+
+// ===== DASHBOARD =====
+function rd(){
+  const el=document.getElementById('dc');
+  if(!allRecs.length){el.innerHTML='<div class="empty">No data yet</div>';return;}
+  const getScore=r=>r.store_type==='nonpromoter'?r.total_normalized:r.total;
+  const pRecs=allRecs.filter(r=>r.store_type==='promoter');
+  const npRecs=allRecs.filter(r=>r.store_type==='nonpromoter');
+  const avg=Math.round(allRecs.reduce((a,r)=>a+getScore(r),0)/allRecs.length);
+  const pass=allRecs.filter(r=>getScore(r)>=75).length;
+  const fail=allRecs.filter(r=>getScore(r)<60).length;
+  // Chain performance
+  const chainMap={};
+  allRecs.forEach(r=>{const c=getChain(r.store);if(!chainMap[c])chainMap[c]={count:0,total:0,pass:0};chainMap[c].count++;chainMap[c].total+=getScore(r);if(getScore(r)>=75)chainMap[c].pass++;});
+  const chainBars=Object.entries(chainMap).sort((a,b)=>b[1].count-a[1].count).map(([c,d])=>{
+    const avg2=Math.round(d.total/d.count),pr=Math.round(d.pass/d.count*100),col=avg2>=75?'#027A48':avg2>=60?'#C96A00':'#B42318';
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #F2F4F7">
+      <div style="width:50px;font-size:12px;font-weight:600">${c}</div>
+      <div style="flex:1"><div style="height:8px;background:#F2F4F7;border-radius:4px;overflow:hidden"><div style="height:100%;width:${avg2}%;background:${col};border-radius:4px"></div></div></div>
+      <span style="font-size:12px;font-weight:700;color:${col}">${avg2}</span>
+      <span style="font-size:11px;color:#98A2B3">${d.count} visits</span>
+      <span style="font-size:11px;font-weight:600;color:${pr>=75?'#027A48':'#B42318'}">${pr}% pass</span>
+    </div>`;
+  }).join('');
+  // Store performance with trend
+  const sm={};allRecs.forEach(r=>{if(!sm[r.store])sm[r.store]=[];sm[r.store].push(r);});
+  const storeRows=Object.keys(sm).sort((a,b)=>{
+    const aa=sm[a].reduce((x,y)=>x+getScore(y),0)/sm[a].length;
+    const ba=sm[b].reduce((x,y)=>x+getScore(y),0)/sm[b].length;return ba-aa;
+  }).map(s=>{
+    const recs=sm[s].sort((a,b)=>a.date<b.date?-1:1);
+    const avg2=Math.round(recs.reduce((a,r)=>a+getScore(r),0)/recs.length),gc=gi(avg2);
+    let trend='';
+    if(recs.length>=2){const diff=getScore(recs[recs.length-1])-getScore(recs[recs.length-2]);
+    trend=diff>0?`<span class="trend-up">▲${diff}</span>`:diff<0?`<span class="trend-dn">▼${Math.abs(diff)}</span>`:`<span class="trend-fl">—</span>`;}
+    const isNP=recs[recs.length-1].store_type==='nonpromoter';
+    return`<div class="sli" style="cursor:pointer" onclick="dashStoreSelect('${s.replace(/'/g,"\\'")}')">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${s}">${s}</div>
+        <div style="font-size:11px;color:#98A2B3">${recs.length} visits · ${isNP?'📦 No Promoter':'🏪 Promoter'}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">${trend}<div style="font-size:17px;font-weight:700;color:${gc.c}">${avg2}</div></div>
+    </div>`;
+  }).join('');
+  // Promoter vs Non-Promoter comparison
+  const compHtml=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:#EEF4FF;border:1px solid #B2CCFF;border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:11px;font-weight:600;color:#1849A9;margin-bottom:6px">🏪 WITH PROMOTER</div>
+        <div style="font-size:24px;font-weight:700;color:#1849A9">${pRecs.length?Math.round(pRecs.reduce((a,r)=>a+r.total,0)/pRecs.length):0}</div>
+        <div style="font-size:11px;color:#667085">${pRecs.length} stores · avg /100</div>
+      </div>
+      <div style="background:#FFF9EC;border:1px solid #FEC84B;border-radius:10px;padding:12px;text-align:center">
+        <div style="font-size:11px;font-weight:600;color:#854F0B;margin-bottom:6px">📦 NON-PROMOTER</div>
+        <div style="font-size:24px;font-weight:700;color:#854F0B">${npRecs.length?Math.round(npRecs.reduce((a,r)=>a+r.total_normalized,0)/npRecs.length):0}</div>
+        <div style="font-size:11px;color:#667085">${npRecs.length} stores · avg /100 (normalized)</div>
+      </div>
+    </div>`;
+  const storeOpts='<option value="">-- Select store --</option>'+Object.keys(sm).sort().map(s=>`<option value="${s}">${s}</option>`).join('');
+  el.innerHTML=`
+    <div class="dsec"><div class="dtitle">Overview</div>
+    <div class="mgrid4">
+      <div class="mcard"><div class="mval">${avg}</div><div class="mlbl">Avg Score</div></div>
+      <div class="mcard"><div class="mval">${allRecs.length}</div><div class="mlbl">Total Visits</div></div>
+      <div class="mcard"><div class="mval" style="color:#027A48">${pass}</div><div class="mlbl">Pass ≥75</div></div>
+      <div class="mcard"><div class="mval" style="color:#B42318">${fail}</div><div class="mlbl">Fail &lt;60</div></div>
+    </div></div>
+    <div class="dsec"><div class="dtitle">Store Type Comparison</div>${compHtml}</div>
+    <div class="dsec"><div class="dtitle">Chain Performance</div><div class="sec-card">${chainBars}</div></div>
+    <div class="dsec"><div class="dtitle">Store Performance <span style="font-size:10px;color:#98A2B3;font-weight:400">(avg · trend · click to drill down)</span></div>
+    <div class="sec-card" style="max-height:360px;overflow-y:auto">${storeRows}</div></div>
+    <div class="dsec"><div class="dtitle">Store Drill-Down</div>
+    <div class="meta-box" style="margin-bottom:10px"><label>Select Store</label><select id="dash-store-sel" onchange="dashStoreSelect(this.value)" style="font-size:13px">${storeOpts}</select></div>
+    <div id="dash-store-detail"></div></div>
+    <button class="btn-excel" onclick="exportExcel('all')">📥 Export Complete Report</button>`;
+}
+function dashStoreSelect(store){
+  const sel=document.getElementById('dash-store-sel');if(sel&&store)sel.value=store;
+  const box=document.getElementById('dash-store-detail');if(!box)return;
+  if(!store){box.innerHTML='';return;}
+  const getScore=r=>r.store_type==='nonpromoter'?r.total_normalized:r.total;
+  const recs=allRecs.filter(r=>r.store===store).sort((a,b)=>a.date<b.date?-1:1);
+  if(!recs.length){box.innerHTML='<div style="padding:12px;color:#98A2B3;font-size:12px">No records</div>';return;}
+  const avg=Math.round(recs.reduce((a,r)=>a+getScore(r),0)/recs.length),g=gi(avg);
+  const isNP=recs[0].store_type==='nonpromoter';
+  let html=`<div style="background:${g.bg};border:1.5px solid ${g.bd};border-radius:10px;padding:14px;margin-bottom:10px;text-align:center">
+    <div style="font-size:12px;font-weight:600;color:${g.c}">${store} ${isNP?'<span class="type-tag no-promoter">📦</span>':'<span class="type-tag with-promoter">🏪</span>'}</div>
+    <div style="font-size:28px;font-weight:700;color:${g.c};margin:4px 0">${avg} <span style="font-size:14px">/100</span></div>
+    <div style="font-size:11px;color:${g.c}">${recs.length} visits · Best: ${Math.max(...recs.map(r=>getScore(r)))} · Lowest: ${Math.min(...recs.map(r=>getScore(r)))} · ${g.lbl}</div>
+  </div>`;
+  // Trend
+  html+='<div style="font-size:11px;font-weight:600;color:#98A2B3;margin-bottom:4px">SCORE TREND</div>';
+  html+='<div style="display:flex;gap:4px;align-items:flex-end;height:56px;margin-bottom:12px;background:#F9FAFB;border-radius:8px;padding:6px">';
+  recs.forEach(r=>{const sc2=getScore(r);const gc=gi(sc2);html+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px"><div style="font-size:9px;font-weight:700;color:${gc.c}">${sc2}</div><div style="width:100%;height:${Math.round(sc2/100*36)}px;background:${gc.c};border-radius:2px;min-height:2px"></div><div style="font-size:8px;color:#98A2B3">${r.date.slice(5)}</div></div>`;});
+  html+='</div>';
+  html+='<div style="font-size:11px;font-weight:600;color:#98A2B3;margin-bottom:6px">ALL VISITS</div>';
+  recs.slice().reverse().forEach(r=>{
+    const sc2=getScore(r),g2=gi(sc2);
+    html+=`<div style="background:#fff;border:1px solid #E4E7EC;border-radius:8px;padding:10px 12px;margin-bottom:6px;cursor:pointer" onclick="td('ds-${r.id}')">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:12px;color:#667085">${r.date} ${r.time||''}</span>
+        <span style="font-size:15px;font-weight:700;color:${g2.c}">${sc2}/100</span>
+      </div>
+      <div style="display:flex;gap:3px;margin-bottom:2px">`;
+    (r.secs||[]).forEach(s=>{const p=Math.round(s.score/s.max*100);html+=`<div style="flex:1;height:4px;background:#F2F4F7;border-radius:2px;overflow:hidden"><div style="height:100%;width:${p}%;background:${s.col}"></div></div>`;});
+    html+=`</div><div class="hdet" id="hd-ds-${r.id}" style="margin-top:6px">${buildDetail(r)}</div></div>`;
+  });
+  box.innerHTML=html;
+}
+
+// ===== COVERAGE =====
+function updateCovBadge(){
+  const t=today();
+  const allStoreNames=[...Object.keys(SM_PROMOTER),...NP_STORES.map(s=>s.name)];
+  const visited=new Set(allRecs.filter(r=>r.date===t).map(r=>r.store));
+  const miss=allStoreNames.filter(s=>!visited.has(s)).length;
+  const b=document.getElementById('cov-badge');b.textContent=miss;b.style.display=miss>0?'':'none';
+}
+function renderCoverage(){
+  const dateStr=document.getElementById('cov-date').value||today();
+  const visited=new Set(allRecs.filter(r=>r.date===dateStr).map(r=>r.store));
+  const pStores=Object.keys(SM_PROMOTER),npStores=NP_STORES.map(s=>s.name);
+  const allStores=[...pStores,...npStores];
+  const done=allStores.filter(s=>visited.has(s)),miss=allStores.filter(s=>!visited.has(s));
+  const rate=Math.round(done.length/allStores.length*100);
+  document.getElementById('cov-metrics').innerHTML=
+    `<div class="mcard"><div class="mval" style="color:#027A48">${done.length}</div><div class="mlbl">Visited</div></div>
+    <div class="mcard"><div class="mval" style="color:#B42318">${miss.length}</div><div class="mlbl">Not Visited</div></div>
+    <div class="mcard"><div class="mval">${allStores.length}</div><div class="mlbl">Total Stores</div></div>
+    <div class="mcard"><div class="mval" style="color:${rate>=80?'#027A48':rate>=50?'#C96A00':'#B42318'}">${rate}%</div><div class="mlbl">Coverage</div></div>`;
+  document.getElementById('cov-progress').style.width=rate+'%';
+  document.getElementById('cov-progress').style.background=rate>=80?'#27AE60':rate>=50?'#C96A00':'#B42318';
+  document.getElementById('cov-rate-lbl').textContent=dateStr+' · '+done.length+'/'+allStores.length+' stores visited';
+  function makeCards(arr,type){
+    return arr.map(s=>{
+      const isNP=NP_STORES.some(n=>n.name===s);
+      const score=allRecs.find(r=>r.store===s&&r.date===dateStr);
+      const scoreHtml=score?` · <strong style="color:${gi(score.store_type==='nonpromoter'?score.total_normalized:score.total).c}">${score.store_type==='nonpromoter'?score.total_normalized:score.total}</strong>`:'';
+      const bg=type==='done'?'background:#ECFDF3;border:1px solid #A6F4C5;color:#027A48':'background:#FEF3F2;border:1px solid #FECDCA;color:#B42318';
+      return`<div style="${bg};border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:12px">
+        <span>${type==='done'?'✓':'○'}</span>
+        <span>${isNP?'📦':'🏪'}</span>
+        <span style="flex:1;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${s}">${s.split(' ').slice(0,3).join(' ')}${scoreHtml}</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('cov-miss-title').textContent=`Not Visited (${miss.length}) — ${miss.filter(s=>NP_STORES.some(n=>n.name===s)).length} non-promoter, ${miss.filter(s=>SM_PROMOTER[s]).length} promoter`;
+  document.getElementById('cov-done-title').textContent=`Visited (${done.length})`;
+  document.getElementById('cov-miss').innerHTML=makeCards(miss,'miss')||'<div style="color:#027A48;padding:10px">All stores visited! 🎉</div>';
+  document.getElementById('cov-done').innerHTML=makeCards(done,'done')||'<div style="color:#98A2B3;padding:10px">None yet</div>';
+}
+
+// ===== EXPORT =====
+function exportExcel(mode){
+  if(!allRecs.length){toast('No data to export');return;}
+  if(typeof XLSX==='undefined'){toast('Excel library loading...');return;}
+  const wb=XLSX.utils.book_new();
+  const getScore=r=>r.store_type==='nonpromoter'?r.total_normalized:r.total;
+  if(mode==='detailed'||mode==='all'){
+    const h=['Date','Time','Store Type','Store','Chain','Promoter/BA','Star','City','Auditor',
+      'A.Display(30)','B.Materials(20)','C.Sales(30)','D.Ops(15)','E.Service(5)',
+      'X.Visibility(20)','Y.Brand(12)','Z.Stock(8)',
+      'Raw Score','Normalized Score','Grade','Highlights','Actions','Feedback'];
+    const rows=allRecs.map(r=>{
+      const gs=id=>{const s=(r.secs||[]).find(x=>x.id===id);return s?s.score:'N/A';};
+      return[r.date,r.time||'',r.store_type==='promoter'?'With Promoter':'Non-Promoter',r.store,getChain(r.store),
+        r.store_type==='promoter'?r.promoter:r.ba,r.star||'',r.city||'',r.auditor_name||r.auditor||'',
+        gs('A'),gs('B'),gs('C'),gs('D'),gs('E'),gs('X'),gs('Y'),gs('Z'),
+        r.total,r.total_normalized,r.grade||'',r.h1||'',r.h2||'',r.h3||''];
+    });
+    const ws=XLSX.utils.aoa_to_sheet([h].concat(rows));ws['!cols']=h.map(()=>({wch:14}));
+    XLSX.utils.book_append_sheet(wb,ws,'Detailed Scores');
+  }
+  if(mode==='summary'||mode==='all'){
+    const h=['Date','Store Type','Store','Chain','Promoter/BA','Auditor','Score /100','Grade'];
+    const rows=allRecs.map(r=>[r.date,r.store_type==='promoter'?'Promoter':'Non-Promoter',r.store,getChain(r.store),
+      r.store_type==='promoter'?r.promoter:r.ba,r.auditor_name||r.auditor||'',getScore(r)+'/100',r.grade||'']);
+    const ws=XLSX.utils.aoa_to_sheet([h].concat(rows));ws['!cols']=h.map(()=>({wch:16}));
+    XLSX.utils.book_append_sheet(wb,ws,'Summary');
+  }
+  if(mode==='all'){
+    const chainMap={};
+    allRecs.forEach(r=>{const c=getChain(r.store);if(!chainMap[c])chainMap[c]={count:0,total:0,pass:0,np:0};chainMap[c].count++;chainMap[c].total+=getScore(r);if(getScore(r)>=75)chainMap[c].pass++;if(r.store_type==='nonpromoter')chainMap[c].np++;});
+    const aH=['Chain','Total Visits','Promoter Stores','Non-Promoter Stores','Avg Score','Pass Rate'];
+    const aR=Object.keys(chainMap).sort((a,b)=>chainMap[b].count-chainMap[a].count).map(c=>{
+      const d=chainMap[c];return[c,d.count,d.count-d.np,d.np,Math.round(d.total/d.count),Math.round(d.pass/d.count*100)+'%'];
+    });
+    const ws=XLSX.utils.aoa_to_sheet([aH].concat(aR));ws['!cols']=aH.map(()=>({wch:18}));
+    XLSX.utils.book_append_sheet(wb,ws,'Analytics by Chain');
+  }
+  XLSX.writeFile(wb,'TECNO_KSA_Scorecard_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  toast('✓ Exported! '+allRecs.length+' records');
+}
+function exportJSON(){
+  if(!allRecs.length){toast('No data');return;}
+  const b=new Blob([JSON.stringify(allRecs,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='TECNO_KSA_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('JSON exported!');
+}
+
+// ===== SETTINGS =====
+function cfgSave(){
+  myName=document.getElementById('cfg-name').value.trim();
+  gasUrl=document.getElementById('cfg-url').value.trim();
+  lsSet('myName',myName);lsSet('gasUrl',gasUrl);
+  document.getElementById('user-pill').textContent=myName;
+  document.getElementById('f-a').value=myName;
+  toast('Settings saved!');pull();
+}
+function testConn(){
+  const url=document.getElementById('cfg-url').value.trim();if(!url){alert('Enter URL');return;}
+  setConn('sp','Testing...');
+  fetch(url+'?action=list').then(r=>r.json()).then(d=>{
+    if(d.ok!==undefined){setConn('ok','Connected');toast('✓ OK! '+(d.total||0)+' records');}
+    else{setConn('err','Unexpected');toast('Unexpected response');}
+  }).catch(e=>{setConn('err','Failed');toast('Failed: '+e.message);});
+}
 
 init();
 </script>
