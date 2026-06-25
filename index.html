@@ -179,6 +179,7 @@ textarea.fi{min-height:52px;resize:vertical}
   .meta-g{grid-template-columns:1fr}
   .tabs{gap:3px}.tab{font-size:10px;padding:6px 2px;min-width:46px}
   .stype-bar{flex-direction:column}
+  #cov-metrics{grid-template-columns:repeat(3,1fr)!important}
 }
 </style>
 </head>
@@ -235,7 +236,11 @@ textarea.fi{min-height:52px;resize:vertical}
    <span class="user-pill" id="user-pill"></span>
   </div>
  </div>
- <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+ <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+  <div class="score-box">
+   <div class="big-score" id="ls">0</div>
+   <div class="score-lbl" id="score-lbl">/ 100 pts</div>
+  </div>
   <button class="btn-top" onclick="exportExcel('all')">📥 Export</button>
   <button class="btn-logout" onclick="doLogout()">↩</button>
  </div>
@@ -290,9 +295,17 @@ textarea.fi{min-height:52px;resize:vertical}
   <div class="meta-box"><label>Date</label><input type="date" id="f-d"></div>
   <div class="meta-box"><label>Time</label><input type="time" id="f-t"></div>
  </div>
- <div id="form-sections"></div>
+
+ <!-- Scoring sections render here -->
+ <div id="form-sections" style="margin-bottom:10px"></div>
+
+ <!-- Score summary bar -->
  <div class="sumbar" id="sum-bar"></div>
+
+ <!-- Grade result -->
  <div id="grade-div" style="margin-bottom:12px"></div>
+
+ <!-- Notes -->
  <div class="gnote"><label>✅ Highlights</label><textarea id="n1" placeholder="What was done well..."></textarea></div>
  <div class="gnote"><label>⚠️ Actions Required</label><textarea id="n2" placeholder="Items to fix..."></textarea></div>
  <div class="gnote" id="n3-wrap"><label>💬 Promoter Feedback</label><textarea id="n3" placeholder="Promoter feedback on product/customers..."></textarea></div>
@@ -359,16 +372,40 @@ textarea.fi{min-height:52px;resize:vertical}
 <!-- COVERAGE -->
 <div id="v-cov" style="display:none">
  <div class="card">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
    <div style="font-size:13px;font-weight:600;color:#1B2A4A">📋 Visit Coverage</div>
-   <input type="date" id="cov-date" onchange="renderCoverage()" style="font-size:12px;border:1px solid #D0D5DD;border-radius:6px;padding:5px 9px;font-family:inherit;outline:none">
+   <div style="display:flex;gap:4px;flex-wrap:wrap">
+    <button class="ba-ptab on" id="cov-tab-day" onclick="setCovPeriod('day',this)">Today</button>
+    <button class="ba-ptab" id="cov-tab-week" onclick="setCovPeriod('week',this)">This Week</button>
+    <button class="ba-ptab" id="cov-tab-month" onclick="setCovPeriod('month',this)">This Month</button>
+    <input type="date" id="cov-date" onchange="setCovPeriod('custom',null)" style="font-size:12px;border:1px solid #D0D5DD;border-radius:6px;padding:5px 9px;font-family:inherit;outline:none">
+   </div>
   </div>
-  <div class="mgrid4" id="cov-metrics" style="margin-bottom:12px"></div>
+  <!-- BA + Chain filters -->
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+   <select id="cov-ba-filter" onchange="renderCoverage()" style="font-size:12px;border:1px solid #D0D5DD;border-radius:8px;padding:6px 10px;outline:none;font-family:inherit;flex:1;min-width:130px">
+    <option value="">All BAs</option>
+    <option>Debas</option><option>Mubash</option><option>Ishakh</option><option>Sajed</option>
+    <option>Shawki</option><option>Sameh</option><option>Sharaf</option><option>Reffat</option>
+    <option>Abdelkream</option><option>Ali</option>
+   </select>
+   <select id="cov-chain-filter" onchange="renderCoverage()" style="font-size:12px;border:1px solid #D0D5DD;border-radius:8px;padding:6px 10px;outline:none;font-family:inherit;flex:1;min-width:130px">
+    <option value="">All Chains</option>
+    <option>Jarir</option><option>Extra</option><option>LuLu</option><option>Nesto</option><option>Wafa</option>
+   </select>
+   <select id="cov-type-filter" onchange="renderCoverage()" style="font-size:12px;border:1px solid #D0D5DD;border-radius:8px;padding:6px 10px;outline:none;font-family:inherit;flex:1;min-width:130px">
+    <option value="">All Store Types</option>
+    <option value="promoter">🏪 With Promoter</option>
+    <option value="nonpromoter">📦 Non-Promoter</option>
+   </select>
+  </div>
+  <!-- Summary metrics: 3 visit type cards + coverage -->
+  <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px" id="cov-metrics"></div>
   <div class="progress-bar"><div class="progress-fill" id="cov-progress" style="background:#27AE60;width:0%"></div></div>
   <div style="font-size:11px;color:#667085;text-align:right;margin-top:4px" id="cov-lbl"></div>
  </div>
- <div class="dsec" style="margin-top:14px"><div class="dtitle" id="cov-miss-t">Not Visited</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px" id="cov-miss"></div></div>
- <div class="dsec"><div class="dtitle" id="cov-done-t">Visited</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px" id="cov-done"></div></div>
+ <div class="dsec" style="margin-top:14px"><div class="dtitle" id="cov-miss-t">Not Visited</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px" id="cov-miss"></div></div>
+ <div class="dsec"><div class="dtitle" id="cov-done-t">Visited</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px" id="cov-done"></div></div>
 </div>
 
 <!-- EXPORT -->
@@ -630,7 +667,7 @@ const GAS_CODE='// TECNO KSA Scorecard v3 Backend\nconst SHEET_ID=\'YOUR_SHEET_I
 // ===== STATE =====
 let sc={},storeType='promoter',activeSec=SEC_P;
 let allRecs=[],gasUrl='',myName='',pollTimer=null,curFilter='all';
-let baPeriod='day',offCount=0;
+let baPeriod='day',covPeriod='day',offCount=0;
 
 const lsGet=k=>localStorage.getItem('sv3_'+k)||'';
 const lsSet=(k,v)=>localStorage.setItem('sv3_'+k,v);
@@ -682,6 +719,8 @@ function showMain(){
   setStoreType('promoter',document.getElementById('stype-promoter'));
   buildStoreList();renderQuickBar();checkDraft();
   pull();startPoll();
+  // Re-draw after all DOM is settled
+  setTimeout(()=>draw(),0);
   ['n1','n2','n3','f-d','f-t','f-st'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',saveDraft);});
 }
 function setupSave(){
@@ -706,6 +745,7 @@ function setStoreType(type,btn){
   document.getElementById('f-star-wrap').style.display=isNP?'none':'';
   document.getElementById('f-city-wrap').style.display=isNP?'':'none';
   document.getElementById('n3-wrap').style.display=isNP?'none':'';
+  document.getElementById('score-lbl').textContent=isNP?'/ 55 pts (→100)':'/ 100 pts';
   buildStoreList();draw();
 }
 
@@ -827,12 +867,12 @@ function draw(){
       for(let v=1;v<=it.pts;v++){const on=cur===v;btns+=`<button class="sb${on?' on':''}" style="${on?'background:'+sec.col+';border-color:'+sec.col+';':''}" onclick="setSc('${k}',${v})">${v}</button>`;}
       return`<div class="irow"><div><div class="izh">${it.en}<div class="item-hint">Max ${it.pts} pts</div></div></div><div style="display:flex;align-items:center;gap:5px"><div class="sbtns">${btns}</div><div style="font-size:11px;font-weight:700;min-width:34px;text-align:right;color:${cur>0?sec.col:'#98A2B3'}">${cur}/${it.pts}</div></div></div>`;
     }).join('');
-    d.innerHTML=`<div class="sec-hdr" onclick="togSec('${bid}')"><div class="dot" style="background:${sec.col}"></div><div class="sec-name">${sec.id}. ${sec.en}</div><div class="sec-badge" style="color:${sec.col}">${st}/${sec.max}</div></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${bc}"></div></div><div id="${bid}">${itemsHtml}</div>`;
+    d.innerHTML=`<div class="sec-hdr" onclick="togSec('${bid}')"><div class="dot" style="background:${sec.col}"></div><div class="sec-name">${sec.id}. ${sec.en}</div><div class="sec-badge" style="color:${sec.col}">${st}/${sec.max}</div></div><div class="pbar"><div class="pfill" style="width:${pct}%;background:${bc}"></div></div><div id="${bid}" style="display:block">${itemsHtml}</div>`;
     w.appendChild(d);
   });
   saveDraft();
 }
-function togSec(bid){const e=document.getElementById(bid);e.style.display=e.style.display==='none'?'':'none';}
+function togSec(bid){const e=document.getElementById(bid);if(e)e.style.display=e.style.display==='none'?'block':'none';}
 function setSc(k,v){sc[k]=(sc[k]===v&&v!==0)?0:v;draw();}
 
 function rst(){
@@ -1244,36 +1284,115 @@ function dss(store){
 }
 
 // ===== COVERAGE =====
+function getCovRange(){
+  const t=today(),now2=new Date();
+  if(covPeriod==='day')return{from:t,to:t,label:'Today · '+t};
+  if(covPeriod==='week'){
+    const dow=now2.getDay(),mon=new Date(now2);
+    mon.setDate(now2.getDate()-(dow===0?6:dow-1));
+    const ms=mon.toISOString().slice(0,10);
+    return{from:ms,to:t,label:'This Week ('+ms+' – '+t+')'};
+  }
+  if(covPeriod==='month'){
+    const y=now2.getFullYear(),mo=String(now2.getMonth()+1).padStart(2,'0');
+    return{from:`${y}-${mo}-01`,to:t,label:'This Month ('+y+'-'+mo+')'};
+  }
+  const v=document.getElementById('cov-date').value||t;
+  return{from:v,to:v,label:'Date: '+v};
+}
+function setCovPeriod(p,btn){
+  covPeriod=p;
+  document.querySelectorAll('.ba-ptab[id^="cov-tab"]').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderCoverage();
+}
 function updateCovBadge(){
   const t=today(),allS=[...Object.keys(SM),...NP.map(s=>s.name)];
   const visited=new Set(allRecs.filter(r=>r.date===t).map(r=>r.store));
   const miss=allS.filter(s=>!visited.has(s)).length;
-  const b=document.getElementById('cov-badge');b.textContent=miss;b.style.display=miss>0?'':'none';
+  const b=document.getElementById('cov-badge');
+  if(b){b.textContent=miss;b.style.display=miss>0?'':'none';}
 }
 function renderCoverage(){
-  const dateStr=document.getElementById('cov-date').value||today();
-  const visited=new Set(allRecs.filter(r=>r.date===dateStr).map(r=>r.store));
-  const pS=Object.keys(SM),npS=NP.map(s=>s.name),all=[...pS,...npS];
-  const done=all.filter(s=>visited.has(s)),miss=all.filter(s=>!visited.has(s));
-  const rate=Math.round(done.length/all.length*100);
+  const{from,to,label}=getCovRange();
+  const baF=document.getElementById('cov-ba-filter').value;
+  const chainF=document.getElementById('cov-chain-filter').value;
+  const typeF=document.getElementById('cov-type-filter').value;
+
+  // Build filtered store list
+  let pStores=Object.entries(SM).map(([n,i])=>({name:n,ba:i.ba,chain:i.chain,type:'promoter'}));
+  let npStores=NP.map(s=>({name:s.name,ba:s.ba,chain:s.chain,type:'nonpromoter'}));
+  let allS=[...pStores,...npStores];
+
+  // Apply filters to store list
+  if(baF)allS=allS.filter(s=>s.ba===baF);
+  if(chainF)allS=allS.filter(s=>s.chain===chainF);
+  if(typeF)allS=allS.filter(s=>s.type===typeF);
+
+  // Records in period, filtered by same BA/chain/type
+  let periRecs=allRecs.filter(r=>r.date>=from&&r.date<=to);
+  if(baF)periRecs=periRecs.filter(r=>r.ba===baF);
+  if(chainF)periRecs=periRecs.filter(r=>r.chain===chainF);
+  if(typeF)periRecs=periRecs.filter(r=>r.store_type===typeF);
+
+  // Visit counts per store
+  const visitCounts={};allS.forEach(s=>visitCounts[s.name]=0);
+  periRecs.forEach(r=>{if(visitCounts[r.store]!==undefined)visitCounts[r.store]++;});
+
+  const pRecs=periRecs.filter(r=>r.store_type==='promoter');
+  const npRecs=periRecs.filter(r=>r.store_type==='nonpromoter');
+  const done=allS.filter(s=>visitCounts[s.name]>0);
+  const miss=allS.filter(s=>visitCounts[s.name]===0);
+  const covPct=allS.length?Math.round(done.length/allS.length*100):0;
+
+  // 6-metric grid
   document.getElementById('cov-metrics').innerHTML=
-    `<div class="mcard"><div class="mval" style="color:#027A48">${done.length}</div><div class="mlbl">Visited</div></div>
-    <div class="mcard"><div class="mval" style="color:#B42318">${miss.length}</div><div class="mlbl">Not Visited</div></div>
-    <div class="mcard"><div class="mval">${all.length}</div><div class="mlbl">Total Stores</div></div>
-    <div class="mcard"><div class="mval" style="color:${rate>=80?'#027A48':rate>=50?'#C96A00':'#B42318'}">${rate}%</div><div class="mlbl">Coverage</div></div>`;
-  document.getElementById('cov-progress').style.width=rate+'%';
-  document.getElementById('cov-progress').style.background=rate>=80?'#27AE60':rate>=50?'#C96A00':'#B42318';
-  document.getElementById('cov-lbl').textContent=dateStr+' · '+done.length+'/'+all.length;
-  const mk=(arr,type)=>arr.map(s=>{
-    const isNP=NP.some(n=>n.name===s);
-    const sc=allRecs.find(r=>r.store===s&&r.date===dateStr);
-    const score=sc?(sc.store_type==='nonpromoter'?sc.total_norm:sc.total_raw):null;
-    return`<div class="cov-card ${type}"><span>${type==='done'?'✓':'○'}</span><span>${isNP?'📦':'🏪'}</span><span style="flex:1;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${s}">${s.split(' ').slice(0,3).join(' ')}${score!=null?' · <strong>'+score+'</strong>':''}</span></div>`;
+    `<div class="mcard" style="padding:10px"><div class="mval" style="font-size:18px;color:#027A48">${done.length}</div><div class="mlbl">Stores Visited</div></div>
+    <div class="mcard" style="padding:10px"><div class="mval" style="font-size:18px;color:#B42318">${miss.length}</div><div class="mlbl">Not Visited</div></div>
+    <div class="mcard" style="padding:10px"><div class="mval" style="font-size:18px">${periRecs.length}</div><div class="mlbl">Total Visits</div></div>
+    <div class="mcard" style="padding:10px;background:#EEF4FF;border-color:#B2CCFF"><div class="mval" style="font-size:18px;color:#1849A9">${pRecs.length}</div><div class="mlbl">🏪 Promoter Visits</div></div>
+    <div class="mcard" style="padding:10px;background:#FFF9EC;border-color:#FEC84B"><div class="mval" style="font-size:18px;color:#854F0B">${npRecs.length}</div><div class="mlbl">📦 Non-Promoter Visits</div></div>
+    <div class="mcard" style="padding:10px"><div class="mval" style="font-size:18px;color:${covPct>=80?'#027A48':covPct>=50?'#C96A00':'#B42318'}">${covPct}%</div><div class="mlbl">Coverage Rate</div></div>`;
+
+  document.getElementById('cov-progress').style.width=covPct+'%';
+  document.getElementById('cov-progress').style.background=covPct>=80?'#27AE60':covPct>=50?'#C96A00':'#B42318';
+
+  const filterDesc=[baF?'BA: '+baF:'',chainF||'',typeF==='promoter'?'🏪 Promoter Only':typeF==='nonpromoter'?'📦 Non-Promoter Only':''].filter(Boolean).join(' · ');
+  document.getElementById('cov-lbl').textContent=label+(filterDesc?' · '+filterDesc:'')+' · '+done.length+'/'+allS.length+' stores';
+
+  // Card renderer with visit count + last score + store type info
+  const mk=(arr,isDone)=>arr.map(s=>{
+    const cnt=visitCounts[s.name]||0;
+    const isNP=s.type==='nonpromoter';
+    const lastRec=periRecs.filter(r=>r.store===s.name).sort((a,b)=>b.date>a.date?1:-1)[0];
+    const lastScore=lastRec?(lastRec.store_type==='nonpromoter'?lastRec.total_norm:lastRec.total_raw):null;
+    const bg=isDone
+      ?'background:#ECFDF3;border:1px solid #A6F4C5'
+      :'background:#FEF3F2;border:1px solid #FECDCA';
+    const textCol=isDone?'#027A48':'#B42318';
+    const cntBadge=isDone
+      ?`<span style="background:#1B2A4A;color:#C9A227;border-radius:10px;padding:1px 8px;font-size:10px;font-weight:700;flex-shrink:0">${cnt}×</span>`
+      :`<span style="background:#FECDCA;color:#B42318;border-radius:10px;padding:1px 8px;font-size:10px;font-weight:700;flex-shrink:0">0×</span>`;
+    const scoreTag=lastScore!=null
+      ?`<span style="font-size:10px;font-weight:700;color:${isDone?'#027A48':'#B42318'}">${lastScore}/100</span>`:'';
+    return`<div style="${bg};border-radius:8px;padding:9px 12px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <span style="font-size:11px">${isDone?'✓':'○'}</span>
+        <span style="font-size:11px">${isNP?'📦':'🏪'}</span>
+        <span style="flex:1;font-size:12px;font-weight:600;color:#1B2A4A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${s.name}">${s.name}</span>
+        ${cntBadge}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:10px;color:#667085">${s.chain} · BA: ${s.ba||'—'}</span>
+        ${scoreTag}
+      </div>
+    </div>`;
   }).join('');
+
   document.getElementById('cov-miss-t').textContent=`Not Visited (${miss.length})`;
-  document.getElementById('cov-done-t').textContent=`Visited (${done.length})`;
-  document.getElementById('cov-miss').innerHTML=mk(miss,'miss')||'<div style="color:#027A48;padding:10px">All stores visited! 🎉</div>';
-  document.getElementById('cov-done').innerHTML=mk(done,'done')||'<div style="color:#98A2B3;padding:10px">None yet</div>';
+  document.getElementById('cov-done-t').textContent=`Visited (${done.length}) — ${periRecs.length} total visits · 🏪 ${pRecs.length} promoter · 📦 ${npRecs.length} non-promoter`;
+  document.getElementById('cov-miss').innerHTML=mk(miss,false)||'<div style="color:#027A48;padding:12px;font-size:13px">🎉 All stores visited!</div>';
+  document.getElementById('cov-done').innerHTML=mk(done,true)||'<div style="color:#98A2B3;padding:12px;font-size:13px">None yet</div>';
 }
 
 // ===== EXPORT =====
