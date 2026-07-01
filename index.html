@@ -5203,7 +5203,7 @@ function parseRec(r){
     {id:'R',en:'Relationship',score:sc('R'),max:15,col:'#6B3FA0'},
   ].filter(s=>r.store_type==='nonpromoter'?['X','Y','Z','R'].includes(s.id):['A','B','C','D','E'].includes(s.id));
   return{id:String(r.id),store_type:r.store_type||'promoter',store:r.store||'',
-    chain:r.chain||getChain(r.store||''),ba:r.ba||getBA(r.store||''),region:r.region||'',city:r.city||'',
+    chain:r.chain||getChain(r.store||''),ba:r.ba||r.auditor||getBA(r.store||''),region:r.region||'',city:r.city||'',
     promoter:r.promoter||'',star:r.star||'',auditor:r.auditor||'',auditor_name:r.auditor_name||r.auditor||'',
     date:(()=>{
       const d=r.date,idTs=Number(r.id)||0;
